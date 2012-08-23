@@ -82,20 +82,11 @@ function twosichatConfig(){
 			array('check', '2sichat_gad_trans'),
 			array('text', '2sichat_gad_lang', 'size' => 10, 'subtext' => $txt['2sichat_gad_lang_sub']),
 			'',
-			//array('check', '2sichat_ico_home'),
-			//array('check', '2sichat_ico_pm'),
 			array('check', '2sichat_ico_myspace'),
 			array('check', '2sichat_ico_twit'),
 			array('check', '2sichat_ico_fb'),
 			'',
-			/*array('check', '2sichat_load_chk'),
-			array('text', '2sichat_max_load', 'subtext' => $txt['2sichat_max_l_sub']),
-			array('check', '2sichat_load_dis_chat'),
-			array('check', '2sichat_load_dis_list'),
-			array('check', '2sichat_load_dis_bar'),
-			'',*/
 			array('text', 'size' => 50, '2sichat_board_index'),
-			//post,boardindex,board,topic,help,search,profile,mlist,pm,moderate,admin
 	);
 	
 	if (!empty($return_config))
@@ -372,25 +363,6 @@ function twosichatGadget(){
 			$smcFunc['db_free_result']($request);
 		}
 	}elseif (isset($_REQUEST['save'])) {
-		//errors!!!!!
-		/*$fields_string = array('title', 'url', 'width', 'height');
-		$fields_ints = array('width', 'height','ord');
-		foreach ($fields_string as $field)
-		{
-			if (empty($_POST[$field]))
-				fatal_error($field . $txt['2silempty'], false);
-			else
-				$_POST[$field] = $smcFunc['htmlspecialchars']($_POST[$field], ENT_QUOTES);
-		}
-		foreach ($fields_ints as $field)
-		{
-			if (is_numeric($_POST[$field]))
-				$_POST[$field] = !empty($_POST[$field]) ? (int) $_POST[$field] : 0;
-			if(empty($_POST[$field['ord']]))
-				$_POST[$field['ord']] = 0;
-			else
-				fatal_error($field . $txt['2silempty1'], false);
-		}*/
 		if (isset($_REQUEST['mod'])){
 			$smcFunc['db_query']('', '
 				UPDATE {db_prefix}2sichat_gadgets
