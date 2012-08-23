@@ -11,8 +11,6 @@ global $boardurl, $scripturl, $db_prefix, $smcFunc;
 // First load the SMF 2's Extra DB Functions
     db_extend('packages');
 	db_extend('extra');
-	
-	db_package_server();
 
 	add_integration_function('integrate_pre_include', '$boarddir/Sources/SAChatHooks.php');
     add_integration_function('integrate_load_permissions', 'SAChat_load_permissions');
@@ -293,25 +291,5 @@ global $boardurl, $scripturl, $db_prefix, $smcFunc;
 		),
 	array());
 }
-	
-function db_package_server() {
-    global $smcFunc;
 
-    $query = $smcFunc['db_query']('', '
-	   SELECT COUNT(*)
-	   FROM {db_prefix}package_servers
-	   WHERE url = {string:sleepyarcade}',
-    array('sleepyarcade' => 'http://www.sa-mods.info',)
-    );
-    list ($count) = $smcFunc['db_fetch_row']($query);
-    if (empty($count))
-    {
-    $smcFunc['db_insert']('insert',
-	'{db_prefix}package_servers',
-	array('name' => 'string', 'url' => 'string'),
-	array('SA Mods', 'http://www.sa-mods.info'),
-	array('id_server')
-	);
-  }
-}
 ?>
