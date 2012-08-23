@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>wdm2005:2sichat</id>
+	<version>Beta 5 Rev44</version>
+
+	
+	<file name="$themedir/Profile.template.php">
+		<operation>
+			<search position="before"><![CDATA[echo '
+							<li>
+								<input type="hidden" name="default_options[view_newest_first]" value="0" />
+								<label for="view_newest_first"><input type="checkbox" name="default_options[view_newest_first]" id="view_newest_first" value="1"', !empty($context['member']['options']['view_newest_first']) ? ' checked="checked"' : '', ' class="input_check" /> ', $txt['recent_posts_at_top'], '</label>
+							</li>';]]></search>
+			<add><![CDATA[
+echo '
+							<li>
+								<input type="hidden" name="default_options[show_cbar]" value="0" />
+								<label for="show_cbar"><input type="checkbox" name="default_options[show_cbar]" id="show_cbar" value="1"', !empty($context['member']['options']['show_cbar']) ? ' checked="checked"' : '', ' class="input_check" /> Hide chat bar?</label>
+							</li>';
+]]></add>
+		</operation>
+	</file>
+</modification>
