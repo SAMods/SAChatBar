@@ -96,31 +96,6 @@ function SAChat_getActions($actions){
 	    $context['current_action'] = $context['current_action'];//main actions
 }
 
-function SAChat_load_buffer(&$buffer)
-{
-	global $boardurl, $modSettings;
-	
-	if (isset($_REQUEST['xml']))
-		return $buffer;
-	
-	$copy = str_replace('{version}', 'Beta 4 Rev42', '<a href="http://www.sa-mods.info/" target="_blank">SA Chat {version} &copy; 2011 SA Mods</a>');
-	
-	$finds = array(
-		'Simple Machines</a>',
-		'class="copywrite"',
-	);
-	$replaces = array(
-		'Simple Machines</a><br />' . $copy,
-		'class="copywrite" style="line-height: 1;"',
-	);
-
-	$buffer = str_replace($finds, $replaces, $buffer);
-	
-	// I think were done
-	return $buffer;
-}
-
-
 function SAChat_load_permissions(&$permissionGroups, &$permissionList, &$leftPermissionGroups, &$hiddenPermissions, &$relabelPermissions)
 {
 	global $context;
