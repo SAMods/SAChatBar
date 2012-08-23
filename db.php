@@ -46,7 +46,6 @@ global $boardurl, $scripturl, $db_prefix, $smcFunc;
 		array(
 			'name' => 'sent',
 			'type' => 'timestamp',
-//			'default' => 'CURRENT_TIMESTAMP',
 			'null' => false,
 		),
 		array(
@@ -79,8 +78,6 @@ global $boardurl, $scripturl, $db_prefix, $smcFunc;
 			array ('2sichat_purge' ,'1'),
 			array ('2sichat_gad_lang' ,'en'),
 			array ('2sichat_gad_trans' ,'1'),
-			//array ('2sichat_ico_home' ,'1'),
-			//array ('2sichat_ico_pm' ,'1'),
 			array ('2sichat_ico_myspace' ,'1'),
 			array ('2sichat_ico_twit' ,'1'),
 			array ('2sichat_ico_fb' ,'1'),
@@ -162,25 +159,6 @@ global $boardurl, $scripturl, $db_prefix, $smcFunc;
 			'default' => 0,
 			'null' => false,
 	));	
-	
-	/*$result = $smcFunc['db_query']('','
-	  SELECT id
-	  FROM {db_prefix}2sichat_gadgets
-	  LIMIT 1',
-	  array());
-	  
-   list ($has_gadget) = $smcFunc['db_fetch_row']($result);
-   
-   if(!empty($has_gadget)){
-          
-		  $smcFunc['db_query']('', '
-			  UPDATE {db_prefix}2sichat_gadgets
-			  SET type = {string:type}',
-		  array('type' => 1));
-   }
-   
-   
-   $smcFunc['db_free_result']($result);*/
 	
 	$smcFunc['db_create_table']('{db_prefix}2sichat_barlinks',
 	array(
