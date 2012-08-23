@@ -6,11 +6,11 @@ function initchat() {
 	if ($member_id && empty($modSettings['2sichat_dis_bar'])) {
 		$bar = addslashes(preg_replace("/\r?\n?\t/m", "", chat_bar_template()));
 		
-			if (isset($modSettings['2sichat_list_type']) && $modSettings['2sichat_list_type'] == 1) {
+		if (isset($modSettings['2sichat_list_type']) && $modSettings['2sichat_list_type'] == 1) {
 				$buddies = addslashes(preg_replace("/\r?\n?\t/m", "", genOnList()));
-			} else {
-				$buddies = addslashes(preg_replace("/\r?\n?\t/m", "", genBudList()));
-			}
+		} else {
+			$buddies = addslashes(preg_replace("/\r?\n?\t/m", "", genBudList()));
+		}
 			
 	} elseif (!$modSettings['2sichat_dis_bar'] && !$member_id) {
 		$bar = addslashes(preg_replace("/\r?\n?\t/m", "", guest_bar_template()));
