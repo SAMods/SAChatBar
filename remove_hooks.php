@@ -1,7 +1,6 @@
 <?php
 
-global $txt, $smcFunc, $db_prefix, $modSettings;
-global $project_version, $addSettings, $permissions, $tables, $sourcedir;
+global $boarddir;
 
 if (!defined('SMF'))
 	require '../SSI.php';
