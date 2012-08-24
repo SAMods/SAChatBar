@@ -29,7 +29,7 @@ function sachat_array_insert(&$input, $key, $insert, $where = 'before', $strict 
 }
 
 function SAChat_loadtheme(){
-     global $context;
+    global $context;
 	 
 	loadLanguage('2sichat');
 	
@@ -44,8 +44,8 @@ function SAChat_loadtheme(){
                 $context['template_layers'][] = 'sachat';
         }
     }
-	
-	$context['html_headers'] .= SAChat_showBar('head');
+
+    $context['html_headers'] .= SAChat_showBar('head');
 }
 
 function template_sachat_above(){
@@ -56,7 +56,7 @@ function template_sachat_above(){
 function template_sachat_below(){}
 
 function SAChat_showBar($type){
-   global $modSettings, $boardurl, $context;
+   global $modSettings, $options, $boardurl, $context;
    
     //explode our actions
 	$actions = explode(',', $modSettings['2sichat_board_index']);
@@ -72,9 +72,9 @@ function SAChat_showBar($type){
 	SAChat_getActions($actions);	
     
 	//work out where the bar should be shown
-    if (in_array($context['current_action'],$actions) && !empty($modSettings['2sichat_board_index']))//certain actions
+    if (in_array($context['current_action'],$actions) && !empty($modSettings['2sichat_board_index']) && empty($options['show_cbar']))//certain actions
 	      $bar = '<script type="text/javascript" src="'.$boardurl.'/sachat/index.php?action='.$type.'&amp;theme='.$sachatTheme.'"></script>';
-	elseif (in_array('everywhere',$actions) && !empty($modSettings['2sichat_board_index']))//show everywhere
+	elseif (in_array('everywhere',$actions) && !empty($modSettings['2sichat_board_index']) && empty($options['show_cbar']))//show everywhere
 	      $bar ='<script type="text/javascript" src="'.$boardurl.'/sachat/index.php?action='.$type.'&amp;theme='.$sachatTheme.'"></script>'; 
     else//nothing defined
          $bar =''; 	
