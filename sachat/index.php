@@ -181,7 +181,7 @@
 			gadget();
 		}
  	}
- 	if ($member_id && isset($_REQUEST['action']) && $_REQUEST['action'] == 'heart' && $modSettings['2sichat_live_online'] || $member_id && !isset($_REQUEST['action']) && $modSettings['2sichat_live_online']) {
+ 	if ($member_id && isset($_REQUEST['action']) && $_REQUEST['action'] == 'heart' && !empty($modSettings['2sichat_live_online']) || $member_id && !isset($_REQUEST['action']) && !empty($modSettings['2sichat_live_online'])) {
 		liveOnline();
 	}
 	// If output function hasn't been declared lets do it.
@@ -487,7 +487,7 @@ function load_smiles(){
 function phaseMSG($data){
 
 	global $modSettings;
-	if ($modSettings['2sichat_simple_bbc']) {
+	if (!empty($modSettings['2sichat_simple_bbc'])) {
 		$data = phaseBBC($data);
 		$data = preg_replace("#((http|https|ftp)://(\S*?\.\S*?))(\s|\;|\)|\]|\[|\{|\}|,|\"|'|:|\<|$|\.\s)#ie", "'<a href=\"$1\" target=\"_blank\">$3</a>$4'", $data);
 	} else {
