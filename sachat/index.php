@@ -636,10 +636,11 @@ function genBudcount() {
 		SELECT COUNT(*)
 	    FROM {db_prefix}log_online AS o
 		LEFT JOIN {db_prefix}members AS m ON m.id_member = o.id_member
-		LEFT JOIN {db_prefix}themes AS t ON t.id_member = m.id_member
-		WHERE NOT FIND_IN_SET({int:member_id}, m.buddy_list) AND o.id_member != {int:member_id} AND m.show_online = 1 AND variable = "show_cbar" AND value = 0',
+		LEFT JOIN {db_prefix}themes AS t ON (t.variable = {string:name} AND t.id_member = m.id_member)
+		WHERE NOT FIND_IN_SET({int:member_id}, m.buddy_list) AND o.id_member != {int:member_id} AND t.value != 1 AND m.show_online = 1',
 			array(
 				'member_id' => $member_id,
+				'name' => 'show_cbar',
 				)
 			);
 
@@ -657,10 +658,11 @@ function genOncount() {
 		SELECT COUNT(*)
 	    FROM {db_prefix}log_online AS o
 		LEFT JOIN {db_prefix}members AS m ON m.id_member = o.id_member
-		LEFT JOIN {db_prefix}themes AS t ON t.id_member = m.id_member
-		WHERE FIND_IN_SET({int:member_id}, m.buddy_list) AND o.id_member != {int:member_id} AND m.show_online = 1 AND variable = "show_cbar" AND value = 0',
+		LEFT JOIN {db_prefix}themes AS t ON (t.variable = {string:name} AND t.id_member = m.id_member)
+		WHERE FIND_IN_SET({int:member_id}, m.buddy_list) AND o.id_member != {int:member_id} AND t.value != 1 AND m.show_online = 1',
 			array(
 				'member_id' => $member_id,
+				'name' => 'show_cbar',
 				)
 			);
 
@@ -674,14 +676,15 @@ function genBudList() {
 	global $smcFunc, $user_settings, $member_id, $user_settings, $context;
 
 	$results = $smcFunc['db_query']('', '
-		SELECT m.id_member, m.member_name, m.real_name, m.buddy_list, o.session
+		SELECT m.id_member, m.member_name, m.real_name, t.value, m.buddy_list, o.session
 		FROM {db_prefix}members AS m
 		LEFT JOIN {db_prefix}log_online AS o ON o.id_member = m.id_member
-		LEFT JOIN {db_prefix}themes AS t ON t.id_member = m.id_member
-		WHERE FIND_IN_SET({int:member_id}, m.buddy_list) AND variable = "show_cbar" AND value = 0
+		LEFT JOIN {db_prefix}themes AS t ON (t.variable = {string:name} AND t.id_member = m.id_member)
+		WHERE FIND_IN_SET({int:member_id}, m.buddy_list)
 		ORDER BY m.real_name DESC',
 		array(
 			'member_id' => $member_id,
+			'name' => 'show_cbar',
 		)
 	);
 
@@ -690,8 +693,10 @@ function genBudList() {
 	if ($results){
 		while ($row = $smcFunc['db_fetch_assoc']($results)) {
 			if (in_array($row['id_member'], $buddies)) {
-	          	$context['friends'][] = $row;
-			 }
+				if ($row['value'] != 1){
+	          	    $context['friends'][] = $row;
+				}
+			}
 		}
 		$smcFunc['db_free_result']($results);
 	}
@@ -704,21 +709,24 @@ function genOnList() {
 	global $smcFunc, $user_settings, $member_id, $context;
 
 	$results = $smcFunc['db_query']('', '
-		SELECT m.id_member, m.member_name, m.real_name, o.session
+		SELECT m.id_member, m.member_name, m.real_name, t.value, o.session
 		FROM {db_prefix}members AS m
 		LEFT JOIN {db_prefix}log_online AS o ON o.id_member = m.id_member
-		LEFT JOIN {db_prefix}themes AS t ON t.id_member = m.id_member
-		WHERE NOT FIND_IN_SET({int:member_id}, m.pm_ignore_list) AND variable = "show_cbar" AND value = 0 AND m.show_online = 1 OR FIND_IN_SET({int:member_id}, m.buddy_list) AND m.show_online = 0
+		LEFT JOIN {db_prefix}themes AS t ON (t.variable = {string:name} AND t.id_member = m.id_member)
+		WHERE NOT FIND_IN_SET({int:member_id}, m.pm_ignore_list) AND m.show_online = 1 OR FIND_IN_SET({int:member_id}, m.buddy_list) AND m.show_online = 0
 		ORDER BY m.real_name DESC',
 		array(
 			'member_id' => $member_id,
+			'name' => 'show_cbar',
 		)
 	);
 
 	if ($results){
 		while ($row = $smcFunc['db_fetch_assoc']($results)) { //show_online
 			if (isset($row['session']) && $row['id_member'] != $member_id){
-	          	$context['friends'][] = $row;
+			    if ($row['value'] != 1){
+	          	    $context['friends'][] = $row;
+				}
 			}
 		}
 		$smcFunc['db_free_result']($results);
