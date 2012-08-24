@@ -3,7 +3,7 @@
 [color=blue]MySpace/Facebook style chat bar for Simple Machines Forum.[/color]
 
 [hr]
-[size=10pt][b][color=green][url=https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4ECXFSWZSM89U]If you like this mod please donate by clicking here.[/url][/color][/b][/size]
+[size=10pt][b][color=green][If you like this mod please donate by clicking here.](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4ECXFSWZSM89U)[/color][/b][/size]
 [/center]
 [hr]
 
