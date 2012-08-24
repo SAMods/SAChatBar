@@ -636,7 +636,8 @@ function genBudcount() {
 		SELECT COUNT(*)
 	    FROM {db_prefix}log_online AS o
 		LEFT JOIN {db_prefix}members AS m ON m.id_member = o.id_member
-		WHERE NOT FIND_IN_SET({int:member_id}, m.buddy_list) AND o.id_member != {int:member_id} AND m.show_online = 1',
+		LEFT JOIN {db_prefix}themes AS t ON t.id_member = m.id_member
+		WHERE NOT FIND_IN_SET({int:member_id}, m.buddy_list) AND o.id_member != {int:member_id} AND m.show_online = 1 AND variable = "show_cbar" AND value = 0',
 			array(
 				'member_id' => $member_id,
 				)
@@ -656,7 +657,8 @@ function genOncount() {
 		SELECT COUNT(*)
 	    FROM {db_prefix}log_online AS o
 		LEFT JOIN {db_prefix}members AS m ON m.id_member = o.id_member
-		WHERE FIND_IN_SET({int:member_id}, m.buddy_list) AND o.id_member != {int:member_id} AND m.show_online = 1',
+		LEFT JOIN {db_prefix}themes AS t ON t.id_member = m.id_member
+		WHERE FIND_IN_SET({int:member_id}, m.buddy_list) AND o.id_member != {int:member_id} AND m.show_online = 1 AND variable = "show_cbar" AND value = 0',
 			array(
 				'member_id' => $member_id,
 				)
@@ -675,7 +677,8 @@ function genBudList() {
 		SELECT m.id_member, m.member_name, m.real_name, m.buddy_list, o.session
 		FROM {db_prefix}members AS m
 		LEFT JOIN {db_prefix}log_online AS o ON o.id_member = m.id_member
-		WHERE FIND_IN_SET({int:member_id}, m.buddy_list)
+		LEFT JOIN {db_prefix}themes AS t ON t.id_member = m.id_member
+		WHERE FIND_IN_SET({int:member_id}, m.buddy_list) AND variable = "show_cbar" AND value = 0
 		ORDER BY m.real_name DESC',
 		array(
 			'member_id' => $member_id,
@@ -704,7 +707,8 @@ function genOnList() {
 		SELECT m.id_member, m.member_name, m.real_name, o.session
 		FROM {db_prefix}members AS m
 		LEFT JOIN {db_prefix}log_online AS o ON o.id_member = m.id_member
-		WHERE NOT FIND_IN_SET({int:member_id}, m.pm_ignore_list) AND m.show_online = 1 OR FIND_IN_SET({int:member_id}, m.buddy_list) AND m.show_online = 0
+		LEFT JOIN {db_prefix}themes AS t ON t.id_member = m.id_member
+		WHERE NOT FIND_IN_SET({int:member_id}, m.pm_ignore_list) AND variable = "show_cbar" AND value = 0 AND m.show_online = 1 OR FIND_IN_SET({int:member_id}, m.buddy_list) AND m.show_online = 0
 		ORDER BY m.real_name DESC',
 		array(
 			'member_id' => $member_id,
