@@ -285,7 +285,7 @@ function twosichatThemes(){
 			@apache_reset_timeout();
 
 		// Copy over the default non-theme files.
-		$to_copy = array('/body.js.php', '/index.php', '/template.php', '/style.css');
+		$to_copy = array('/head.js.php', '/body.js.php', '/index.php', '/template.php', '/style.css');
 		foreach ($to_copy as $file)
 		{
 			if(file_exists($boarddir . '/sachat/themes/default' . $file)){

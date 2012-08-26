@@ -155,7 +155,7 @@
 	
 		// If we are loading the main javascript lets get it ready based on the user
      	if ($_REQUEST['action'] == 'body') {
-			initJs();
+			initJs('body');
 			initLink();
 			initGadgets();
 			initchat();
@@ -165,7 +165,7 @@
 			doheart();
 		}
 		if ($_REQUEST['action'] == 'head') {
-			require_once('head.js.php');
+			initJs('head');
 			$context['HTML'] = ' ';
 		}
 	} else {
@@ -187,14 +187,25 @@
 	// If output function hasn't been declared lets do it.
 	doOutput();
 	
-function initJs(){
+function initJs($jsType){
     global $themedir;
     
-	if(file_exists ($themedir.'/body.js.php'))
-	    require_once($themedir.'/body.js.php');
-	else
-	    require_once('body.js.php');
-	    
+	if($jsType == 'body'){
+	    if(file_exists ($themedir.'/body.js.php')){
+	        require_once($themedir.'/body.js.php');
+		}
+	    else{
+	        require_once('body.js.php');
+		}
+	}
+	if($jsType == 'head'){
+	    if(file_exists ($themedir.'/head.js.php')){
+	        require_once($themedir.'/head.js.php');
+		}
+	    else{
+	        require_once('head.js.php');
+		}
+	}	    
 }
 
 function initLink(){
