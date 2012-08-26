@@ -190,22 +190,12 @@
 function initJs($jsType){
     global $themedir;
     
-	if($jsType == 'body'){
-	    if(file_exists ($themedir.'/body.js.php')){
-	        require_once($themedir.'/body.js.php');
-		}
-	    else{
-	        require_once('body.js.php');
-		}
+	if(file_exists ($themedir.'/'.$jsType.'.js.php')){
+	    require_once($themedir.'/'.$jsType.'.js.php');
 	}
-	if($jsType == 'head'){
-	    if(file_exists ($themedir.'/head.js.php')){
-	        require_once($themedir.'/head.js.php');
-		}
-	    else{
-	        require_once('head.js.php');
-		}
-	}	    
+	else{
+	    require_once($jsType.'.js.php');
+    }
 }
 
 function initLink(){
