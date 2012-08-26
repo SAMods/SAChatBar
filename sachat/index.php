@@ -78,6 +78,7 @@
 		$smcFunc['db_query']('set_character_set', 'SET NAMES ' . $db_character_set,array());
 	}	
 	
+	if($member_id){
 	$results = $smcFunc['db_query']('', '
 		SELECT variable, value
 		FROM {db_prefix}themes
@@ -91,6 +92,7 @@
 		$options[$row[0]] = $row[1];
 	}
 	$smcFunc['db_free_result']($results);
+	}
 	
 	$results = $smcFunc['db_query']('', '
 		SELECT variable, value
@@ -138,7 +140,7 @@
 				$buddy_settings = loadUserSettings($buddy_id);
 			}
 		 }
-	} else if ($modSettings['2sichat_permissions']) {
+	} else if (!empty($modSettings['2sichat_permissions'])) {
      	$permission = loadPermissions(-1); // -1 is guest.
 	}
 	

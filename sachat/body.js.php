@@ -12,7 +12,7 @@ function initchat() {
 			$buddies = addslashes(preg_replace("/\r?\n?\t/m", "", genOnList()));
 		}
 			
-	} elseif (!$modSettings['2sichat_dis_bar'] && !$member_id) {
+	} elseif (empty($modSettings['2sichat_dis_bar']) && !$member_id) {
 		$bar = addslashes(preg_replace("/\r?\n?\t/m", "", guest_bar_template()));
 	}
 
