@@ -125,7 +125,7 @@ function twosichatLoad(){
 	$context['sub_template'] = 'show_settings';
     $context['page_title'] = $txt['2sichatloadbal'];
 
-	$disabled = true;
+	$disabled = false;
 	
 	if (strpos(strtolower(PHP_OS), 'win') === 0)
 		$context['chat_settings_message'] = $txt['loadavg_disabled_windows'];
