@@ -5,12 +5,7 @@ function initchat() {
 
 	if ($member_id && empty($modSettings['2sichat_dis_bar'])) {
 		$bar = addslashes(preg_replace("/\r?\n?\t/m", "", chat_bar_template()));
-		
-		if (!empty($options['show_cbar_buddys']) && $options['show_cbar_buddys'] == 1) {
-			$buddies = addslashes(preg_replace("/\r?\n?\t/m", "", genBudList()));
-		} else {
-			$buddies = addslashes(preg_replace("/\r?\n?\t/m", "", genOnList()));
-		}
+		$buddies = addslashes(preg_replace("/\r?\n?\t/m", "", genMemList()));
 			
 	} elseif (empty($modSettings['2sichat_dis_bar']) && !$member_id) {
 		$bar = addslashes(preg_replace("/\r?\n?\t/m", "", guest_bar_template()));
