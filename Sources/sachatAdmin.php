@@ -213,7 +213,7 @@ function twosichatThemes(){
 
     // get each entry
     while($entryName = readdir($myDirectory)) {
-	      $dirArray[] = $entryName;
+	     $dirArray[] = $entryName;
     }
 
     // close directory
@@ -227,10 +227,11 @@ function twosichatThemes(){
 	
 	//save theme
 	if(isset($_GET['save'])) {
-	  checkSession();
-      updateSettings (array('2sichat_theme' => $_POST['sachatTheme'])); 
-	  redirectexit('action=admin;area=sachat;sa=theme;done');
+	    checkSession();
+        updateSettings (array('2sichat_theme' => $_POST['sachatTheme'])); 
+	    redirectexit('action=admin;area=sachat;sa=theme;done');
 	}
+	
 	//upload theme
 	if(isset($_GET['upload'])) {
 
@@ -238,32 +239,33 @@ function twosichatThemes(){
 		if (!is_writable($boarddir . '/sachat/themes'))
 			fatal_lang_error('theme_install_write_error', 'critical');
 		
-	if(SAchat_isAllowedExtension($_FILES['theme_gz']['name'])) {
+	    if(SAchat_isAllowedExtension($_FILES['theme_gz']['name'])) {
 
-		require_once($sourcedir . '/Subs-Package.php');
+		    require_once($sourcedir . '/Subs-Package.php');
 
-		// Set the default settings...
-		$theme_name = basename($_FILES['theme_gz']['name']);
-		$theme_name1 = preg_replace(array('/\.zip/','/\s/', '/\.[\.]+/', '/[^\w_\.\-]/'), array('','_', '.', ''), $theme_name);
-		$theme_dir = $boarddir . '/sachat/themes/' . $theme_name1;
+		    // Set the default settings...
+		    $theme_name = basename($_FILES['theme_gz']['name']);
+		    $theme_name1 = preg_replace(array('/\.zip/','/\s/', '/\.[\.]+/', '/[^\w_\.\-]/'), array('','_', '.', ''), $theme_name);
+		    $theme_dir = $boarddir . '/sachat/themes/' . $theme_name1;
        
-	    mkdir($theme_dir, 0777);
+	        mkdir($theme_dir, 0777);
 	   
-		if (isset($_FILES['theme_gz']) && is_uploaded_file($_FILES['theme_gz']['tmp_name']) && (@ini_get('open_basedir') != '' || file_exists($_FILES['theme_gz']['tmp_name']))){
+		    if (isset($_FILES['theme_gz']) && is_uploaded_file($_FILES['theme_gz']['tmp_name']) && (@ini_get('open_basedir') != '' || file_exists($_FILES['theme_gz']['tmp_name']))){
 			
-			$extracted = read_tgz_file($_FILES['theme_gz']['tmp_name'], $theme_dir, false, true);
+			    $extracted = read_tgz_file($_FILES['theme_gz']['tmp_name'], $theme_dir, false, true);
 		  
-		    redirectexit('action=admin;area=sachat;sa=theme;udone='.$theme_name1.'');
-		}
-		else{
-			redirectexit('action=admin;area=sachat;sa=theme');
-		}
+		        redirectexit('action=admin;area=sachat;sa=theme;udone='.$theme_name1.'');
+		    }
+		    else{
+			    redirectexit('action=admin;area=sachat;sa=theme');
+		    }
+	    }
+	    else{
+	        //Invalide file type
+            fatal_lang_error('2sichat_theme3',false);
+	    }
 	}
-	else{
-	 //Invalide file type
-    fatal_lang_error('2sichat_theme3',false);
-	}
-	}
+	
 	//copy theme
 	if(isset($_GET['copy'])) {
 	// Hopefully the themes directory is writable, or we might have a problem.
@@ -283,36 +285,40 @@ function twosichatThemes(){
 			@apache_reset_timeout();
 
 		// Copy over the default non-theme files.
-		$to_copy = array('/index.php', '/template.php', '/style.css');
+		$to_copy = array('/body.js.php', '/index.php', '/template.php', '/style.css');
 		foreach ($to_copy as $file)
 		{
-			copy($boarddir . '/sachat/themes/default' . $file, $theme_dir . $file);
-			@chmod($theme_dir . $file, 0777);
+			if(file_exists($boarddir . '/sachat/themes/default' . $file)){
+			    copy($boarddir . '/sachat/themes/default' . $file, $theme_dir . $file);
+			    @chmod($theme_dir . $file, 0777);
+			}
 		}
 
 		// And now the entire images directory!
 		copytree($boarddir . '/sachat/themes/default/images', $theme_dir . '/images');
+		
 		// And now the entire languages directory!
 		copytree($boarddir . '/sachat/themes/default/languages', $theme_dir . '/languages');
+		
 		package_flush_cache();
 		redirectexit('action=admin;area=sachat;sa=theme;udone');
 	}
+	
 	//remove theme
 	if(isset($_GET['remove'])) {
-	  if($_GET['remove'] != $modSettings['2sichat_theme']){
-	    if($_GET['remove'] != '') {
-	        SAChat_deleteAll($boarddir . '/sachat/themes/'.$_GET['remove']);
-	        redirectexit('action=admin;area=sachat;sa=theme;rdone='.$_GET['remove'].'');
-		}
-		else{
-		    fatal_lang_error('2sichat_theme20', false);
-		}
-	  }
-	  else{
-		 fatal_lang_error('2sichat_theme21', false);
-	  }
+	    if($_GET['remove'] != $modSettings['2sichat_theme']){
+	        if($_GET['remove'] != '') {
+	            SAChat_deleteAll($boarddir . '/sachat/themes/'.$_GET['remove']);
+	            redirectexit('action=admin;area=sachat;sa=theme;rdone='.$_GET['remove'].'');
+		    }
+		    else{
+		        fatal_lang_error('2sichat_theme20', false);
+		    }
+	    }
+	    else{
+		    fatal_lang_error('2sichat_theme21', false);
+	    }
 	}
-
 }
 
 function twosichatGadget(){
