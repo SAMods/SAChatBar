@@ -80,6 +80,20 @@
 	
 	$results = $smcFunc['db_query']('', '
 		SELECT variable, value
+		FROM {db_prefix}themes
+		WHERE id_member = {string:mem}',
+		array(
+		    'mem' => $member_id,
+		)
+	);
+	$options = array();
+	while ($row = $smcFunc['db_fetch_row']($results)) {
+		$options[$row[0]] = $row[1];
+	}
+	$smcFunc['db_free_result']($results);
+	
+	$results = $smcFunc['db_query']('', '
+		SELECT variable, value
 		FROM {db_prefix}settings',
 		array()
 	);
@@ -100,11 +114,11 @@
 	// If it is a member lets load some data.
 	if ($member_id != 0){
 		
-	    if (isset($modSettings['2sichat_list_type']) && $modSettings['2sichat_list_type'] == 1) {
-		  $OnCount = genBudcount();
+	    if (!empty($options['show_cbar_buddys']) && $options['show_cbar_buddys'] == 1) {
+		  $OnCount = genOncount();
 		}
 	    else{
-		  $OnCount = genOncount();
+		  $OnCount = genBudcount();
 		}
 		
           $user_settings = loadUserSettings($member_id);
@@ -618,13 +632,13 @@ function loadPermissions($data) {
 
 function liveOnline() {
 	
-	global $modSettings, $context;
+	global $modSettings, $options, $context;
 
 	if (!$modSettings['2sichat_dis_list']) {
-		if (isset($modSettings['2sichat_list_type']) && $modSettings['2sichat_list_type'] == 1) {
-			$context['JSON']['ONLINE'] = genOnList();
-		} else {
+		if (!empty($options['show_cbar_buddys']) && $options['show_cbar_buddys'] == 1) {
 			$context['JSON']['ONLINE'] = genBudList();
+		} else {
+		    $context['JSON']['ONLINE'] = genOnList();
 		}
 	}
 }

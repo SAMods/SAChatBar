@@ -6,10 +6,10 @@ function initchat() {
 	if ($member_id && empty($modSettings['2sichat_dis_bar'])) {
 		$bar = addslashes(preg_replace("/\r?\n?\t/m", "", chat_bar_template()));
 		
-		if (isset($modSettings['2sichat_list_type']) && $modSettings['2sichat_list_type'] == 1) {
-				$buddies = addslashes(preg_replace("/\r?\n?\t/m", "", genOnList()));
-		} else {
+		if (!empty($options['show_cbar_buddys']) && $options['show_cbar_buddys'] == 1) {
 			$buddies = addslashes(preg_replace("/\r?\n?\t/m", "", genBudList()));
+		} else {
+			$buddies = addslashes(preg_replace("/\r?\n?\t/m", "", genOnList()));
 		}
 			
 	} elseif (!$modSettings['2sichat_dis_bar'] && !$member_id) {
@@ -87,6 +87,7 @@ function initchat() {
 								}
 							});
 						}
+
 						if (data != null && data.ONLINE != null) {
 							document.getElementById(\'friends\').innerHTML = data.ONLINE;
 						}

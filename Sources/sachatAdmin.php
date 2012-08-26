@@ -73,7 +73,7 @@ function twosichatConfig(){
 			array('check', '2sichat_purge_all', 'subtext' => $txt['2sichat_purge_a_sub']),
 			'',
 			array('check', '2sichat_live_online'),
-			array('check', '2sichat_list_type', 'subtext' => $txt['2sichat_list_t_sub']),
+			//array('check', '2sichat_list_type', 'subtext' => $txt['2sichat_list_t_sub']),
 			'',
 			array('check', '2sichat_dis_list', 'subtext' => $txt['2sichat_dis_l_sub']),
 			'',
