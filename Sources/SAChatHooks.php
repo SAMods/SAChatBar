@@ -29,9 +29,16 @@ function sachat_array_insert(&$input, $key, $insert, $where = 'before', $strict 
 }
 
 function SAChat_loadtheme(){
-    global $context;
+    global $options, $user_info, $context;
 	 
 	loadLanguage('2sichat');
+
+	if ($context['user']['is_logged'] && empty($options['cbar_opt_done'])){
+	   
+		SAChat_InsertOptions($user_info['id'],'show_cbar',0);
+        SAChat_InsertOptions($user_info['id'],'show_cbar_buddys',0);
+		SAChat_InsertOptions($user_info['id'],'cbar_opt_done',1);
+	}
 	
 	if (!isset($_REQUEST['xml']))
     {
@@ -46,6 +53,18 @@ function SAChat_loadtheme(){
     }
 
     $context['html_headers'] .= SAChat_showBar('head');
+}
+
+function SAChat_InsertOptions($chatmem, $chatvar, $chatval){
+    global $smcFunc;
+	
+    $smcFunc['db_insert']('ignore',
+        '{db_prefix}themes',
+        array('id_member' => 'int', 'id_theme' => 'int', 'variable' => 'string', 'value' => 'string',),
+        array($chatmem, 1, $chatvar, $chatval,),
+        array('id_member', 'id_theme')
+    );
+
 }
 
 function template_sachat_above(){

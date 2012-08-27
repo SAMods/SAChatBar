@@ -16,7 +16,7 @@ global $boardurl, $scripturl, $db_prefix, $smcFunc;
     add_integration_function('integrate_load_permissions', 'SAChat_load_permissions');
     add_integration_function('integrate_admin_areas', 'SAChat_admin_areas');
 	add_integration_function('integrate_load_theme', 'SAChat_loadTheme');
- 
+	
     $result = $smcFunc['db_query']('','
 	    SELECT id_member
 	    FROM {db_prefix}members',
