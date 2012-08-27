@@ -194,6 +194,7 @@
  	}
  	if ($member_id && isset($_REQUEST['action']) && $_REQUEST['action'] == 'heart' && !empty($modSettings['2sichat_live_online']) || $member_id && !isset($_REQUEST['action']) && !empty($modSettings['2sichat_live_online'])) {
 		liveOnline();
+		$context['JSON']['CONLINE'] = genMemcount();
 	}
 	// If output function hasn't been declared lets do it.
 	doOutput();
@@ -689,7 +690,7 @@ function genMemList() {
 
 function genMemcount() {
 
-	global $smcFunc, $puppys, $member_id, $options, $context;
+	global $smcFunc, $member_id, $options, $context;
 	
 	if (!empty($options['show_cbar_buddys']) && $options['show_cbar_buddys'] == 1)
 	    $query = 'WHERE FIND_IN_SET({int:member_id}, m.buddy_list) AND o.id_member != {int:member_id} AND t1.value != 1 AND t2.value = 1 AND m.show_online = 1';
@@ -711,10 +712,10 @@ function genMemcount() {
 		)
 	);
 
-	list ($puppys) = $smcFunc['db_fetch_row']($request);
+	list ($data) = $smcFunc['db_fetch_row']($request);
 	$smcFunc['db_free_result']($request);
 	
-	return $puppys;
+	return $data;
 }
 
 function loadDatabase(){

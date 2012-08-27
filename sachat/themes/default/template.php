@@ -131,7 +131,7 @@ function chat_bar_template() { //Chat bar template for logged in users, not gues
 		</div>
 		'.(!empty($modSettings['2sichat_dis_list']) ? '':'
 		<a class="white" href="javascript:void(0)" onclick="javascript:showhide(\'friends\');">
-			<img src="'.$themeurl.'/images/balloon.png" alt="{}" border="0"><strong>'.$txt['whos_on'].' ('.$OnCount.')</strong>
+			<img src="'.$themeurl.'/images/balloon.png" alt="{}" border="0"><strong>'.$txt['whos_on'].' (<span id="cfriends">'.$OnCount.'</span>)</strong>
 		</a>');
          
 	    if(!empty($context['gadgets'])) {
