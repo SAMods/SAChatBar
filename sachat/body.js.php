@@ -155,7 +155,6 @@ function initchat() {
 				document.body.appendChild(div);
 				//}
 			  
-				
 				jQuery.noConflict()(function($){
 					$.ajax({
 						url: \''.$boardurl.'/sachat/index.php\',
