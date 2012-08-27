@@ -17,6 +17,26 @@ global $boardurl, $scripturl, $db_prefix, $smcFunc;
     add_integration_function('integrate_admin_areas', 'SAChat_admin_areas');
 	add_integration_function('integrate_load_theme', 'SAChat_loadTheme');
  
+    $result = $smcFunc['db_query']('','
+	    SELECT id_member
+	    FROM {db_prefix}members',
+	    array()
+    );
+	while ($row = $smcFunc['db_fetch_assoc']($result)) {
+        $smcFunc['db_insert']('ignore',
+            '{db_prefix}themes',
+            array('id_member' => 'int', 'id_theme' => 'int', 'variable' => 'string', 'value' => 'string',),
+            array($row['id_member'], 1, 'show_cbar', 0,),
+            array('id_member', 'id_theme')
+        );
+		$smcFunc['db_insert']('ignore',
+            '{db_prefix}themes',
+            array('id_member' => 'int', 'id_theme' => 'int', 'variable' => 'string', 'value' => 'string',),
+            array($row['id_member'], 1, 'show_cbar_buddys', 0,),
+            array('id_member', 'id_theme')
+        );
+	}
+	
 	$smcFunc['db_create_table']('{db_prefix}2sichat',
 	array(
 		array(
