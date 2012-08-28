@@ -114,6 +114,9 @@ function chat_bar_template() { //Chat bar template for logged in users, not gues
 			}
 			}
 			$data.= '
+			'.($modSettings['2sichat_ico_gplus'] ? '<a href="javascript:void(0)" onclick="javascript:getSocial(\'gplus\');">
+				<img src="'.$themeurl.'/images/gplus.png" width="17" height="17" alt="'.$txt['facebook'].'" border="0">
+			</a>':'').'
 			'.($modSettings['2sichat_ico_myspace'] ? '<a href="javascript:void(0)" onclick="javascript:getSocial(\'myspace\');">
 				<img src="'.$themeurl.'/images/myspace.png" width="17" height="17" alt="'.$txt['myspace'].'" border="0">
 			</a>':'').'
@@ -200,6 +203,9 @@ function guest_bar_template() { //Well guest can't access everything.
 			}
 			}
 			$data.= '
+			'.($modSettings['2sichat_ico_gplus'] ? '<a href="javascript:void(0)" onclick="javascript:getSocial(\'gplus\');">
+				<img src="'.$themeurl.'/images/gplus.png" width="17" height="17" alt="'.$txt['facebook'].'" border="0">
+			</a>':'').'
 			'.($modSettings['2sichat_ico_myspace'] ? '<a href="javascript:void(0)" onclick="javascript:getSocial(\'myspace\');">
 				<img src="'.$themeurl.'/images/myspace.png" width="17" height="17" alt="'.$txt['myspace'].'" border="0">
 			</a>':'').'
