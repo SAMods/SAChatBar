@@ -99,6 +99,7 @@ global $boardurl, $scripturl, $db_prefix, $smcFunc;
 			array ('2sichat_gad_lang' ,'en'),
 			array ('2sichat_gad_trans' ,'1'),
 			array ('2sichat_ico_myspace' ,'1'),
+			array ('2sichat_ico_gplus' ,'1'),
 			array ('2sichat_ico_twit' ,'1'),
 			array ('2sichat_ico_fb' ,'1'),
 			array ('2sichat_board_index' ,'everywhere'),

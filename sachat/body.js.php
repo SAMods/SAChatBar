@@ -572,6 +572,9 @@ function initchat() {
 			if (social == \'facebook\') {
 				pupUP("http://www.facebook.com/sharer.php?t="+document.documentElement.getElementsByTagName("TITLE")[0].innerHTML+"&u="+window.location);
 			}
+			if (social == \'gplus\') {
+				pupUP("https://plusone.google.com/_/+1/confirm?hl=en-US&url="+window.location);
+			}
 		}
 		function pupUP(url) {
 			newwindow=window.open(url,\'pupUP\',\'height=400,width=550,top=200,left=200,toolbar=0,location=0,directories=0,status=0,menubar=0,statusbar=0\');

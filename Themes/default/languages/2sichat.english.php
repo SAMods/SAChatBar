@@ -77,6 +77,7 @@ $txt['2sichat_gad_lang_sub'] = 'The Page language translator needs a language co
 $txt['2sichat_ico_home'] = 'Enable Home Icon';
 $txt['2sichat_ico_pm'] = 'Enable PM Icon';
 $txt['2sichat_ico_myspace'] = 'Enable Myspace Icon';
+$txt['2sichat_ico_gplus'] = 'Enable Gplus Icon';
 $txt['2sichat_ico_twit'] = 'Enable Twitter Icon';
 $txt['2sichat_ico_fb'] = 'Enable Facebook Icon';
 $txt['2sichat'] = 'SA Chat';

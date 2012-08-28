@@ -83,6 +83,7 @@ function twosichatConfig(){
 			array('text', '2sichat_gad_lang', 'size' => 10, 'subtext' => $txt['2sichat_gad_lang_sub']),
 			'',
 			array('check', '2sichat_ico_myspace'),
+			array('check', '2sichat_ico_gplus'),
 			array('check', '2sichat_ico_twit'),
 			array('check', '2sichat_ico_fb'),
 			'',
