@@ -16,6 +16,9 @@ function chat_window_template() { //Main chat window, not the bar, the window yo
 					<a href="javascript:void(0)" onclick="javascript:xchat(\''.$buddy_settings['id_member'].'\'); return false;" onMouseOver="document.rollover'.$buddy_settings['id_member'].'.src=image2.src" onMouseOut="document.rollover'.$buddy_settings['id_member'].'.src=image1.src">
 						<img name="rollover'.$buddy_settings['id_member'].'" src="'.$themeurl.'/images/x_inactive.png" border="0" alt="X" />
 					</a>
+					<a href="javascript:void(0)" onclick="javascript:minchat(\''.$buddy_settings['id_member'].'\',\''.$buddy_settings['real_name'].'\'); return false;">
+					&nbsp;<img name="rollover'.$buddy_settings['id_member'].'" src="'.$themeurl.'/images/minimize.png" border="0" alt="-" />
+					</a>
 				</div>
 				<div id="top_cont_avatar">
 					<img align="left" width="40px" height="40px" src="'.$buddy_settings['avatar'].'" /><br />&nbsp;<span class="'.($buddy_settings['session']?'green':'red').'">*&nbsp;</span><span class="white">'.$buddy_settings['real_name'].'</span>
@@ -147,6 +150,9 @@ function chat_bar_template() { //Chat bar template for logged in users, not gues
 		  }
 		  }
 		}
+		
+		$data .='&nbsp;&nbsp;<span id="minchats"></span>';
+		
 	return $data;
 }
 

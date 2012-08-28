@@ -169,6 +169,13 @@ function initchat() {
 							} else {
 								xchat(DId);
 							}
+							
+							var chatmin = document.getElementById(\'minchats\'+ id);
+                            if(chatmin){
+							    chatmin.parentNode.removeChild(chatmin);
+					            delCookieArray(\'min\' + id);
+							}
+							
 							if (data != null && data.CONLINE != null) {
                                 document.getElementById(\'cfriends\').innerHTML = data.CONLINE;
 						    }
@@ -177,6 +184,7 @@ function initchat() {
 							}
 						}
 					});
+					
 				});
 
 				jQuery.noConflict()(function($){
@@ -193,6 +201,27 @@ function initchat() {
 			 }
 		}
 		
+		function minchat(budid, budname) {
+
+			var div = document.getElementById(arguments[0]);
+			div.parentNode.removeChild(div);
+			
+			if (window["re" + budid]) {
+				clearInterval(window["re" + budid]);
+			}
+			delCookieArray(\'msg_win\' + arguments[0]);
+			
+			var tsting = \'minchats\'+ budid;
+
+			var session = new setCookieArray(\'min\'+budid, \'2sichat_min\',+budid, budname);
+			
+			jQuery.noConflict()(function($){
+			    if (document.getElementById(\'minchats\'+budid) == undefined){
+                    $(\'#minchats\').append(\'&nbsp;&nbsp;<span id="\'+tsting+\'"><a class="white" href="javascript:void(0)" onclick="javascript:chatTo(\'+budid+\');return false;"><strong>\' + budname + \'</strong></a>&nbsp;&nbsp;</span>\');
+			    }
+			});
+		}
+		
 		function xchat(id) {
 
 			var div = document.getElementById(arguments[0]);
@@ -202,6 +231,7 @@ function initchat() {
 				clearInterval(window["re" + id]);
 			}
 			delCookieArray(\'msg_win\' + arguments[0]);
+			delCookieArray(\'min\' + id);
 		}
 
 		function jsubmit(id){
@@ -423,7 +453,7 @@ function initchat() {
 					var c = $.trim(cookie), name = c.split(\'=\')[0], value = c.split(\'=\')[1];
 					var cname = name.substring(0, name.length - 1);
 			    		var cSession = new getCookieArray(cname);
-			    		if (cSession[1] == \'2sichat\') {
+			    	if (cSession[1] == \'2sichat\') {
 						chatTo(cSession[2]);
 						document.getElementById(cSession[2]).style.left = cSession[3]+\'px\';
 						document.getElementById(cSession[2]).style.top = cSession[4]+\'px\';
@@ -433,6 +463,14 @@ function initchat() {
 						document.getElementById(cSession[2]).style.left = cSession[3]+\'px\';
 						document.getElementById(cSession[2]).style.top = cSession[4]+\'px\';
 					}
+					
+					if (cSession[1] == \'2sichat_min\' && cSession[3] != \'NaN\') {
+					    var tsting = \'minchats\'+cSession[2];
+					    if (document.getElementById(\'minchats\'+cSession[2]) == undefined){
+					       $(\'#minchats\').append(\'&nbsp;&nbsp;<span id="\'+tsting+\'"><a class="white" href="javascript:void(0)" onclick="javascript:chatTo(\'+cSession[2]+\');return false;"><strong>\'+cSession[3]+\'</strong></a>&nbsp;&nbsp;</span>\');
+					    }
+					}
+					
 				});
 			 });
 		}
