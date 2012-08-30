@@ -79,6 +79,7 @@ $txt['2sichat_ico_pm'] = 'Enable PM Icon';
 $txt['2sichat_ico_myspace'] = 'Enable Myspace Icon';
 $txt['2sichat_ico_gplus'] = 'Enable Gplus Icon';
 $txt['2sichat_ico_twit'] = 'Enable Twitter Icon';
+$txt['2sichat_ico_adthis'] = 'Enable AddThis Icon';
 $txt['2sichat_ico_fb'] = 'Enable Facebook Icon';
 $txt['2sichat'] = 'SA Chat';
 $txt['twosichatConfig'] = 'Config';

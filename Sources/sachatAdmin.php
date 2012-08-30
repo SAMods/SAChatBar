@@ -86,6 +86,7 @@ function twosichatConfig(){
 			array('check', '2sichat_ico_gplus'),
 			array('check', '2sichat_ico_twit'),
 			array('check', '2sichat_ico_fb'),
+			array('check', '2sichat_ico_adthis'),
 			'',
 			array('text', 'size' => 50, '2sichat_board_index'),
 	);

@@ -85,26 +85,23 @@ function initchat() {
 					success: function(data){
 						if (data != null && data.ids != null){
 							jQuery.each(data.ids, function() {
-
 							    if (this != null) {
 							        var chatmin1 = document.getElementById(\'minchats\'+this);
 									var tsting = \'minchats\'+ this;
 									var tstingj = $(\'#minchats\'+this).html();
-									//alert(\'\'+ tstingj);	
-							    }	
-							
+							    }							
 								if (!chatmin1 && !document.getElementById(\'cmsg\'+this) && this != null) {
 									chatTo(this);
-									loadsnd(\'new_msg\');															
+									loadsnd(\'new_msg\');
 								}
 								if (document.getElementById(\'cmsg\'+this) && this != null) {
 									updatemsg(this);
-									loadsnd(\'new_msg\');
 								}
 								if(chatmin1){
 							        chatmin1.parentNode.removeChild(chatmin1);
-								    if (document.getElementById(chatmin1) == undefined){
-                                        $(\'#minchats\').append(\'<span style="background-color: red" id="\'+tsting+\'">&nbsp;\'+tstingj+\'&nbsp;</span>\');
+								    if (document.getElementById(chatmin1) == undefined){                                    
+										loadsnd(\'new_msg\');
+										$(\'#minchats\').append(\'<span style="background-color: red" id="\'+tsting+\'">\'+tstingj+\'</span>\');
 			                        }
 				                }
 							});

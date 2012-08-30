@@ -102,6 +102,7 @@ global $boardurl, $scripturl, $db_prefix, $smcFunc;
 			array ('2sichat_ico_gplus' ,'1'),
 			array ('2sichat_ico_twit' ,'1'),
 			array ('2sichat_ico_fb' ,'1'),
+			array ('2sichat_ico_adthis' ,'1'),
 			array ('2sichat_board_index' ,'everywhere'),
 			array ('2sichat_theme' ,'default'),
 		),

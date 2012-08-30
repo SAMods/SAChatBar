@@ -29,7 +29,7 @@ function sachat_array_insert(&$input, $key, $insert, $where = 'before', $strict 
 }
 
 function SAChat_loadtheme(){
-    global $options, $user_info, $context;
+    global $options, $modSettings, $user_info, $context;
 	 
 	loadLanguage('2sichat');
 
@@ -53,6 +53,9 @@ function SAChat_loadtheme(){
     }
 
     $context['html_headers'] .= SAChat_showBar('head');
+	if($modSettings['2sichat_ico_adthis']){
+	    $context['html_headers'] .= '<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-503f263237ff99da"></script>';
+    }
 }
 
 function SAChat_InsertOptions($chatmem, $chatvar, $chatval){
