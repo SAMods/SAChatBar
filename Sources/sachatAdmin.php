@@ -302,6 +302,9 @@ function twosichatThemes(){
 		// And now the entire languages directory!
 		copytree($boarddir . '/sachat/themes/default/languages', $theme_dir . '/languages');
 		
+		// And now the entire sound directory!
+		copytree($boarddir . '/sachat/themes/default/sounds', $theme_dir . '/sounds');
+		
 		package_flush_cache();
 		redirectexit('action=admin;area=sachat;sa=theme;udone');
 	}
