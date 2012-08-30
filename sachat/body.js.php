@@ -217,7 +217,7 @@ function initchat() {
 			
 			jQuery.noConflict()(function($){
 			    if (document.getElementById(\'minchats\'+budid) == undefined){
-                    $(\'#minchats\').append(\'&nbsp;&nbsp;<span id="\'+tsting+\'"><a class="white" href="javascript:void(0)" onclick="javascript:chatTo(\'+budid+\');return false;"><strong>\' + budname + \'</strong></a>&nbsp;&nbsp;</span>\');
+                    $(\'#minchats\').append(\'<span id="\'+tsting+\'">&nbsp;&nbsp;<a class="white" href="javascript:void(0)" onclick="javascript:chatTo(\'+budid+\');return false;"><strong>\' + budname + \'</strong></a>&nbsp;&nbsp;</span>\');
 			    }
 			});
 		}
@@ -467,7 +467,7 @@ function initchat() {
 					if (cSession[1] == \'2sichat_min\' && cSession[3] != \'NaN\') {
 					    var tsting = \'minchats\'+cSession[2];
 					    if (document.getElementById(\'minchats\'+cSession[2]) == undefined){
-					       $(\'#minchats\').append(\'&nbsp;&nbsp;<span id="\'+tsting+\'"><a class="white" href="javascript:void(0)" onclick="javascript:chatTo(\'+cSession[2]+\');return false;"><strong>\'+cSession[3]+\'</strong></a>&nbsp;&nbsp;</span>\');
+					       $(\'#minchats\').append(\'<span id="\'+tsting+\'">&nbsp;&nbsp;<a class="white" href="javascript:void(0)" onclick="javascript:chatTo(\'+cSession[2]+\');return false;"><strong>\'+cSession[3]+\'</strong></a>&nbsp;&nbsp;</span>\');
 					    }
 					}
 					

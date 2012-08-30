@@ -2,7 +2,7 @@
 <!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
 <modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
 	<id>wdm2005:2sichat</id>
-	<version>RC1 Rev55</version>
+	<version>RC1 Rev56</version>
 
 	
 	<file name="$themedir/Profile.template.php">
@@ -18,7 +18,7 @@
 			<add><![CDATA[
 ';
 							if(allowedTo('2sichat_bar_close') || allowedTo('2sichat_bar_buddys')){
-							echo'<br />
+							echo'<br /><a name="chatbar"></a>
                            <hr /><strong>Chat Bar Settings</strong>';
 							if(allowedTo('2sichat_bar_close')){
                             echo'
