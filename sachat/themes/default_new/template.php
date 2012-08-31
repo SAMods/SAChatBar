@@ -123,7 +123,7 @@ function chat_bar_template() { //Chat bar template for logged in users, not gues
 
 function chat_extra_template() { 
 
-	global $txt, $member_id, $scripturl, $modSettings, $context, $themeurl;
+	global $txt, $member_id, $scripturl, $options, $modSettings, $context, $themeurl;
 
 	$data ='
 		<div id="extra_top">
@@ -135,22 +135,25 @@ function chat_extra_template() {
 		</div>
 		<div id="extra_bottom">';
 		if (!empty($member_id)) {
-          $data.= '<br /><a href="?action=profile;area=theme#chatbar"><strong>'.$txt['bar_setings'].'</strong></a>
+          $data.= '<br /><a href="?action=profile;area=theme;u='.$member_id.'#chatbar"><strong>'.$txt['bar_setings'].'</strong></a>';
+		 
+		  if(!empty($options['show_cbar_buddys'])){
+ 		  $data.= '<br /><a href="?action=profile;area=lists;u='.$member_id.'"><strong>'.$txt['bil'].'</strong></a>';
+		  }
 		  
-		  
-		  <hr />';
+		  $data.= '<hr />';
 		  }
 			$data.= '<strong>'.$txt['bar_social'].'</strong><br /><br />
 			'.($modSettings['2sichat_ico_adthis'] ? '<a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;pubid=xa-503f263237ff99da">
-			<img src="'.$themeurl.'/images/add-this.png" width="25" height="25" alt="Bookmark and Share" style="border:0"/> <strong>'.$txt['addthis'].'</strong></a><br />':'').'
+			<img src="'.$themeurl.'/images/add-this.png" width="17" height="17" alt="Bookmark and Share" style="border:0"/> <strong>'.$txt['addthis'].'</strong></a><br />':'').'
 			'.($modSettings['2sichat_ico_gplus'] ? '<a href="javascript:void(0)" onclick="javascript:getSocial(\'gplus\');">
-				<img src="'.$themeurl.'/images/gplus.png" width="25" height="25" alt="'.$txt['facebook'].'" border="0"> <strong>'.$txt['gplus1'].'</strong></a><br />':'').'
+				<img src="'.$themeurl.'/images/gplus.png" width="17" height="17" alt="'.$txt['facebook'].'" border="0"> <strong>'.$txt['gplus1'].'</strong></a><br />':'').'
 			'.($modSettings['2sichat_ico_myspace'] ? '<a href="javascript:void(0)" onclick="javascript:getSocial(\'myspace\');">
-				<img src="'.$themeurl.'/images/myspace.png" width="25" height="25" alt="'.$txt['myspace'].'" border="0"> <strong>'.$txt['myspace1'].'</strong></a><br />':'').'
+				<img src="'.$themeurl.'/images/myspace.png" width="17" height="17" alt="'.$txt['myspace'].'" border="0"> <strong>'.$txt['myspace1'].'</strong></a><br />':'').'
 			'.($modSettings['2sichat_ico_twit'] ? '<a href="javascript:void(0)" onclick="javascript:getSocial(\'twitter\');">
-				<img src="'.$themeurl.'/images/twitter.png" width="25" height="25" alt="'.$txt['twitter'].'" border="0"> <strong>'.$txt['twitter1'].'</strong></a><br />':'').'
+				<img src="'.$themeurl.'/images/twitter.png" width="17" height="17" alt="'.$txt['twitter'].'" border="0"> <strong>'.$txt['twitter1'].'</strong></a><br />':'').'
 			'.($modSettings['2sichat_ico_fb'] ? '<a href="javascript:void(0)" onclick="javascript:getSocial(\'facebook\');">
-				<img src="'.$themeurl.'/images/facebook.png" width="25" height="25" alt="'.$txt['facebook'].'" border="0"> <strong>'.$txt['facebook1'].'</strong></a><br />':'').'<hr />';
+				<img src="'.$themeurl.'/images/facebook.png" width="17" height="17" alt="'.$txt['facebook'].'" border="0"> <strong>'.$txt['facebook1'].'</strong></a><br />':'').'<hr />';
 		
 		     
 			 

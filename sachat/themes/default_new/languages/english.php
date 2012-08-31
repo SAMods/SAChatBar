@@ -17,6 +17,7 @@ $txt['facebook'] = 'Facebook';
 $txt['facebook1'] = 'Share on Facebook';
 $txt['gplus'] = 'Google+';
 $txt['gplus1'] = 'Share on Google+';
+$txt['bil'] = 'Buddies/Ignore List';
 $txt['addthis'] = 'Add This';
 $txt['whos_on'] = 'Who&#39;s Online';
 $txt['guest_msg'] = 'Welcome, Guest. Please <a class="white" href="'.$boardurl.'/index.php?action=login">login</a> or <a class="white" href="'.$boardurl.'/index.php?action=register">register.</a>';
