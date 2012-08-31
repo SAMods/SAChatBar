@@ -37,7 +37,9 @@ function SAChat_loadtheme(){
 	   
 		SAChat_InsertOptions($user_info['id'],'show_cbar',0);
         SAChat_InsertOptions($user_info['id'],'show_cbar_buddys',0);
+		SAChat_InsertOptions($user_info['id'],'cbar_theme',0);
 		SAChat_InsertOptions($user_info['id'],'cbar_opt_done',1);
+		
 	}
 	
 	if (!isset($_REQUEST['xml']))
@@ -88,8 +90,11 @@ function SAChat_showBar($type){
 	    $modSettings['2sichat_theme'] = 'default';
 	
 	//load our theme
-	$sachatTheme = $modSettings['2sichat_theme'];
-    
+	if(!empty($options['cbar_theme']) && allowedTo('2sichat_bar_theme'))
+	    $sachatTheme = $options['cbar_theme'];
+	else
+        $sachatTheme = $modSettings['2sichat_theme'];	
+		
 	//get our actions
 	SAChat_getActions($actions);	
     
@@ -128,6 +133,7 @@ function SAChat_load_permissions(&$permissionGroups, &$permissionList, &$leftPer
 		'2sichat_bar' => array(false, '2sichat', '2sichat'),
 		'2sichat_bar_close' => array(false, '2sichat', '2sichat'),
 		'2sichat_bar_buddys' => array(false, '2sichat', '2sichat'),
+		'2sichat_bar_theme' => array(false, '2sichat', '2sichat'),
 	);
 	
 	$context['non_guest_permissions'] = array_merge(
@@ -135,6 +141,9 @@ function SAChat_load_permissions(&$permissionGroups, &$permissionList, &$leftPer
 		    array(
 		        '2sichat_access',
 		        '2sichat_chat',
+				'2sichat_bar_theme',
+				'2sichat_bar_buddys',
+				'2sichat_bar_close',
 		)
 	);
 }
@@ -169,6 +178,28 @@ function SAChat_admin_areas(&$admin_areas)
 	       ),
         )
     );
+}
+
+function SAChat_LoadTemes(){
+    global $boarddir, $dirArray, $indexCount;
+	
+    // open this directory 
+    $myDirectory = opendir($boarddir.'/sachat/themes');
+
+    // get each entry
+    while($entryName = readdir($myDirectory)) {
+	     $dirArray[] = $entryName;
+    }
+
+    // close directory
+    closedir($myDirectory);
+	  
+	//count elements in array
+    $indexCount = count($dirArray);
+
+    // sort 'em
+    sort($dirArray);
+	
 }
 
 ?>

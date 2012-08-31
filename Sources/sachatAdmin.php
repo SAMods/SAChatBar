@@ -55,7 +55,7 @@ function twosichatConfig(){
 
 	$context[$context['admin_menu_name']]['tab_data']['title'] = $txt['2sichat_config'];
 	$context[$context['admin_menu_name']]['tab_data']['description'] = $txt['2sichat_config_des'];
-	
+
 	$config_vars = array(
 			array('check', '2sichat_disable', 'subtext' => $txt['2sichat_disable_sub']),
 			'',
@@ -210,22 +210,7 @@ function twosichatThemes(){
 	$context[$context['admin_menu_name']]['tab_data']['title'] = $txt['2sichat_theme1'];
 	$context[$context['admin_menu_name']]['tab_data']['description'] = $txt['2sichat_theme2'];
 	 
-	// open this directory 
-    $myDirectory = opendir($boarddir.'/sachat/themes');
-
-    // get each entry
-    while($entryName = readdir($myDirectory)) {
-	     $dirArray[] = $entryName;
-    }
-
-    // close directory
-    closedir($myDirectory);
-	  
-	//count elements in array
-    $indexCount = count($dirArray);
-
-    // sort 'em
-    sort($dirArray);
+	SAChat_LoadTemes();
 	
 	//save theme
 	if(isset($_GET['save'])) {

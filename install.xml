@@ -2,7 +2,7 @@
 <!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
 <modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
 	<id>wdm2005:2sichat</id>
-	<version>RC1 Rev57</version>
+	<version>RC1 Rev58</version>
 
 	
 	<file name="$themedir/Profile.template.php">
@@ -17,9 +17,26 @@
 							</li>]]></search>
 			<add><![CDATA[
 ';
-							if(allowedTo('2sichat_bar_close') || allowedTo('2sichat_bar_buddys')){
-							echo'<br /><a name="chatbar"></a>
-                           <hr /><strong>Chat Bar Settings</strong>';
+							if(allowedTo('2sichat_bar_close') || allowedTo('2sichat_bar_buddys') || allowedTo('2sichat_bar_theme')){
+							   
+							   if(allowedTo('2sichat_bar_theme')){
+							   global $dirArray, $context, $indexCount;
+                                
+								SAChat_LoadTemes();
+							    echo'<br />
+                               <hr /><strong>Chat Bar Settings</strong><br />';
+
+							echo'<br /><label for="cbar_theme">Bar Theme</label>
+								<select name="default_options[cbar_theme]" id="cbar_theme">';
+									
+									echo'<option value="0"', empty($options['cbar_theme']) ? ' selected="selected"' : '', '>Forum Default</option>';
+									for($index=0; $index < $indexCount; $index++) {
+                                        if (substr($dirArray[$index], 0, 1) != '.' && $dirArray[$index] != "index.php"){ // don't list hidden files
+				                            echo'<option value="', $dirArray[$index], '"', !empty($context['member']['options']['cbar_theme']) && $context['member']['options']['cbar_theme'] == $dirArray[$index] ? ' selected="selected"' : '', '>', $dirArray[$index], '</option>';
+	                                    }
+                                    }
+								echo'</select>';
+								}
 							if(allowedTo('2sichat_bar_close')){
                             echo'
 							<li>

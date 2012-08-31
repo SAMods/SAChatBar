@@ -58,6 +58,7 @@ $txt['permissionname_2sichat_access'] = 'Access SA Chat';
 $txt['permissionname_2sichat_chat'] = 'Allowed to Chat';
 $txt['permissionname_2sichat_bar'] = 'Disable Bar';
 $txt['permissionname_2sichat_bar_close'] = 'Allowed to disable bar';
+$txt['permissionname_2sichat_bar_theme'] = 'Allowed to change themes';
 $txt['permissionname_2sichat_bar_buddys'] = 'Allowed to choose who to talk to';
 $txt['2silempty'] = 'Left Empty!';
 $txt['2silempty1'] = 'Must Be Numeric!';
