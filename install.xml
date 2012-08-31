@@ -23,7 +23,7 @@
 							   global $dirArray, $context, $indexCount;
                                 
 								SAChat_LoadTemes();
-							    echo'<br />
+							    echo'<br /><a name="chatbar"></a>
                                <hr /><strong>Chat Bar Settings</strong><br />';
 
 							echo'<br /><label for="cbar_theme">Bar Theme</label>
