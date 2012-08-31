@@ -97,12 +97,12 @@ function initchat() {
 								if (document.getElementById(\'cmsg\'+this) && this != null) {
 									updatemsg(this);
 								}
+							
 								if(chatmin1){
-							        chatmin1.parentNode.removeChild(chatmin1);
-								    if (document.getElementById(chatmin1) == undefined){                                    
-										loadsnd(\'new_msg\');
-										$(\'#minchats\').append(\'<span style="background-color: red" id="\'+tsting+\'">\'+tstingj+\'</span>\');
-			                        }
+								    $(\'#minchats\'+ this).fadeOut(\'1000\', function(){
+                                    $(this).fadeIn(\'1000\', function(){});});
+									chatmin1.setAttribute(\'style\',\'background-color: red; margin: 0.3em 2px 2em 2px\');
+									loadsnd(\'new_msg\');
 				                }
 							});
 						}
