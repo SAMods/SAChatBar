@@ -88,8 +88,6 @@ function initchat() {
 							jQuery.each(data.ids, function() {
 							    if (this != null) {
 							        var chatmin1 = document.getElementById(\'minchats\'+this);
-									var tsting = \'minchats\'+ this;
-									var tstingj = $(\'#minchats\'+this).html();
 							    }							
 								if (!chatmin1 && !document.getElementById(\'cmsg\'+this) && this != null) {
 									chatTo(this);
@@ -98,7 +96,6 @@ function initchat() {
 								if (document.getElementById(\'cmsg\'+this) && this != null) {
 									updatemsg(this);
 								}
-							
 								if(chatmin1){
 								    $(\'#minchats\'+ this).fadeOut(\'1000\', function(){
                                     $(this).fadeIn(\'1000\', function(){});});
@@ -165,22 +162,16 @@ function initchat() {
 			var DId = arguments[0];
 			if (document.getElementById(DId) == undefined && DId != undefined) {
 
-				var div = document.createElement(\'div\');
-
-				div.setAttribute(\'id\',DId);
-				div.setAttribute(\'dir\',\'ltr\');
-				div.setAttribute(\'class\',\'msg_win\');
+				div = document.createElement(\'div\');
+                div.id = +DId;
+				div.dir = \'ltr\';
+				div.className = \'msg_win\';
 				div.style.position = \'fixed\';
 				zdex = (zdex+1);
 				div.style.zIndex = zdex;
 				
-				//if (isIE) {
-				//document.documentElement.appendChild(div);
-				//}
-				//else{ 
 				document.body.appendChild(div);
-				//}
-			  
+
 				jQuery.noConflict()(function($){
 					$.ajax({
 						url: \''.$boardurl.'/sachat/index.php\',
@@ -391,20 +382,16 @@ function initchat() {
 
           function openGadget(id) {
 			if (document.getElementById(\'Gadget\'+id) == undefined) {
+				
 				var div = document.createElement(\'div\');
-				div.setAttribute(\'id\',\'Gadget\'+id);
-				div.setAttribute(\'dir\',\'ltr\');
-				div.setAttribute(\'class\',\'msg_win\');
+				div.id = \'Gadget\'+id;
+				div.dir = \'ltr\';
+				div.className = \'msg_win\';
 				div.style.position = \'fixed\';
 				zdex = (zdex+1);
 				div.style.zIndex = zdex;
                  
-				//if (isIE) {
-				////document.documentElement.appendChild(div);
-				//}
-				//else{ 
 				document.body.appendChild(div);
-				//}
 
 				jQuery.noConflict()(function($){
 					$.ajax({
@@ -423,17 +410,17 @@ function initchat() {
                                 document.getElementById(\'cfriends\').innerHTML = data.CONLINE;
 						    }
 						}
+						
 					});
 				});
-
+				
+                showhide(\'extra\');
+				
 				if (cSession == undefined) {
                     	var session = new setCookieArray(\'Gadget\'+id, \'2sichat_gadget\', \'Gadget\'+id);
 				}else{
 					var session = new setCookieArray(\'Gadget\'+id, \'2sichat_gadget\', \'Gadget\'+id, cSession[3], cSession[4]);
 				}
-
-				
-				//document.body.appendChild(div);
 
 				jQuery.noConflict()(function($){
 					cwh = $(\'#Gadget\'+id).height();
