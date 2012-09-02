@@ -219,7 +219,7 @@ function guest_bar_template() { //Well guest can't access everything.
 			$data = '
 			<div style="float: right; padding-right: 30px; padding-top: 3px;">
 			<a class="white" href="javascript:void(0)" onclick="javascript:showhide(\'extra\');">
-			<img src="'.$themeurl.'/images/control_eject_blue.png" width="17" height="17" alt="Extra" border="0">
+			<img id="extraimg" src="'.$themeurl.'/images/control_eject_blue.png" width="17" height="17" alt="Extra" border="0">
 		    </a></div>';
 	    $data.= '
 		<div class="langCont">
