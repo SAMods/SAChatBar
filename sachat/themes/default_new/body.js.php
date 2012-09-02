@@ -414,7 +414,9 @@ function initchat() {
 					});
 				});
 				
-                showhide(\'extra\');
+                if(document.getElementById("extra").style.display == \'block\'){
+				    showhide(\'extra\');
+				}
 				
 				if (cSession == undefined) {
                     	var session = new setCookieArray(\'Gadget\'+id, \'2sichat_gadget\', \'Gadget\'+id);
