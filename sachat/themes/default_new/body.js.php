@@ -187,7 +187,6 @@ function initchat() {
 							} else {
 								xchat(DId);
 							}
-							
 							var chatmin = document.getElementById(\'minchats\'+ id);
                             if(chatmin){
 							    chatmin.parentNode.removeChild(chatmin);
@@ -567,10 +566,16 @@ function initchat() {
 			    if(document.getElementById(layer_ref).style.display == \'none\')
                 {
                     $(document.getElementById(layer_ref)).fadeIn("fast");
+					if(layer_ref == \'extra\'){
+					    document.getElementById("extraimg").src = \''.$themeurl.'/images/control_eject_blue1.png\';
+					}
                 }
                 else
                 {
                     $(document.getElementById(layer_ref)).fadeOut("slow");
+					if(layer_ref == \'extra\'){
+					    document.getElementById("extraimg").src = \''.$themeurl.'/images/control_eject_blue.png\';
+					}
                 }	
 			});
 		}

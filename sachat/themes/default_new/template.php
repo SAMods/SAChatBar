@@ -100,7 +100,7 @@ function chat_bar_template() { //Chat bar template for logged in users, not gues
 	    '.(empty($modSettings['2sichat_dis_list']) ? ' <div style="float: right; padding-right: 30px; padding-top: 1px;">':'
 			 <div style="float: right; padding-right: 30px; padding-top: 3px;">').'';
 			$data .= '<a class="white" href="javascript:void(0)" onclick="javascript:showhide(\'extra\');">
-			<img src="'.$themeurl.'/images/control_eject_blue.png" width="17" height="17" alt="Extra" border="0">
+			<img id="extraimg" src="'.$themeurl.'/images/control_eject_blue.png" width="17" height="17" alt="Extra" border="0">
 		    </a>';
 
 				$data.= ''.(empty($modSettings['2sichat_dis_list']) ? ' &nbsp;<a href="javascript:void(0)" onclick="javascript:chatSnd();">
