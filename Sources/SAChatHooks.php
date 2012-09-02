@@ -139,7 +139,7 @@ function SAChat_load_permissions(&$permissionGroups, &$permissionList, &$leftPer
 	$context['non_guest_permissions'] = array_merge(
 		$context['non_guest_permissions'],
 		    array(
-		        '2sichat_access',
+		        //'2sichat_access',
 		        '2sichat_chat',
 				'2sichat_bar_theme',
 				'2sichat_bar_buddys',
