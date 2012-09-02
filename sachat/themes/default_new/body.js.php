@@ -99,7 +99,8 @@ function initchat() {
 								if(chatmin1){
 								    $(\'#minchats\'+ this).fadeOut(\'1000\', function(){
                                     $(this).fadeIn(\'1000\', function(){});});
-									chatmin1.setAttribute(\'style\',\'background-color: red; margin: 0.3em 2px 2em 2px\');
+									chatmin1.style.backgroundColor = \'red\';
+									chatmin1.style.margin += \'0.3em 2px 0em 2px\';
 									loadsnd(\'new_msg\');
 				                }
 							});
