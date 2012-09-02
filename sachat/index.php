@@ -140,16 +140,16 @@
 	}
 	
 	//Lets see if 2-SI Chat is enabled for this group.
-	if (!empty($modSettings['2sichat_permissions']) && !$permission['2sichat_access'] && !$permission['is_admin'] && !$permission['is_mod']) {
+	if (!empty($modSettings['2sichat_permissions']) && empty($permission['2sichat_access']) && empty($permission['is_admin']) && empty($permission['is_mod'])) {
 		$context['JSON']['STATUS'] = 'NO ACCESS'; // Sorry but you don't have access
 		doOutput();
-	} else if (!empty($modSettings['2sichat_permissions']) && !$permission['is_admin'] && !$permission['is_mod']) {
+	} else if (!empty($modSettings['2sichat_permissions']) && empty($permission['is_admin']) && empty($permission['is_mod'])) {
 		// Lets just hook into the modSettings
-		if (!$permission['2sichat_chat']) {
+		if (empty($permission['2sichat_chat'])) {
 			$modSettings['2sichat_dis_list'] = 1;
 			$modSettings['2sichat_dis_chat'] = 1;
 		}
-		if ($permission['2sichat_bar']) {
+		if (!empty($permission['2sichat_bar'])) {
 			$modSettings['2sichat_dis_bar'] = 1;
 		}
 	}
