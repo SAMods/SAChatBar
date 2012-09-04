@@ -36,7 +36,6 @@ function template_twosichatGadgets(){
 				 <td align="left" class="windowbg2">
 					'.($row['type'] == 0 ? 'PHP' : '').'
 					'.($row['type'] == 1 ? 'HTML' : '').'
-					'.($row['type'] == 2 ? 'BBC' : '').'
 				</td>
                </tr>';
 	  }
@@ -229,7 +228,6 @@ function template_twosichatGadAdd(){
 						<select name="type">
 							<option value="0" '.(isset($context['gadget']['type']) && $context['gadget']['type'] == 0 ? 'selected="selected"' : '').'>PHP</option>
 							<option value="1" '.(isset($context['gadget']['type']) && $context['gadget']['type'] == 1 ? 'selected="selected"' : '').'>HTML</option>
-							<option value="2" '.(isset($context['gadget']['type']) && $context['gadget']['type'] == 2 ? 'selected="selected"' : '').'>BBC</option>
 						</select>
 					</td>
 				</tr>

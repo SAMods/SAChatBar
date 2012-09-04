@@ -30,19 +30,17 @@ function twosichatAdmin(){
 }
 
 function twosichatchmod(){
-  global  $txt, $context;
+    global  $txt, $context;
     
 	loadTemplate('sachat');
     $context['sub_template'] = 'twosichatchmod';
 	$context[$context['admin_menu_name']]['tab_data']['title'] = $txt['2sichatchmod'];
 	$context[$context['admin_menu_name']]['tab_data']['description'] = $txt['2sichatchmod1'];
 
-  if(isset($_GET['chmod'])){
-	chmodDirectory('sachat/',0);
-	redirectexit('action=admin;area=sachat;sa=chmod;done');
-  }
-  
-
+    if(isset($_GET['chmod'])){
+	    chmodDirectory('sachat/',0);
+	    redirectexit('action=admin;area=sachat;sa=chmod;done');
+    }
 }
  
 
@@ -55,7 +53,7 @@ function twosichatConfig(){
 
 	$context[$context['admin_menu_name']]['tab_data']['title'] = $txt['2sichat_config'];
 	$context[$context['admin_menu_name']]['tab_data']['description'] = $txt['2sichat_config_des'];
-
+   
 	$config_vars = array(
 			array('check', '2sichat_disable', 'subtext' => $txt['2sichat_disable_sub']),
 			'',
@@ -89,6 +87,9 @@ function twosichatConfig(){
 			array('check', '2sichat_ico_adthis'),
 			'',
 			array('text', 'size' => 50, '2sichat_board_index'),
+			'',
+			array('check', '2sichat_censor'),
+			array('large_text', '2sichat_censor_words', '8','affiliates_reqirments'),
 	);
 	
 	if (!empty($return_config))

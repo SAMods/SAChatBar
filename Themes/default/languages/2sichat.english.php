@@ -1,4 +1,6 @@
 <?php
+$txt['2sichat_censor'] = 'Enable word censoring';
+$txt['2sichat_censor_words'] = 'Words to censor<div class="smalltext">Separate each word with a "|"<br /> Example:<br /> badword1|badword2|badword3</div>';
 $txt['2sichatchmod'] = 'CHMOD';
 $txt['2sichatchmod1'] = 'CHMOD Files';
 $txt['2sichatchmod2'] = '<div align="center">Cant see the bar? click the link below to attempt to chmod the files<br />

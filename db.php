@@ -13,9 +13,9 @@ global $boardurl, $scripturl, $db_prefix, $smcFunc;
 	db_extend('extra');
 
 	add_integration_function('integrate_pre_include', '$boarddir/Sources/SAChatHooks.php');
-    add_integration_function('integrate_load_permissions', 'SAChat_load_permissions');
-    add_integration_function('integrate_admin_areas', 'SAChat_admin_areas');
-	add_integration_function('integrate_load_theme', 'SAChat_loadTheme');
+    add_integration_function('integrate_load_permissions', 'SAChat_load_permissions','$boarddir/Sources/SAChatHooks.php');
+    add_integration_function('integrate_admin_areas', 'SAChat_admin_areas','$boarddir/Sources/SAChatHooks.php');
+	add_integration_function('integrate_load_theme', 'SAChat_loadTheme','$boarddir/Sources/SAChatHooks.php');
 	
     $result = $smcFunc['db_query']('','
 	    SELECT id_member

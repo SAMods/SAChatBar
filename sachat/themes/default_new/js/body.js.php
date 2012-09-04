@@ -41,7 +41,8 @@ function initchat() {
 		css.setAttribute("type", "text/css");
 		css.setAttribute("href", "'.$themeurl.'/style.css");
 		document.documentElement.getElementsByTagName("HEAD")[0].appendChild(css);
-          '.(!empty($modSettings['2sichat_dis_bar']) ? '':'
+        
+		'.(!empty($modSettings['2sichat_dis_bar']) ? '':'
 		var div = document.createElement(\'div\');
 		div.setAttribute(\'id\',\'chat_containter\');
 		div.setAttribute(\'dir\',\'ltr\');
@@ -219,23 +220,23 @@ function initchat() {
 			 }
 		}
 
-		function minchat(budid, budname) {
+		function minchat(id, name) {
 
 			var div = document.getElementById(arguments[0]);
 			div.parentNode.removeChild(div);
 
-			if (window["re" + budid]) {
-				clearInterval(window["re" + budid]);
+			if (window["re" + id]) {
+				clearInterval(window["re" + id]);
 			}
 			delCookieArray(\'msg_win\' + arguments[0]);
 			
-			var tsting = \'minchats\'+ budid;
+			var tsting = \'minchats\'+ id;
 
-			var session = new setCookieArray(\'min\'+budid, \'2sichat_min\',+budid, budname);
+			var session = new setCookieArray(\'min\'+id, \'2sichat_min\',+id, name);
 			
 			jQuery.noConflict()(function($){
-			    if (document.getElementById(\'minchats\'+budid) == undefined){
-                    $(\'#minchats\').append(\'<span id="\'+tsting+\'">&nbsp;<a class="white" href="javascript:void(0)" onclick="javascript:chatTo(\'+budid+\');return false;"><strong>\' + budname + \'</strong></a>&nbsp;</span>\');
+			    if (document.getElementById(\'minchats\'+id) == undefined){
+                    $(\'#minchats\').append(\'<span id="\'+tsting+\'">&nbsp;<a class="white" href="javascript:void(0)" onclick="javascript:chatTo(\'+id+\');return false;"><strong>\' + name + \'</strong></a>&nbsp;</span>\');
 			    }
 			});
 		}
@@ -430,7 +431,6 @@ function initchat() {
 				});
 			 }
 		}
-
 		function closeGadget(id) {
 			var div = document.getElementById(\'Gadget\'+id);
 			div.parentNode.removeChild(div);

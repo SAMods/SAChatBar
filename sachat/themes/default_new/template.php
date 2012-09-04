@@ -30,6 +30,7 @@ function chat_window_template() { //Main chat window, not the bar, the window yo
 					<input type="button" onclick="javascript:jsubmit(\''.$buddy_settings['id_member'].'\'); return false;" value="Send" />
 				</form>
 			</div>
+			<div class="bottop_container"></div>
 			<div class="msg_container">
 				<div id="cmsg'.$buddy_settings['id_member'].'" class="msg_container2">';
 	// Messages from previous chat session that have not been deleted yet, lets show them. :D
@@ -37,7 +38,7 @@ function chat_window_template() { //Main chat window, not the bar, the window yo
 		foreach ($context['msgs'] as $message) {
 			if ($message['from'] == $user_settings['id_member']) { // Messages sent from me.
 				$data .='
-					<div style="background-color: #D8D8D8;">
+					<div class="msg_container3">
 						<img width="20px" height="20px" src="'.$user_settings['avatar'].'" />
 						<strong>'.$user_settings['real_name'].': </strong>
 						'.$message['msg'].'
@@ -84,7 +85,7 @@ function chat_savemsg_template() { //When you send a message
 	global $user_settings, $context;
 
 	// This is the html response when you send a message.
-	$data ='<div style="background-color: #D8D8D8;">
+	$data ='<div class="msg_container3"">
 					<img width="20px" height="20px" src="'.$user_settings['avatar'].'" />
 					<strong>'.$user_settings['real_name'].': </strong>
 					'.$context['msgs'].'
@@ -99,6 +100,7 @@ function chat_bar_template() { //Chat bar template for logged in users, not gues
 	$data= '
 	    '.(empty($modSettings['2sichat_dis_list']) ? ' <div style="float: right; padding-right: 30px; padding-top: 1px;">':'
 			 <div style="float: right; padding-right: 30px; padding-top: 3px;">').'';
+			
 			$data .= '<a class="white" href="javascript:void(0)" onclick="javascript:showhide(\'extra\');">
 			<img id="extraimg" src="'.$themeurl.'/images/control_eject_blue.png" width="17" height="17" alt="Extra" border="0">
 		    </a>';
@@ -263,7 +265,7 @@ function gadgetObject_template() {
 		<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
 		<title>'.$context['gadget']['title'].'</title>
 	</head>
-	<body style="background-color: #F0F4F7;padding:1;margin:1;">
+	<body style="background-color: #f5f5f5;padding:1;margin:1;">
 	'.$context['gadget']['url'].'
 	</body>
 </html>';
