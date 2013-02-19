@@ -334,9 +334,14 @@ function template_twosichatThemes(){
 	                   <br /><strong>'.$txt['2sichat_theme25'].'</strong><br />';
 			if(!empty($dirArray)){
 				for($index=0; $index < $indexCount; $index++) {
-                  if (substr($dirArray[$index], 0, 1) != '.' && $dirArray[$index] != "index.php" && $dirArray[$index] != 'default' ){ // don't list hidden files
-				     echo' '.$dirArray[$index].' <a href="', $scripturl, '?action=admin;area=sachat;sa=theme;remove='.$dirArray[$index].'" onclick="return confirm(\''.$txt['2sichat_theme26'].'\');"><img src="', $settings['default_images_url'], '/pm_recipient_delete.gif" alt="'.$txt['2sichat_theme27'].'" /></a><br />';
-	              }
+                    if (substr($dirArray[$index], 0, 1) != '.' && $dirArray[$index] != "index.php"){ // dont list hidden files
+				        if ($dirArray[$index] == 'default' || $dirArray[$index] == 'default_new'){ //these should not be deleted
+				          echo' '.$dirArray[$index].' <br />';
+	                    }
+					    else{
+					        echo' '.$dirArray[$index].' <a href="', $scripturl, '?action=admin;area=sachat;sa=theme;remove='.$dirArray[$index].'" onclick="return confirm(\''.$txt['2sichat_theme26'].'\');"><img src="', $settings['default_images_url'], '/pm_recipient_delete.gif" alt="'.$txt['2sichat_theme27'].'" /></a><br />';
+	                    }
+				    }
                 }
 			}		 
 				echo'</td></tr>
