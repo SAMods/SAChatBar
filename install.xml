@@ -2,7 +2,7 @@
 <!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
 <modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
 	<id>wdm2005:2sichat</id>
-	<version>RC2 Rev60</version>
+	<version>RC3 Rev61</version>
 
 	
 	<file name="$themedir/Profile.template.php">
