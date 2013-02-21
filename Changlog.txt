@@ -1,2 +1,4 @@
-fixed undefined server errors this could another possible reson for the bar not shoing on some servers
-themes now can use there own body.js.php file this will help with theme making [newer theme may come with minimised feature]
+=====SA Chat RC3 Rev61=====
+used proper php opening tag
+show default themes but dont allow deletion
+added test cht file for testing chat and preveiwing themes [acessed via site.com/sachat/sachattest.php]
