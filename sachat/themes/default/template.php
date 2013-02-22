@@ -30,6 +30,7 @@ function chat_window_template() { //Main chat window, not the bar, the window yo
 					<input type="button" onclick="javascript:jsubmit(\''.$buddy_settings['id_member'].'\'); return false;" value="Send" />
 				</form>
 			</div>
+			<div class="bottop_container"></div>
 			<div class="msg_container">
 				<div id="cmsg'.$buddy_settings['id_member'].'" class="msg_container2">';
 	// Messages from previous chat session that have not been deleted yet, lets show them. :D
@@ -37,7 +38,7 @@ function chat_window_template() { //Main chat window, not the bar, the window yo
 		foreach ($context['msgs'] as $message) {
 			if ($message['from'] == $user_settings['id_member']) { // Messages sent from me.
 				$data .='
-					<div style="background-color: #D8D8D8;">
+					<div class="msg_container3">
 						<img width="20px" height="20px" src="'.$user_settings['avatar'].'" />
 						<strong>'.$user_settings['real_name'].': </strong>
 						'.$message['msg'].'
@@ -84,7 +85,7 @@ function chat_savemsg_template() { //When you send a message
 	global $user_settings, $context;
 
 	// This is the html response when you send a message.
-	$data ='<div style="background-color: #D8D8D8;">
+	$data ='<div class="msg_container3"">
 					<img width="20px" height="20px" src="'.$user_settings['avatar'].'" />
 					<strong>'.$user_settings['real_name'].': </strong>
 					'.$context['msgs'].'
@@ -96,42 +97,17 @@ function chat_bar_template() { //Chat bar template for logged in users, not gues
 
 	global $boardurl, $themeurl, $modSettings, $context, $OnCount, $txt;
 
-	// jquery google ajax translate, does not work good.
-	// It is however coded into 2-SI Chat.
-	// Maybe someday it will work, but will have to use the google translate element
-	// <div style="float: right; padding-right: 30px; position: relative; bottom: 2px;" id="2sitranslate"> </div>
-
-		
-			$data= '
-			'.(empty($modSettings['2sichat_dis_list']) ? ' <div style="float: right; padding-right: 30px; padding-top: 1px;">':'
+	$data= '
+	    '.(empty($modSettings['2sichat_dis_list']) ? ' <div style="float: right; padding-right: 30px; padding-top: 1px;">':'
 			 <div style="float: right; padding-right: 30px; padding-top: 3px;">').'';
-			if(!empty($context['gadgetslink'])) {
-			foreach ($context['gadgetslink'] as $link) {
-			if($link['image']){
-				$data.= '
-			<a href="'.$link['url'].'" '.(!empty($link['newwin']) ? 'target="blank"' :'').'><img src="'.$link['image'].'" alt="'.$link['title'].'" /></a>&nbsp;';
-			  }
-			}
-			}
-			$data.= '
-			'.($modSettings['2sichat_ico_adthis'] ? '<a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;pubid=xa-503f263237ff99da">
-			<img src="'.$themeurl.'/images/add-this.png" width="17" height="17" alt="Bookmark and Share" style="border:0"/>':'').'
-			'.($modSettings['2sichat_ico_gplus'] ? '<a href="javascript:void(0)" onclick="javascript:getSocial(\'gplus\');">
-				<img src="'.$themeurl.'/images/gplus.png" width="17" height="17" alt="'.$txt['facebook'].'" border="0">
-			</a>':'').'
-			'.($modSettings['2sichat_ico_myspace'] ? '<a href="javascript:void(0)" onclick="javascript:getSocial(\'myspace\');">
-				<img src="'.$themeurl.'/images/myspace.png" width="17" height="17" alt="'.$txt['myspace'].'" border="0">
-			</a>':'').'
-			'.($modSettings['2sichat_ico_twit'] ? '<a href="javascript:void(0)" onclick="javascript:getSocial(\'twitter\');">
-				<img src="'.$themeurl.'/images/twitter.png" width="17" height="17" alt="'.$txt['twitter'].'" border="0">
-			</a>':'').'
-			'.($modSettings['2sichat_ico_fb'] ? '<a href="javascript:void(0)" onclick="javascript:getSocial(\'facebook\');">
-				<img src="'.$themeurl.'/images/facebook.png" width="17" height="17" alt="'.$txt['facebook'].'" border="0">
-			</a>':'').'
-			'.(empty($modSettings['2sichat_dis_list']) ? ' &nbsp;<a href="javascript:void(0)" onclick="javascript:chatSnd();">
+			
+			$data .= '<a class="white" href="javascript:void(0)" onclick="javascript:showhide(\'extra\');">
+			<img id="extraimg" src="'.$themeurl.'/images/control_eject_blue.png" width="17" height="17" alt="Extra" border="0">
+		    </a>';
+
+				$data.= ''.(empty($modSettings['2sichat_dis_list']) ? ' &nbsp;<a href="javascript:void(0)" onclick="javascript:chatSnd();">
 				<img id="chat_Snd" src="'.(!empty($_COOKIE["chatSnd"]) ? $themeurl.'/images/mute2.png':$themeurl.'/images/mute1.png').'" />
-				</a>':'').'
-		</div>';
+				</a>':'').'</div>';
 		
 		$data.= '
 		<div class="langCont">
@@ -140,24 +116,72 @@ function chat_bar_template() { //Chat bar template for logged in users, not gues
 		'.(!empty($modSettings['2sichat_dis_list']) ? '':'
 		<a class="white" href="javascript:void(0)" onclick="javascript:showhide(\'friends\');">
 			<img src="'.$themeurl.'/images/balloon.png" alt="{}" border="0"><strong>'.$txt['whos_on'].' (<span id="cfriends">'.$OnCount.'</span>)</strong>
-		</a>');
+		</a> ');
          
-	    if(!empty($context['gadgets'])) {
-		 $data .=''.(!$modSettings['2sichat_dis_list'] ? '&nbsp;&nbsp;|&nbsp;&nbsp;':'').'';
-			foreach ($context['gadgets'] as $gadget) {
-				$data.= '
-				'.(!$modSettings['2sichat_dis_list'] ? '':'<span style="float: left; padding-left: 0px; padding-top: 4px;">').'
-			<a class="white" href="javascript:void(0)" onclick="javascript:openGadget(\''.$gadget['id'].'\');"><strong>'.$gadget['title'].'</strong></a></span>';
-			if(count($context['gadgets'],2) > 1) {
-		    $data.= '
-		   '.(!$modSettings['2sichat_dis_list'] ? '':'<span style="float: left; padding-left: 0px; padding-top: 4px;">').'
-		   &nbsp;&nbsp;|&nbsp;&nbsp;</span>';
-		  }
-		  }
-		}
-		
 		$data .='&nbsp;&nbsp;<span id="minchats"></span>';
 		
+	return $data;
+}
+
+function chat_extra_template() { 
+
+	global $txt, $member_id, $scripturl, $options, $modSettings, $context, $themeurl;
+
+	$data ='
+		<div id="extra_top">
+			<div id="extra_x">
+				<a href="javascript:void(0)" onclick="javascript:showhide(\'extra\');" onMouseOver="document.fx.src=image2.src" onMouseOut="document.fx.src=image1.src">
+					<img name="fx" src="'.$themeurl.'/images/x_inactive.png" border="0" alt="X" />
+				</a>
+			</div>
+		</div>
+		<div id="extra_bottom">';
+		if (!empty($member_id)) {
+          $data.= '<br /><a href="?action=profile;area=theme;u='.$member_id.'#chatbar"><strong>'.$txt['bar_setings'].'</strong></a>';
+		 
+		  if(!empty($options['show_cbar_buddys'])){
+ 		  $data.= '<br /><a href="?action=profile;area=lists;u='.$member_id.'"><strong>'.$txt['bil'].'</strong></a>';
+		  }
+		  
+		  $data.= '<hr />';
+		  }
+			$data.= '<strong>'.$txt['bar_social'].'</strong><br /><br />
+			'.($modSettings['2sichat_ico_adthis'] ? '<a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;pubid=xa-503f263237ff99da">
+			<img src="'.$themeurl.'/images/add-this.png" width="17" height="17" alt="Bookmark and Share" style="border:0"/> <strong>'.$txt['addthis'].'</strong></a><br />':'').'
+			'.($modSettings['2sichat_ico_gplus'] ? '<a href="javascript:void(0)" onclick="javascript:getSocial(\'gplus\');">
+				<img src="'.$themeurl.'/images/gplus.png" width="17" height="17" alt="'.$txt['facebook'].'" border="0"> <strong>'.$txt['gplus1'].'</strong></a><br />':'').'
+			'.($modSettings['2sichat_ico_myspace'] ? '<a href="javascript:void(0)" onclick="javascript:getSocial(\'myspace\');">
+				<img src="'.$themeurl.'/images/myspace.png" width="17" height="17" alt="'.$txt['myspace'].'" border="0"> <strong>'.$txt['myspace1'].'</strong></a><br />':'').'
+			'.($modSettings['2sichat_ico_twit'] ? '<a href="javascript:void(0)" onclick="javascript:getSocial(\'twitter\');">
+				<img src="'.$themeurl.'/images/twitter.png" width="17" height="17" alt="'.$txt['twitter'].'" border="0"> <strong>'.$txt['twitter1'].'</strong></a><br />':'').'
+			'.($modSettings['2sichat_ico_fb'] ? '<a href="javascript:void(0)" onclick="javascript:getSocial(\'facebook\');">
+				<img src="'.$themeurl.'/images/facebook.png" width="17" height="17" alt="'.$txt['facebook'].'" border="0"> <strong>'.$txt['facebook1'].'</strong></a><br />':'').'<hr />';
+		
+		     
+			 
+			 if(!empty($context['gadgetslink'])) {
+             $data.= '<strong>'.$txt['bar_links'].'</strong><br /><br />';
+			foreach ($context['gadgetslink'] as $link) {
+			if($link['image']){
+				$data.= '
+			<a href="'.$link['url'].'" '.(!empty($link['newwin']) ? 'target="blank"' :'').'><img src="'.$link['image'].'" alt="'.$link['title'].'" /> <strong>'.$link['title'].'</strong></a><br />';
+			  }
+			}
+
+			}
+			if(!empty($context['gadgets'])) {
+		 $data.= '<hr /><strong>'.$txt['bar_gadgets'] .'</strong><br /><br />';
+			foreach ($context['gadgets'] as $gadget) {
+				$data.= '
+				
+			<a href="javascript:void(0)" onclick="javascript:openGadget(\''.$gadget['id'].'\');"><strong>'.$gadget['title'].'</strong></a><br />';
+		
+		  }
+		}
+	
+	$data.='
+			<br /><br />
+		</div>';
 	return $data;
 }
 
@@ -195,31 +219,11 @@ function guest_bar_template() { //Well guest can't access everything.
 	global $boardurl, $themeurl, $modSettings, $txt, $context;
 
 			$data = '
-			<div style="float: right; padding-right: 30px; padding-top: 3px;">';
-			if(!empty($context['gadgetslink'])) {
-			foreach ($context['gadgetslink'] as $link) {
-			if($link['image']){
-				$data.= '
-			<a href="'.$link['url'].'" '.(!empty($link['newwin']) ? 'target="blank"' :'').'><img src="'.$link['image'].'" alt="'.$link['title'].'" /></a>&nbsp;';
-			  }
-			}
-			}
-			$data.= '
-			'.($modSettings['2sichat_ico_adthis'] ? '<a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;pubid=xa-503f263237ff99da">
-			<img src="'.$themeurl.'/images/add-this.png" width="17" height="17" alt="Bookmark and Share" style="border:0"/>':'').'
-			'.($modSettings['2sichat_ico_gplus'] ? '<a href="javascript:void(0)" onclick="javascript:getSocial(\'gplus\');">
-				<img src="'.$themeurl.'/images/gplus.png" width="17" height="17" alt="'.$txt['facebook'].'" border="0">
-			</a>':'').'
-			'.($modSettings['2sichat_ico_myspace'] ? '<a href="javascript:void(0)" onclick="javascript:getSocial(\'myspace\');">
-				<img src="'.$themeurl.'/images/myspace.png" width="17" height="17" alt="'.$txt['myspace'].'" border="0">
-			</a>':'').'
-			'.($modSettings['2sichat_ico_twit'] ? '<a href="javascript:void(0)" onclick="javascript:getSocial(\'twitter\');">
-				<img src="'.$themeurl.'/images/twitter.png" width="17" height="17" alt="'.$txt['twitter'].'" border="0">
-			</a>':'').'
-			'.($modSettings['2sichat_ico_fb'] ? '<a href="javascript:void(0)" onclick="javascript:getSocial(\'facebook\');">
-				<img src="'.$themeurl.'/images/facebook.png" width="17" height="17" alt="'.$txt['facebook'].'" border="0">
-			</a>':'').' </div>';
-	$data.= '
+			<div style="float: right; padding-right: 30px; padding-top: 3px;">
+			<a class="white" href="javascript:void(0)" onclick="javascript:showhide(\'extra\');">
+			<img id="extraimg" src="'.$themeurl.'/images/control_eject_blue.png" width="17" height="17" alt="Extra" border="0">
+		    </a></div>';
+	    $data.= '
 		<div class="langCont">
 			<div id="2siTranslate"></div>
 		</div>
@@ -227,13 +231,7 @@ function guest_bar_template() { //Well guest can't access everything.
 		<span class="white">
 		'.$txt['guest_msg'].'
 		</span>';
-		
-	     if(!empty($context['gadgets'])) {
-			foreach ($context['gadgets'] as $gadget) {
-				$data.= '
-			&nbsp;&nbsp;|&nbsp;&nbsp;<a class="white" href="javascript:void(0)" onclick="javascript:openGadget(\''.$gadget['id'].'\');"><strong>'.$gadget['title'].'</strong></a> </div>';
-			}
-		}
+	    
 		$data .='</div>';
 
 	return $data;
@@ -267,7 +265,7 @@ function gadgetObject_template() {
 		<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
 		<title>'.$context['gadget']['title'].'</title>
 	</head>
-	<body style="background-color: #F0F4F7;padding:1;margin:1;">
+	<body style="background-color: #f5f5f5;padding:1;margin:1;">
 	'.$context['gadget']['url'].'
 	</body>
 </html>';

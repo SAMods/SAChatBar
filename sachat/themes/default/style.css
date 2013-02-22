@@ -7,9 +7,23 @@
 	position: fixed;
 	bottom: 0px;
 	left: 0px;
-	left: 0px;
 	text-align: left;
 	z-Index: 10000;
+}
+#extra{
+	display: none;
+	overflow: hidden;
+	width: 225px;
+	height: 50%;
+	position: fixed;
+	bottom: 26px;
+	right: 0px;
+	text-align: left;
+	z-Index: 10000;
+}
+#extra_bottom{
+	overflow: auto;
+	text-align: left;
 }
 #friends{
 	display: none;
@@ -17,7 +31,7 @@
 	width: 225px;
 	height: 80%;
 	position: fixed;
-	bottom: 25px;
+	bottom: 26px;
 	left: 0px;
 	text-align: left;
 	z-Index: 10000;
@@ -72,6 +86,11 @@ a.red:hover {color: #800000;border:0px;text-decoration:none;border:0px;text-deco
 	margin-top: 5px;
 	text-align: center;
 }
+
+.msg_container3{
+	background-color: #D8D8D8;
+}
+
 .msg_container{
 	background: url(./images/fwin.png) repeat-y;
 	padding-right: 10px;
@@ -95,6 +114,14 @@ a.red:hover {color: #800000;border:0px;text-decoration:none;border:0px;text-deco
 	width: 225px;
 	height: 15px;
 }
+
+.bottop_container{
+	background: url(./images/bwin.png) no-repeat;
+	position: relative;
+	bottom: 12px;
+	width: 225px;
+	height: 15px;
+}
 .msg_win{
 	width: 225px;
 	height: 300px;
@@ -102,6 +129,25 @@ a.red:hover {color: #800000;border:0px;text-decoration:none;border:0px;text-deco
 	left: 100px;
 	top: 30px;
 	text-align: left;
+}
+#extra_x{
+	position: relative;
+	bottom: 2px;
+	float: right;
+	padding-right: 4px;
+}
+#extra_top{
+	background: url(./images/fbar.png) no-repeat;
+	height: 26px;
+	padding-top: 4px;
+	padding-left: 10px;
+	color: #346;
+	font-weight: 600;
+}
+#extra_bottom{
+	height: 100%;
+	background: url(./images/fwin.png) repeat-y;
+	padding-left: 5px;
 }
 #friends_x{
 	position: relative;
