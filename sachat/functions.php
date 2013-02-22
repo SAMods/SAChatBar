@@ -694,29 +694,17 @@ function doLoadCHK() {
 
 	global $modSettings, $themeurl, $txt, $context;
 
-	if (function_exists('sys_getloadavg')) {
-		$cpu = sys_getloadavg();
-	} else if (!function_exists('sys_getloadavg') && !stristr(php_os, 'WIN')) {
-		if (file_exists('/proc/loadavg')) {
-			$cpu = explode(chr(32),file_get_contents('/proc/loadavg'));
-		} else {
-			$cpu = array_map("trim",explode(",",substr(strrchr(shell_exec("uptime"),":"),1)));
-		}
-	} else if (stristr(php_os, 'WIN')) {
-		ob_start();
-		passthru('typeperf -sc 1 "\processor(_total)\% processor time"',$status);
-		$content = ob_get_contents();
-		ob_end_clean();
-		if ($status === 0) {
-			if (preg_match("/\,\"([0-9]+\.[0-9]+)\"/",$content,$load)) {
-				$cpu[0] = $load[1];
-				$cpu[1] = $load[1];
-				$cpu[2] = $load[1];
-			}
+	ob_start();
+	passthru('typeperf -sc 1 "\processor(_total)\% processor time"',$status);
+	$content = ob_get_contents();
+	ob_end_clean();
+	if ($status === 0) {
+		if (preg_match("/\,\"([0-9]+\.[0-9]+)\"/",$content,$load)) {
+			$cpu[0] = $load[1];
 		}
 	}
-
-	if ($cpu[0] && $cpu[0] > $modSettings['2sichat_max_load'] || $cpu[1] && $cpu[1] > $modSettings['2sichat_max_load'] || $cpu[2] && $cpu[2] > $modSettings['2sichat_max_load']) {
+	
+	if ($cpu[0] && $cpu[0] > $modSettings['2sichat_max_load']) {
      	if ($modSettings['2sichat_load_dis_chat']) {
 			$context['JSON']['STATUS'] = 'AWAY';
 			doOutput();

@@ -130,51 +130,29 @@ function twosichatLoad(){
 
 	$disabled = false;
 	
-	if (strpos(strtolower(PHP_OS), 'win') === 0)
-		$context['chat_settings_message'] = $txt['loadavg_disabled_windows'];
-	else
-	{
-	$modSettings['chat_load_average'] = @file_get_contents('/proc/loadavg');
-		if (!empty($modSettings['chat_load_average']) && preg_match('~^([^ ]+?) ([^ ]+?) ([^ ]+)~', $modSettings['chat_load_average'], $matches) !== 0)
-			$modSettings['chat_load_average'] = (float) $matches[1];
-		elseif (($modSettings['chat_load_average'] = @`uptime`) !== null && preg_match('~load averages?: (\d+\.\d+), (\d+\.\d+), (\d+\.\d+)~i', $modSettings['chat_load_average'], $matches) !== 0)
-			$modSettings['chat_load_average'] = (float) $matches[1];
-		else
-			unset($modSettings['chat_load_average']);
-
-		if (!empty($modSettings['chat_load_average']))
-		{
-			$context['chat_settings_message'] = sprintf($txt['2sichat_loadavg_warning'], $modSettings['chat_load_average']);
-			$disabled = false;
-			
+	ob_start();
+	passthru('typeperf -sc 1 "\processor(_total)\% processor time"',$statusa);
+	$contenta = ob_get_contents();
+	ob_end_clean();
+	if ($statusa === 0) {
+		if (preg_match("/\,\"([0-9]+\.[0-9]+)\"/",$contenta,$loada)) {
+			$cpua = $loada[1];
 		}
+		$context['chat_settings_message'] = sprintf($txt['2sichat_loadavg_warning'], $cpua);
 	}
 		
 	$context[$context['admin_menu_name']]['tab_data']['title'] = $txt['2sichatloadbal'];
 	$context[$context['admin_menu_name']]['tab_data']['description'] = $context['chat_settings_message'];
 
-	$default_text = array(
-		'2sichat_max_load' => '',
+	
+	$config_vars = array(
+		array('check', '2sichat_load_chk'),
+		array('check', '2sichat_load_dis_chat'),
+		array('check', '2sichat_load_dis_list'),
+		array('check', '2sichat_load_dis_bar'),
+		array('text', '2sichat_max_load'),
+			
 	);
-	$default_ints = array(
-		'2sichat_load_chk' => '0',
-	    '2sichat_load_dis_chat' => '0',
-		'2sichat_load_dis_list' => '0',
-		'2sichat_load_dis_bar' => '0',
-	);
-
-	foreach ($default_ints as $name => $value)
-	{
-		// Use the default value if the setting isn't set yet.
-		$value = !isset($modSettings[$name]) ? $value : $modSettings[$name];
-		$config_vars[] = array('check', $name, 'value' => $value, 'disabled' => $disabled);
-	}
-	foreach ($default_text as $name => $value)
-	{
-		// Use the default value if the setting isn't set yet.
-		$value = !isset($modSettings[$name]) ? $value : $modSettings[$name];
-		$config_vars[] = array('text', $name, 'value' => $value, 'disabled' => $disabled);
-	}
 	
 	if (!empty($return_config))
 		return $config_vars;
