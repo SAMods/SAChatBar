@@ -9,6 +9,7 @@ echo'
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
 <html xmlns="http://www.w3.org/1999/xhtml"> 
     <head> 
+	     <link rel="stylesheet" type="text/css" href="http://'.$_SERVER['HTTP_HOST'].''.dirname($_SERVER['PHP_SELF']).'/ctest.css" />
         <title>SA Chat Test Page</title> 
         <script type="text/javascript" src="http://'.$_SERVER['HTTP_HOST'].''.dirname($_SERVER['PHP_SELF']).'/index.php?action=head&amp;theme='.$_POST['satesttheme'].'"></script>
     </head>
