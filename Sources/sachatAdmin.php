@@ -181,13 +181,14 @@ function twosichatLoad(){
 function twosichatThemes(){
 	
 	global $txt, $context, $boarddir, $modSettings, $sourcedir, $dirArray, $indexCount, $smcFunc;
-	
+
+	//TODO: Rewrite this it fugly :P
 	loadTemplate('sachat');
 	loadLanguage('Themes');
 	loadLanguage('Settings');
 	$context['sub_template'] = 'twosichatThemes';
 	$context[$context['admin_menu_name']]['tab_data']['title'] = $txt['2sichat_theme1'];
-	$context[$context['admin_menu_name']]['tab_data']['description'] = $txt['2sichat_theme2'];
+	$context[$context['admin_menu_name']]['tab_data']['description'] = $txt['2sichat_theme2'].'<br /><span class="error">'.$txt['2sichat_theme14'].'</span>';
 	 
 	SAChat_LoadTemes();
 	

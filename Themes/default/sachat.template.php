@@ -52,12 +52,19 @@ function template_twosichatchmod(){
 global $txt,$scripturl;
 
      if(isset($_GET['done'])){echo'<div class="information">'.$txt['2sichatchmod3'].'</div>';}
-      echo'  <table class="table_grid" cellspacing="0" width="100%">
-			<tr class="catbg">
-				<td align="left" class="windowbg2">'.$txt['2sichatchmod'].'</td>
-			</tr>';
-			
-	  echo'<tr class="windowbg"><td>'.$txt['2sichatchmod2'].'</td></tr></table>';
+     echo' 
+	    <div class="cat_bar">
+		    <h3 class="catbg">
+			    '.$txt['2sichatchmod'].'
+		    </h3>
+	    </div>
+	<div class="windowbg2">
+		<span class="topslice"><span></span></span>
+	        <div class="content">
+			    '.$txt['2sichatchmod2'].'
+			</div>
+	    <span class="botslice"><span></span></span>
+	</div>';
 }
 function template_twosichatLinks(){
 
@@ -254,9 +261,6 @@ function template_twosichatThemes(){
   
       global $context, $txt, $settings, $modSettings, $scripturl, $dirArray, $indexCount;
       
-	  echo'<div class="information">
-	          <strong>'.$txt['2sichat_theme14'].'</strong>
-           </div>';
 	  if(isset($_GET['rdone'])) {
 	  echo'<div class="information">
 	          <strong>Succesfully removed '.$_GET['rdone'].' theme</strong>
@@ -275,14 +279,17 @@ function template_twosichatThemes(){
 
 	  echo'<form action="', $scripturl, '?action=admin;area=sachat;sa=theme;save" method="post">';
 	  
-	  echo'<table class="table_grid" cellspacing="0" width="100%">
-			<tr class="catbg">
-				<td align="left" class="windowbg2">'.$txt['2sichat_theme6'].'</td>
-			</tr>';
-			
-	  echo'<tr class="windowbg"><td>';
-	  echo' <strong>'.$txt['2sichat_theme15'].'</strong><br /><div class="smalltext">'.$txt['2sichat_theme7'].'</div><br />
-	  <strong>'.$txt['2sichat_theme8'].'</strong> <select name="sachatTheme">';
+	  echo'
+	  <div class="cat_bar">
+		<h3 class="catbg">
+			<strong>'.$txt['2sichat_theme15'].'</strong>
+		</h3>
+	</div>
+	  <div class="windowbg2">
+		<span class="topslice"><span></span></span>
+	        <div class="content">
+			  <div class="smalltext">'.$txt['2sichat_theme7'].'</div><br />
+			  <strong>'.$txt['2sichat_theme8'].'</strong> <select name="sachatTheme">';
            // loop through the array of files and echo all
           for($index=0; $index < $indexCount; $index++) {
                   if (substr($dirArray[$index], 0, 1) != '.' && $dirArray[$index] != "index.php"){ // don't list hidden files
@@ -292,45 +299,60 @@ function template_twosichatThemes(){
 	  echo'</select>
 	  
 		  <input type="submit" value="'.$txt['save'].'" />
-	        <input type="hidden" name="sc" value="'.$context['session_id'].'" /><br /><br />';
+	        <input type="hidden" name="sc" value="'.$context['session_id'].'" /><br /><br />
+			</div>
+	    <span class="botslice"><span></span></span>
+	</div></form>';
 	  
-	  echo'</td>
-			</tr>
-			 
-			</table>';
-			
-	  echo'</form>';
 	  echo'<form action="', $scripturl, '?action=admin;area=sachat;sa=theme;upload" method="post" accept-charset="', $context['character_set'], '" enctype="multipart/form-data" onsubmit="return confirm(\'', $txt['theme_install_new_confirm'], '\');">';
-	  echo' <table class="table_grid" cellspacing="0" width="100%">
-	             <tr class="windowbg2"><td>
-	                <strong>'.$txt['2sichat_theme9'].'</strong><br />
-					<div class="smalltext">'.$txt['2sichat_theme10'].'</div>
-	                   <br /><strong>'.$txt['2sichat_theme11'].'</strong> 
+	  echo'<br />
+	  <div class="cat_bar">
+		<h3 class="catbg">
+			<strong> <strong>'.$txt['2sichat_theme9'].'</strong></strong>
+		</h3>
+	</div>'; 
+	echo' <div class="windowbg2">
+		<span class="topslice"><span></span></span>
+	        <div class="content">
+			<div class="smalltext">'.$txt['2sichat_theme10'].'</div>
+			 <br /><strong>'.$txt['2sichat_theme11'].'</strong> 
 					   <input type="file" name="theme_gz" id="theme_gz" value="theme_gz" size="40" onchange="this.form.copy.disabled = this.value != \'\'; this.form.theme_dir.disabled = this.value != \'\';" class="input_file" />
 				 <input type="submit" value="'.$txt['2sichat_theme13'].'" />
 				<br /> <br /><div class="smalltext"><strong>'.$txt['2sichat_theme12'].'</strong> zip</div>
 	        <input type="hidden" name="sc" value="'.$context['session_id'].'" /><br /><br />
-				</td></tr>
-		 </table>';
-	 echo'</form>';
-	 
-	  echo'<form action="', $scripturl, '?action=admin;area=sachat;sa=theme;copy" method="post" onsubmit="return confirm(\'', $txt['theme_install_new_confirm'], '\');">';
-	  echo' <table class="table_grid" cellspacing="0" width="100%">
-	             <tr class="windowbg"><td>
-	                <strong>'.$txt['2sichat_theme16'].'</strong><br />
-					<div class="smalltext">'.$txt['2sichat_theme17'].'</div>
-	                   <br /><strong>'.$txt['2sichat_theme18'].'</strong> 
+		</div>
+	    <span class="botslice"><span></span></span>
+	</div></form>';
+	  
+	 echo'<form action="', $scripturl, '?action=admin;area=sachat;sa=theme;copy" method="post" onsubmit="return confirm(\'', $txt['theme_install_new_confirm'], '\');">';
+	echo'<br />
+	  <div class="cat_bar">
+		<h3 class="catbg">
+			 <strong>'.$txt['2sichat_theme16'].'</strong>
+		</h3>
+	</div>'; 
+	echo' <div class="windowbg2">
+		<span class="topslice"><span></span></span>
+	        <div class="content">
+			<div class="smalltext">'.$txt['2sichat_theme17'].'</div>
+			<br /><strong>'.$txt['2sichat_theme18'].'</strong> 
 					 <input type="text" name="copy" id="copy" value="" size="40" class="input_text" />
 				 <input type="submit" value="'.$txt['2sichat_theme19'].'" />
 	        <input type="hidden" name="sc" value="'.$context['session_id'].'" /><br /><br />
-				</td></tr>
-		 </table>';
-	 echo'</form>';
+		</div>
+	    <span class="botslice"><span></span></span>
+	</div></form>';
 	 
-	  echo' <table class="table_grid" cellspacing="0" width="100%">
-	             <tr class="windowbg2"><td>
-	                <strong>'.$txt['2sichat_theme23'].'</strong><br />
-					<div class="smalltext">'.$txt['2sichat_theme24'].'</div>
+	 echo'<br />
+	  <div class="cat_bar">
+		<h3 class="catbg">
+			 <strong>'.$txt['2sichat_theme23'].'</strong>
+		</h3>
+	</div>'; 
+	echo' <div class="windowbg2">
+		<span class="topslice"><span></span></span>
+	        <div class="content">
+			<div class="smalltext">'.$txt['2sichat_theme24'].'</div>
 	                   <br /><strong>'.$txt['2sichat_theme25'].'</strong><br />';
 			if(!empty($dirArray)){
 				for($index=0; $index < $indexCount; $index++) {
@@ -344,8 +366,9 @@ function template_twosichatThemes(){
 				    }
                 }
 			}		 
-				echo'</td></tr>
-		 </table>';
-		  
+				echo'
+		</div>
+	    <span class="botslice"><span></span></span>
+	</div>';	  
 }
 ?>

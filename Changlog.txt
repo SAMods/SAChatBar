@@ -5,3 +5,4 @@ added test cht file for testing chat and preveiwing themes [acessed via site.com
 fixed load checking issues
 removed old default theme from package
 enabled update online by default
+admin ui changes
