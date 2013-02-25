@@ -105,6 +105,7 @@ global $boardurl, $scripturl, $db_prefix, $smcFunc;
 			array ('2sichat_ico_adthis' ,'1'),
 			array ('2sichat_board_index' ,'everywhere'),
 			array ('2sichat_theme' ,'default'),
+			array ('2sichat_live_online' ,'1')
 		),
 		array()
 	);
