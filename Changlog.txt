@@ -4,3 +4,4 @@ show default themes but dont allow deletion
 added test cht file for testing chat and preveiwing themes [acessed via site.com/sachat/sachattest.php]
 fixed load checking issues
 removed old default theme from package
+enabled update online by default
