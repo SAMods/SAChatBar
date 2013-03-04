@@ -196,6 +196,18 @@ function twosichatThemes(){
 	if(isset($_GET['save'])) {
 	    checkSession();
         updateSettings (array('2sichat_theme' => $_POST['sachatTheme'])); 
+		
+		if(isset($_POST['sachatThemer'])){
+		    $request = $smcFunc['db_query']('', '
+		        SELECT id_member
+	            FROM {db_prefix}members',
+		        array());
+
+	        list ($id_member) = $smcFunc['db_fetch_row']($request);
+	        $smcFunc['db_free_result']($request);
+		    SAChat_InsertOptions($id_member,'cbar_theme',$_POST['sachatTheme']);
+		}
+		
 	    redirectexit('action=admin;area=sachat;sa=theme;done');
 	}
 	
@@ -269,6 +281,9 @@ function twosichatThemes(){
 		
 		// And now the entire sound directory!
 		copytree($boarddir . '/sachat/themes/default/sounds', $theme_dir . '/sounds');
+		
+		// And now the entire sound directory!
+		copytree($boarddir . '/sachat/themes/default/js', $theme_dir . '/js');
 		
 		package_flush_cache();
 		redirectexit('action=admin;area=sachat;sa=theme;udone');

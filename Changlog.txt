@@ -6,3 +6,6 @@ fixed load checking issues
 removed old default theme from package
 enabled update online by default
 admin ui changes
+fixed issue with ignore list
+added optopn to reset member themes
+copy js when copying theme

@@ -289,16 +289,26 @@ function template_twosichatThemes(){
 		<span class="topslice"><span></span></span>
 	        <div class="content">
 			  <div class="smalltext">'.$txt['2sichat_theme7'].'</div><br />
-			  <strong>'.$txt['2sichat_theme8'].'</strong> <select name="sachatTheme">';
+			  '.$txt['2sichat_theme8'].' <select name="sachatTheme">';
            // loop through the array of files and echo all
           for($index=0; $index < $indexCount; $index++) {
                   if (substr($dirArray[$index], 0, 1) != '.' && $dirArray[$index] != "index.php"){ // don't list hidden files
 				     echo'  <option value="'.$dirArray[$index].'"', $modSettings['2sichat_theme'] == $dirArray[$index] ? 'selected="selected"' : '', '>'.$dirArray[$index].'</option>';
 	              }
           }
+	  echo'</select><br /><br />
+			  Reset everyone to: <select name="sachatThemer"><option value="0">No Change</option>';
+           // loop through the array of files and echo all
+          for($index=0; $index < $indexCount; $index++) {
+                  if (substr($dirArray[$index], 0, 1) != '.' && $dirArray[$index] != "index.php"){ // don't list hidden files
+				     echo'  <option value="'.$dirArray[$index].'">'.$dirArray[$index].'</option>';
+	              }
+          }
 	  echo'</select>
-	  
-		  <input type="submit" value="'.$txt['save'].'" />
+	  <br /><div class="righttext">
+						<input type="submit" value="'.$txt['save'].'" />
+					</div>
+		
 	        <input type="hidden" name="sc" value="'.$context['session_id'].'" /><br /><br />
 			</div>
 	    <span class="botslice"><span></span></span>
@@ -315,7 +325,7 @@ function template_twosichatThemes(){
 		<span class="topslice"><span></span></span>
 	        <div class="content">
 			<div class="smalltext">'.$txt['2sichat_theme10'].'</div>
-			 <br /><strong>'.$txt['2sichat_theme11'].'</strong> 
+			 <br />'.$txt['2sichat_theme11'].'
 					   <input type="file" name="theme_gz" id="theme_gz" value="theme_gz" size="40" onchange="this.form.copy.disabled = this.value != \'\'; this.form.theme_dir.disabled = this.value != \'\';" class="input_file" />
 				 <input type="submit" value="'.$txt['2sichat_theme13'].'" />
 				<br /> <br /><div class="smalltext"><strong>'.$txt['2sichat_theme12'].'</strong> zip</div>
@@ -335,7 +345,7 @@ function template_twosichatThemes(){
 		<span class="topslice"><span></span></span>
 	        <div class="content">
 			<div class="smalltext">'.$txt['2sichat_theme17'].'</div>
-			<br /><strong>'.$txt['2sichat_theme18'].'</strong> 
+			<br />'.$txt['2sichat_theme18'].'
 					 <input type="text" name="copy" id="copy" value="" size="40" class="input_text" />
 				 <input type="submit" value="'.$txt['2sichat_theme19'].'" />
 	        <input type="hidden" name="sc" value="'.$context['session_id'].'" /><br /><br />

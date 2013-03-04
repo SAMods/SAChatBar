@@ -551,19 +551,13 @@ function genMemList() {
 
 	global $options, $smcFunc, $user_settings, $member_id, $context;
 
-	if (!empty($options['show_cbar_buddys']) && $options['show_cbar_buddys'] == 1){
-	    $query = 'WHERE FIND_IN_SET({int:member_id}, m.buddy_list) AND t2.value = 1';
-	}else{
-	    $query = 'WHERE NOT FIND_IN_SET({int:member_id}, m.pm_ignore_list) AND t2.value != 1 AND m.show_online = 1 OR FIND_IN_SET({int:member_id}, m.buddy_list) AND m.show_online = 0';
-    }
-	
 	$results = $smcFunc['db_query']('', '
 		SELECT m.buddy_list, m.id_member, m.member_name, m.real_name, t1.value AS show_cbar, t2.value AS show_cbar_buddys, o.session
 		FROM {db_prefix}members AS m
 		LEFT JOIN {db_prefix}log_online AS o ON o.id_member = m.id_member
 		LEFT JOIN {db_prefix}themes AS t1 ON (t1.variable = {string:name1} AND t1.id_member = m.id_member)
 		LEFT JOIN {db_prefix}themes AS t2 ON (t2.variable = {string:name2} AND t2.id_member = m.id_member)
-		'.$query.'
+		'.(!empty($options['show_cbar_buddys']) && $options['show_cbar_buddys'] == 1 ? 'WHERE FIND_IN_SET({int:member_id}, m.buddy_list) AND t2.value = 1' : 'WHERE NOT FIND_IN_SET({int:member_id}, m.pm_ignore_list) AND t2.value != 1 AND m.show_online = 1 OR FIND_IN_SET({int:member_id}, m.buddy_list) AND m.show_online = 0').'
 		ORDER BY m.real_name DESC',
 		array(
 			'member_id' => $member_id,
@@ -573,6 +567,7 @@ function genMemList() {
 	);
     
 	$buddies = explode(',', $user_settings['buddy_list']);
+	$ignore = explode(',', $user_settings['pm_ignore_list']);
 	
 	if ($results){
 	
@@ -582,7 +577,7 @@ function genMemList() {
 				
 				if ($row['show_cbar'] == 1)
 				    continue;
-	          	    
+					
 			    $context['friends'][] = $row;
 			}
 		    elseif (isset($row['session']) && $row['id_member'] != $member_id){
@@ -601,31 +596,24 @@ function genMemList() {
 
 function genMemcount() {
 
-	global $smcFunc, $member_id, $options, $context;
+	global $smcFunc, $member_id, $options, $user_settings, $context;
 	
-	if (!empty($options['show_cbar_buddys']) && $options['show_cbar_buddys'] == 1)
-	    $query = 'WHERE FIND_IN_SET({int:member_id}, m.buddy_list) AND o.id_member != {int:member_id} AND t1.value != 1 AND t2.value = 1 AND m.show_online = 1';
-	else
-	    $query = 'WHERE NOT FIND_IN_SET({int:member_id}, m.buddy_list) AND o.id_member != {int:member_id} AND t1.value != 1 AND t2.value != 1 AND m.show_online = 1';
-
-	$request = $smcFunc['db_query']('', '
+   $request = $smcFunc['db_query']('', '
 		SELECT COUNT(*)
 	    FROM {db_prefix}log_online AS o
 		LEFT JOIN {db_prefix}members AS m ON m.id_member = o.id_member
 		LEFT JOIN {db_prefix}themes AS t1 ON (t1.variable = {string:name1} AND t1.id_member = m.id_member)
 		LEFT JOIN {db_prefix}themes AS t2 ON (t2.variable = {string:name2} AND t2.id_member = m.id_member)
-		'.$query.'',
+		'.(!empty($options['show_cbar_buddys']) && $options['show_cbar_buddys'] == 1 ? 'WHERE FIND_IN_SET({int:member_id}, m.buddy_list) AND o.id_member != {int:member_id} AND t1.value != 1 AND t2.value = 1 AND m.show_online = 1' : 'WHERE NOT FIND_IN_SET({int:member_id}, m.pm_ignore_list) AND NOT FIND_IN_SET({int:member_id}, m.buddy_list) AND o.id_member != {int:member_id} AND t1.value != 1 AND t2.value != 1 AND m.show_online = 1').'',
 		array(
 			'member_id' => $member_id,
 			'name1' => 'show_cbar',
-			'name2' => 'show_cbar_buddys',
-				
+			'name2' => 'show_cbar_buddys',		
 		)
 	);
-
 	list ($data) = $smcFunc['db_fetch_row']($request);
 	$smcFunc['db_free_result']($request);
-	
+
 	return $data;
 }
 
