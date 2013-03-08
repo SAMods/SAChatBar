@@ -578,7 +578,8 @@ function genMemList() {
 				if ($row['show_cbar'] == 1)
 				    continue;
 					
-			    $context['friends'][] = $row;
+					if (isset($row['session']) && $row['id_member'] != $member_id)
+			            $context['friends'][] = $row;
 			}
 		    elseif (isset($row['session']) && $row['id_member'] != $member_id){
 				    
