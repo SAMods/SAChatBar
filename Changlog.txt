@@ -9,3 +9,4 @@ admin ui changes
 fixed issue with ignore list
 added optopn to reset member themes
 copy js when copying theme
+dont show all users online
