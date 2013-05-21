@@ -32,16 +32,16 @@ function initOptions($member_id){
     $results = $smcFunc['db_query']('', '
 		SELECT variable, value
 		FROM {db_prefix}themes
-		WHERE id_member = {string:mem}',
+		WHERE id_member = {string:mem}
+		AND variable IN ({array_string:opt})',
 		array(
-		        'mem' => $member_id,
+		    'mem' => $member_id,
+			'opt'	=> array('show_cbar', 'show_cbar_buddys'),
 		)
 	);
 	$options = array();
 	while ($row = $smcFunc['db_fetch_row']($results)) {
-		
-		$options[$row[0]] = $row[1];
-		
+		$options[$row[0]] = $row[1];	
 	}
 	$smcFunc['db_free_result']($results);
 	
@@ -477,6 +477,8 @@ function loadUserSettings($id) {
 	);
 	$temp = $smcFunc['db_fetch_assoc']($results);
 	$smcFunc['db_free_result']($results);
+    
+	$temp['real_name'] = utf8_encode($temp['real_name']);
 
 	//Lets do some fusion, Fuussiioooon Ahhhhh!!!!!
 	if ($temp['additional_groups']) {
@@ -547,75 +549,66 @@ function liveOnline() {
 		$context['JSON']['ONLINE'] = genMemList();
 }
 
-function genMemList() {
+function genMemList($type='list') {
 
-	global $options, $smcFunc, $user_settings, $member_id, $context;
+	global $smcFunc, $member_id, $user_settings, $context;
 
+	$user_settings = loadUserSettings($member_id);
+	
 	$results = $smcFunc['db_query']('', '
-		SELECT m.buddy_list, m.id_member, m.member_name, m.real_name, t1.value AS show_cbar, t2.value AS show_cbar_buddys, o.session
+		SELECT m.buddy_list, m.id_member, m.member_name, m.real_name, o.session, m.pm_ignore_list
 		FROM {db_prefix}members AS m
 		LEFT JOIN {db_prefix}log_online AS o ON o.id_member = m.id_member
-		LEFT JOIN {db_prefix}themes AS t1 ON (t1.variable = {string:name1} AND t1.id_member = m.id_member)
-		LEFT JOIN {db_prefix}themes AS t2 ON (t2.variable = {string:name2} AND t2.id_member = m.id_member)
-		'.(!empty($options['show_cbar_buddys']) && $options['show_cbar_buddys'] == 1 ? 'WHERE FIND_IN_SET({int:member_id}, m.buddy_list) AND t2.value = 1' : 'WHERE NOT FIND_IN_SET({int:member_id}, m.pm_ignore_list) AND t2.value != 1 AND m.show_online = 1 OR FIND_IN_SET({int:member_id}, m.buddy_list) AND m.show_online = 0').'
 		ORDER BY m.real_name DESC',
-		array(
-			'member_id' => $member_id,
-			'name1' => 'show_cbar',
-			'name2' => 'show_cbar_buddys',
-		)
-	);
-    
-	$buddies = explode(',', $user_settings['buddy_list']);
-	$ignore = explode(',', $user_settings['pm_ignore_list']);
+		array());
 	
 	if ($results){
 	
 		while ($row = $smcFunc['db_fetch_assoc']($results)) {
 			
-			if (in_array($row['id_member'], $buddies) || $row['show_cbar_buddys'] == 1) {
+			$context['friendsFetch'][$row['id_member']] = $row;
+			
+			$request = $smcFunc['db_query']('', '
+			    SELECT id_member, variable, value
+                FROM {db_prefix}themes
+                WHERE id_member IN ({array_int:members})
+                AND variable IN ({array_string:opt})',
+		        array(
+		           'members' => array_keys($context['friendsFetch']),
+				   'opt' =>  array('show_cbar', 'show_cbar_buddys'),
+			    )
+		    );
+		    while ($row1 = $smcFunc['db_fetch_assoc']($request))
+		        $context['friendsFetch'][$row1['id_member']][$row1['variable']] = $row1['value'];
+	        $smcFunc['db_free_result']($request);
+			
+			$buddies = explode(',', $context['friendsFetch'][$row['id_member']]['buddy_list']);
+			$mybuddies = explode(',', $user_settings['buddy_list']);
 				
-				if ($row['show_cbar'] == 1)
-				    continue;
-					
-					if (isset($row['session']) && $row['id_member'] != $member_id)
-			            $context['friends'][] = $row;
-			}
-		    elseif (isset($row['session']) && $row['id_member'] != $member_id){
-				    
-				if ($row['show_cbar'] == 1)
-				    continue;
-	          	    
-				$context['friends'][] = $row;
-			}
-		}
-		$smcFunc['db_free_result']($results);
-	}
-	$data = buddy_list_template();
-	return $data;
+		    if(isset($row['session']) && $row['id_member'] != $member_id && empty($context['friendsFetch'][$row['id_member']]['show_cbar']) && empty($context['friendsFetch'][$member_id]['show_cbar_buddys']) && empty($context['friendsFetch'][$row['id_member']]['show_cbar_buddys'])){
+			    
+				$context['friends'][$row['id_member']] = $context['friendsFetch'][$row['id_member']];
+		    }
+            elseif(isset($row['session']) && $row['id_member'] != $member_id && empty($context['friendsFetch'][$row['id_member']]['show_cbar']) && !empty($context['friendsFetch'][$member_id]['show_cbar_buddys']) && in_array($member_id,$buddies) && in_array($row['id_member'],$mybuddies)){
+			    
+				$context['friends'][$row['id_member']] = $context['friendsFetch'][$row['id_member']];
+		    }
+            		
+	    }
+	    $smcFunc['db_free_result']($results);
+    }
+    if($type=='list'){
+	    $data = buddy_list_template();
+	    return $data;
+    }
+    else{//must be counting
+		return count(isset($context['friends']) ? $context['friends'] : null);
+    }
 }
 
 function genMemcount() {
 
-	global $smcFunc, $member_id, $options, $user_settings, $context;
-	
-   $request = $smcFunc['db_query']('', '
-		SELECT COUNT(*)
-	    FROM {db_prefix}log_online AS o
-		LEFT JOIN {db_prefix}members AS m ON m.id_member = o.id_member
-		LEFT JOIN {db_prefix}themes AS t1 ON (t1.variable = {string:name1} AND t1.id_member = m.id_member)
-		LEFT JOIN {db_prefix}themes AS t2 ON (t2.variable = {string:name2} AND t2.id_member = m.id_member)
-		'.(!empty($options['show_cbar_buddys']) && $options['show_cbar_buddys'] == 1 ? 'WHERE FIND_IN_SET({int:member_id}, m.buddy_list) AND o.id_member != {int:member_id} AND t1.value != 1 AND t2.value = 1 AND m.show_online = 1' : 'WHERE NOT FIND_IN_SET({int:member_id}, m.pm_ignore_list) AND NOT FIND_IN_SET({int:member_id}, m.buddy_list) AND o.id_member != {int:member_id} AND t1.value != 1 AND t2.value != 1 AND m.show_online = 1').'',
-		array(
-			'member_id' => $member_id,
-			'name1' => 'show_cbar',
-			'name2' => 'show_cbar_buddys',		
-		)
-	);
-	list ($data) = $smcFunc['db_fetch_row']($request);
-	$smcFunc['db_free_result']($request);
-
-	return $data;
+	return genMemList('count');
 }
 
 function loadDatabase(){

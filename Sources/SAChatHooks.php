@@ -69,21 +69,28 @@ function SAChat_InsertOptions($chatmem, $chatvar, $chatval){
         array($chatmem, 1, $chatvar, $chatval,),
         array('id_member', 'id_theme')
     );
-
 }
 
 function template_sachat_above(){
-	
+
 	echo SAChat_showBar('body');
 }
 
 function template_sachat_below(){}
 
 function SAChat_showBar($type){
-   global $modSettings, $options, $boardurl, $context;
+   global $modSettings, $options, $settings, $boardurl, $context;
    
     //explode our actions
 	$actions = explode(',', $modSettings['2sichat_board_index']);
+	
+	//is the bar disabled on this smf theme
+	if(!empty($modSettings['2sichat_disabled_themes'])){
+		$disabled_theme = explode('|', $modSettings['2sichat_disabled_themes']);
+		
+		if (in_array($settings['theme_id'],$disabled_theme))
+		    return;	    	
+	}
 	
 	//set our default theme if none set
 	if(empty($modSettings['2sichat_theme']))
@@ -144,7 +151,7 @@ function SAChat_load_permissions(&$permissionGroups, &$permissionList, &$leftPer
 				'2sichat_bar_theme',
 				'2sichat_bar_buddys',
 				'2sichat_bar_close',
-		)
+		    )
 	);
 }
 
@@ -188,7 +195,7 @@ function SAChat_LoadTemes(){
 
     // get each entry
     while($entryName = readdir($myDirectory)) {
-	     $dirArray[] = $entryName;
+	    $dirArray[] = $entryName;
     }
 
     // close directory
@@ -199,7 +206,5 @@ function SAChat_LoadTemes(){
 
     // sort 'em
     sort($dirArray);
-	
 }
-
 ?>

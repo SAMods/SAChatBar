@@ -2,7 +2,7 @@
 <!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
 <modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
 	<id>wdm2005:2sichat</id>
-	<version>RC3 Rev61</version>
+	<version>RC3 Rev62</version>
 
 	
 	<file name="$themedir/Profile.template.php">
@@ -18,13 +18,13 @@
 			<add><![CDATA[
 ';
 							if(allowedTo('2sichat_bar_close') || allowedTo('2sichat_bar_buddys') || allowedTo('2sichat_bar_theme')){
-							   
+							    echo'<br /><a name="chatbar"></a>
+                               <hr /><strong>Chat Bar Settings</strong><br />';
 							   if(allowedTo('2sichat_bar_theme')){
 							   global $dirArray, $context, $indexCount;
                                 
 								SAChat_LoadTemes();
-							    echo'<br /><a name="chatbar"></a>
-                               <hr /><strong>Chat Bar Settings</strong><br />';
+							   
 
 							echo'<br /><label for="cbar_theme">Bar Theme</label>
 								<select name="default_options[cbar_theme]" id="cbar_theme">';

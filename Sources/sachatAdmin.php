@@ -50,7 +50,6 @@ function twosichatConfig(){
 
 	$context['sub_template'] = 'show_settings';
     $context['page_title'] = $txt['2sichat_admin'];
-
 	$context[$context['admin_menu_name']]['tab_data']['title'] = $txt['2sichat_config'];
 	$context[$context['admin_menu_name']]['tab_data']['description'] = $txt['2sichat_config_des'];
    
@@ -89,7 +88,9 @@ function twosichatConfig(){
 			array('text', 'size' => 50, '2sichat_board_index'),
 			'',
 			array('check', '2sichat_censor'),
-			array('large_text', '2sichat_censor_words', '8','affiliates_reqirments'),
+			array('large_text', '2sichat_censor_words', '8','2sichat_censor_words'),
+			'',
+			array('text', 'size' => 50, '2sichat_disabled_themes'),
 	);
 	
 	if (!empty($return_config))

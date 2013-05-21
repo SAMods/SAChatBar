@@ -201,7 +201,6 @@ function buddy_list_template() { //The buddy list.
 
      if(!empty($context['friends'])) {
 		foreach ($context['friends'] as $buddy) {
-		$user_settings = loadUserSettings($buddy['id_member']);
 			$data.= '
 				<a class="'.($buddy['session']?'green':'red').'" href="javascript:void(0)" onclick="javascript:chatTo(\''.$buddy['id_member'].'\');showhide(\'friends\');return false;">
 				<img width="20px" height="20px" src="'.$user_settings['avatar'].'" />&nbsp;<strong>'.$buddy['real_name'].'</strong>&nbsp;<span class="'.($buddy['session']?'green':'red').'">*</span>
