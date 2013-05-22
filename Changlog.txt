@@ -18,3 +18,4 @@ improved page loading time
 moved $user_settings = loadUserSettings($member_id); from template buddy_list to genMemList()
 added way to refresh bar manualy
 removed init options functiionn no longer needed
+fixed incorrect avatars showing

@@ -545,6 +545,8 @@ function genMemList($type='list') {
 		while ($row = $smcFunc['db_fetch_assoc']($results)) {
 			
 			$context['friendsFetch'][$row['id_member']] = $row;
+			$user_settings1 = loadUserSettings($row['id_member']);
+			$context['friendsFetch'][$row['id_member']]['avatar'] = $user_settings1['avatar'];
 			
 			$request = $smcFunc['db_query']('', '
 			    SELECT id_member, variable, value
