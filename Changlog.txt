@@ -1,4 +1,4 @@
-=====SA Chat RC3 Rev62=====
+=====SA Chat RC3 Rev63=====
 used proper php opening tag
 show default themes but dont allow deletion
 added test cht file for testing chat and preveiwing themes [acessed via site.com/sachat/sachattest.php]
@@ -16,3 +16,5 @@ function initOptions() only gets whats needed
 fixed issue with utf8 special charactors
 improved page loading time
 moved $user_settings = loadUserSettings($member_id); from template buddy_list to genMemList()
+added way to refresh bar manualy
+removed init options functiionn no longer needed

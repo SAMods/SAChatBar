@@ -25,28 +25,6 @@ function initModSettings(){
     
 	return $modSettings;
 }
-	
-function initOptions($member_id){
-    global $smcFunc, $options;
-	
-    $results = $smcFunc['db_query']('', '
-		SELECT variable, value
-		FROM {db_prefix}themes
-		WHERE id_member = {string:mem}
-		AND variable IN ({array_string:opt})',
-		array(
-		    'mem' => $member_id,
-			'opt'	=> array('show_cbar', 'show_cbar_buddys'),
-		)
-	);
-	$options = array();
-	while ($row = $smcFunc['db_fetch_row']($results)) {
-		$options[$row[0]] = $row[1];	
-	}
-	$smcFunc['db_free_result']($results);
-	
-	return $options;
-}
 
 function initCookies(){
     global $cookiename;

@@ -101,7 +101,10 @@ function chat_bar_template() { //Chat bar template for logged in users, not gues
 	    '.(empty($modSettings['2sichat_dis_list']) ? ' <div style="float: right; padding-right: 30px; padding-top: 1px;">':'
 			 <div style="float: right; padding-right: 30px; padding-top: 3px;">').'';
 			
-			$data .= '<a class="white" href="javascript:void(0)" onclick="javascript:showhide(\'extra\');">
+			$data .= '<a class="white" href="javascript:void(0)" onclick="javascript:updatebar();">
+			<img id="test" src="'.$themeurl.'/images/arrow_refresh.png" width="17" height="17" alt="Extra" border="0">
+		    </a>&nbsp;
+			<a class="white" href="javascript:void(0)" onclick="javascript:showhide(\'extra\');">
 			<img id="extraimg" src="'.$themeurl.'/images/control_eject_blue.png" width="17" height="17" alt="Extra" border="0">
 		    </a>';
 
@@ -139,9 +142,9 @@ function chat_extra_template() {
 		if (!empty($member_id)) {
           $data.= '<br /><a href="?action=profile;area=theme;u='.$member_id.'#chatbar"><strong>'.$txt['bar_setings'].'</strong></a>';
 		 
-		  if(!empty($options['show_cbar_buddys'])){
+		  
  		  $data.= '<br /><a href="?action=profile;area=lists;u='.$member_id.'"><strong>'.$txt['bil'].'</strong></a>';
-		  }
+		  
 		  
 		  $data.= '<hr />';
 		  }

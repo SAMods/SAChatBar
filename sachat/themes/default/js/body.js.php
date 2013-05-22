@@ -78,6 +78,7 @@ function initchat() {
 
 		function updatebar() {
 			jQuery.noConflict()(function($){
+			document.getElementById("test").src = \''.$themeurl.'/images/ajax-loader.gif\';
 				$.ajax({
 					url: \''.$boardurl.'/sachat/index.php\',
 					data: \'action=heart\',
@@ -111,7 +112,9 @@ function initchat() {
 						}
 						if (data != null && data.ONLINE != null) {
 							document.getElementById(\'friends\').innerHTML = data.ONLINE;
-						}
+						} 
+						
+						document.getElementById("test").src = \''.$themeurl.'/images/arrow_refresh.png\';
 					}
 				});
 			});

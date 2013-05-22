@@ -51,9 +51,6 @@
 	//Do charset if needed!
 	if (!empty($db_character_set)){doCharset($db_character_set);}
 	
-	//Load members options array
-	if($member_id){$options = initOptions($member_id);}
-	
 	//Load modsettings array
 	$modSettings = initModSettings();
 
