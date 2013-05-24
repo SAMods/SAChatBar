@@ -545,16 +545,17 @@ function genMemList($type='list') {
 		while ($row = $smcFunc['db_fetch_assoc']($results)) {
 			
 			$context['friendsFetch'][$row['id_member']] = $row;
-			$user_settings1 = loadUserSettings($row['id_member']);
-			$context['friendsFetch'][$row['id_member']]['avatar'] = $user_settings1['avatar'];
+			$buddy_settings = loadUserSettings($row['id_member']);
+			$context['friendsFetch'][$row['id_member']]['avatar'] = $buddy_settings['avatar'];
 			
 			$request = $smcFunc['db_query']('', '
 			    SELECT id_member, variable, value
                 FROM {db_prefix}themes
-                WHERE id_member IN ({array_int:members})
+                WHERE id_member IN ({array_int:members}) OR id_member = ({int:member})
                 AND variable IN ({array_string:opt})',
 		        array(
 		           'members' => array_keys($context['friendsFetch']),
+				   'member' => $user_settings['id_member'],
 				   'opt' =>  array('show_cbar', 'show_cbar_buddys'),
 			    )
 		    );
@@ -564,12 +565,28 @@ function genMemList($type='list') {
 			
 			$buddies = explode(',', $context['friendsFetch'][$row['id_member']]['buddy_list']);
 			$mybuddies = explode(',', $user_settings['buddy_list']);
+			
+			if($row['id_member'] == $user_settings['id_member'])
+			    continue;
+			
+			if(!isset($row['session']))
+                continue;
 				
-		    if(isset($row['session']) && $row['id_member'] != $member_id && empty($context['friendsFetch'][$row['id_member']]['show_cbar']) && empty($context['friendsFetch'][$member_id]['show_cbar_buddys']) && empty($context['friendsFetch'][$row['id_member']]['show_cbar_buddys'])){
+			if(!empty($context['friendsFetch'][$row['id_member']]['show_cbar']))
+			    continue;
+				
+			//TODO: permissions
+			/*$permission = loadPermissions($user_settings['groups']);
+			if(isset($row['session']) && $row['id_member'] != $member_id && !empty($permission['is_admin']) && !empty($permission['is_mod'])){
+			     
+				 $context['friends'][$row['id_member']] = $context['friendsFetch'][$row['id_member']];
+				 
+			}*/
+		    if(empty($context['friendsFetch'][$user_settings['id_member']]['show_cbar_buddys']) && empty($context['friendsFetch'][$row['id_member']]['show_cbar_buddys'])){
 			    
 				$context['friends'][$row['id_member']] = $context['friendsFetch'][$row['id_member']];
 		    }
-            elseif(isset($row['session']) && $row['id_member'] != $member_id && empty($context['friendsFetch'][$row['id_member']]['show_cbar']) && !empty($context['friendsFetch'][$member_id]['show_cbar_buddys']) && in_array($member_id,$buddies) && in_array($row['id_member'],$mybuddies)){
+            elseif(!empty($context['friendsFetch'][$user_settings['id_member']]['show_cbar_buddys']) && in_array($user_settings['id_member'],$buddies) && in_array($row['id_member'],$mybuddies)){
 			    
 				$context['friends'][$row['id_member']] = $context['friendsFetch'][$row['id_member']];
 		    }
