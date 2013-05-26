@@ -1,21 +1,2 @@
-=====SA Chat RC3 Rev63=====
-used proper php opening tag
-show default themes but dont allow deletion
-added test cht file for testing chat and preveiwing themes [acessed via site.com/sachat/sachattest.php]
-fixed load checking issues
-removed old default theme from package
-enabled update online by default
-admin ui changes
-added optopn to reset member themes
-copy js when copying theme
-added options to disable bar on certain themes
-improved genMemList() function
-improved genMemcount() now uses genMemList('count')
-fixed profile chat bar settings
-function initOptions() only gets whats needed
-fixed issue with utf8 special charactors
-improved page loading time
-moved $user_settings = loadUserSettings($member_id); from template buddy_list to genMemList()
-added way to refresh bar manualy
-removed init options functiionn no longer needed
-fixed incorrect avatars showing
+=====SA Chat RC4 Rev65=====
+
