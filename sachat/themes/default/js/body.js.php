@@ -584,7 +584,10 @@ function initchat() {
                 }	
 			});
 		}
-
+        jQuery.noConflict()(function($){
+			$.getScript(\'http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-503f263237ff99da\');
+		})
+		
 		function getSocial (social) {
 			if (social == \'myspace\') {
 				pupUP("http://www.myspace.com/Modules/PostTo/Pages/default.aspx?c="+window.location+"&t="+document.documentElement.getElementsByTagName("TITLE")[0].innerHTML);

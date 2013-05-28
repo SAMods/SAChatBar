@@ -12,17 +12,20 @@ function doCharset($db_character_set){
 function initModSettings(){
     global $smcFunc, $modSettings;
 	
-    $results = $smcFunc['db_query']('', '
-		SELECT variable, value
-		FROM {db_prefix}settings',
-		array()
-	);
-	$modSettings = array();
-	while ($row = $smcFunc['db_fetch_row']($results)) {
-		$modSettings[$row[0]] = $row[1];
+	if (($modSettings = cachegetData('modSettings', 90)) == null)
+	{
+        $results = $smcFunc['db_query']('', '
+		    SELECT variable, value
+		    FROM {db_prefix}settings',
+		    array()
+	    );
+	    $modSettings = array();
+	    while ($row = $smcFunc['db_fetch_row']($results)) {
+		    $modSettings[$row[0]] = $row[1];
+	    }
+	    $smcFunc['db_free_result']($results);
+        cacheputData('modSettings', $modSettings, 90); 
 	}
-	$smcFunc['db_free_result']($results);
-    
 	return $modSettings;
 }
 
@@ -46,20 +49,22 @@ function initCookies(){
 }
 
 function initTheme(){
-    global $boardurl, $boarddir;
+    global $boardurl, $time_start, $boarddir;
 	
     if (isset($_REQUEST['theme']) && !strstr('..', $_REQUEST['theme']) && is_file('./themes/'.$_REQUEST['theme'].'/template.php') && is_file('./themes/'.$_REQUEST['theme'].'/style.css')) {
 		$themeurl = $boardurl.'/sachat/themes/'.$_REQUEST['theme'];
 		$themedir = $boarddir.'/sachat/themes/'.$_REQUEST['theme'];
 		$thjs = 'theme='.$_REQUEST['theme'].'&';
+		$load_time = round(array_sum(explode(' ', microtime())) - array_sum(explode(' ', $time_start)), 3);
 	} 
 	else{
 	    $themeurl = $boardurl.'/sachat/themes/default';
 		$themedir = $boarddir.'/sachat/themes/default';
 		$thjs = '';
+		$load_time = round(array_sum(explode(' ', microtime())) - array_sum(explode(' ', $time_start)), 3);
 	}
 	
-	return array($themeurl, $themedir, $thjs);
+	return array($themeurl, $themedir, $thjs, $load_time);
 }
 
 function initLang($lang){
@@ -93,44 +98,53 @@ function initLink(){
 
 	global $smcFunc, $context, $member_id;
 
-	$results = $smcFunc['db_query']('', '
-		SELECT *
-		FROM {db_prefix}2sichat_barlinks
-		ORDER BY ord',
-		array()
-	);
+    if (($context['gadgetslink'] = cachegetData('gadgetslink', 3600)) === null)
+	{
+	    $results = $smcFunc['db_query']('', '
+		    SELECT *
+		    FROM {db_prefix}2sichat_barlinks
+		    ORDER BY ord',
+		    array()
+	    );
 
-	if ($results){
-		while ($row = $smcFunc['db_fetch_assoc']($results)) {
-			if ($row['vis'] != 0 ) {
-				if ($row['vis'] == 1 && $member_id || $row['vis'] == 2 && !$member_id || $row['vis'] == 3) {
-					$context['gadgetslink'][] = $row;
-				}
-			}
-		}
-		$smcFunc['db_free_result']($results);
+	    if ($results){
+		    while ($row = $smcFunc['db_fetch_assoc']($results)) {
+			    if ($row['vis'] != 0 ) {
+				    if ($row['vis'] == 1 && $member_id || $row['vis'] == 2 && !$member_id || $row['vis'] == 3) {
+					    $context['gadgetslink'][] = $row;
+				    }
+			    }
+		    }
+		    $smcFunc['db_free_result']($results);
+	
+	        cacheputData('gadgetslink',  $context['gadgetslink'], 3600);
+	    }
 	}
 }
 function initGadgets(){
 
 	global $smcFunc, $context, $member_id;
 
-	$results = $smcFunc['db_query']('', '
-		SELECT *
-		FROM {db_prefix}2sichat_gadgets
-		ORDER BY ord',
-		array()
-	);
+	if (($context['gadgets'] = cachegetData('gadgets', 3600)) === null)
+	{
+	    $results = $smcFunc['db_query']('', '
+		    SELECT *
+		    FROM {db_prefix}2sichat_gadgets
+		    ORDER BY ord',
+		    array()
+	    );
 
-	if ($results){
-		while ($row = $smcFunc['db_fetch_assoc']($results)) {
-			if ($row['vis'] != 0 ) {
-				if ($row['vis'] == 1 && $member_id || $row['vis'] == 2 && !$member_id || $row['vis'] == 3) {
-					$context['gadgets'][] = $row;
-				}
-			}
-		}
-		$smcFunc['db_free_result']($results);
+	    if ($results){
+		    while ($row = $smcFunc['db_fetch_assoc']($results)) {
+			    if ($row['vis'] != 0 ) {
+				    if ($row['vis'] == 1 && $member_id || $row['vis'] == 2 && !$member_id || $row['vis'] == 3) {
+					    $context['gadgets'][] = $row;
+				    }
+			    }
+		    }
+		    $smcFunc['db_free_result']($results);
+		    cacheputData('gadgets',  $context['gadgets'], 3600);
+	    }
 	}
 }
 
@@ -533,67 +547,51 @@ function genMemList($type='list') {
 
 	$user_settings = loadUserSettings($member_id);
 	
-	$results = $smcFunc['db_query']('', '
-		SELECT m.buddy_list, m.id_member, m.member_name, m.real_name, o.session, m.pm_ignore_list
-		FROM {db_prefix}members AS m
-		LEFT JOIN {db_prefix}log_online AS o ON o.id_member = m.id_member
-		ORDER BY m.real_name DESC',
+    $results = $smcFunc['db_query']('', '
+		SELECT id_member
+		FROM {db_prefix}members',
 		array());
 	
-	if ($results){
-	
-		while ($row = $smcFunc['db_fetch_assoc']($results)) {
+	while ($row = $smcFunc['db_fetch_assoc']($results)) {
+		
+		$context['friendsFetch'][$row['id_member']] = loadUserSettings($row['id_member']);	
+		
+		if(!isset($context['friendsFetch'][$row['id_member']]['session']) || $context['friendsFetch'][$row['id_member']]['id_member'] == $user_settings['id_member'])
+            continue;
 			
-			$context['friendsFetch'][$row['id_member']] = $row;
-			$buddy_settings = loadUserSettings($row['id_member']);
-			$context['friendsFetch'][$row['id_member']]['avatar'] = $buddy_settings['avatar'];
+		$request = $smcFunc['db_query']('', '
+			SELECT id_member, variable, value
+            FROM {db_prefix}themes
+            WHERE id_member IN ({array_int:members}) OR id_member = ({int:member})
+            AND variable IN ({array_string:opt})',
+		    array(
+		        'members' => array_keys($context['friendsFetch']),
+			    'member' => $user_settings['id_member'],
+			    'opt' =>  array('show_cbar', 'show_cbar_buddys'),
+			)
+		);
+		
+		while ($row1 = $smcFunc['db_fetch_assoc']($request))
+		    $context['friendsFetch'][$row1['id_member']][$row1['variable']] = $row1['value'];
+	    $smcFunc['db_free_result']($request);
+		
+        if(!empty($context['friendsFetch'][$row['id_member']]['show_cbar']))
+            continue;
 			
-			$request = $smcFunc['db_query']('', '
-			    SELECT id_member, variable, value
-                FROM {db_prefix}themes
-                WHERE id_member IN ({array_int:members}) OR id_member = ({int:member})
-                AND variable IN ({array_string:opt})',
-		        array(
-		           'members' => array_keys($context['friendsFetch']),
-				   'member' => $user_settings['id_member'],
-				   'opt' =>  array('show_cbar', 'show_cbar_buddys'),
-			    )
-		    );
-		    while ($row1 = $smcFunc['db_fetch_assoc']($request))
-		        $context['friendsFetch'][$row1['id_member']][$row1['variable']] = $row1['value'];
-	        $smcFunc['db_free_result']($request);
-			
-			$buddies = explode(',', $context['friendsFetch'][$row['id_member']]['buddy_list']);
-			$mybuddies = explode(',', $user_settings['buddy_list']);
-			
-			if($row['id_member'] == $user_settings['id_member'])
-			    continue;
-			
-			if(!isset($row['session']))
-                continue;
-				
-			if(!empty($context['friendsFetch'][$row['id_member']]['show_cbar']))
-			    continue;
-				
-			//TODO: permissions
-			/*$permission = loadPermissions($user_settings['groups']);
-			if(isset($row['session']) && $row['id_member'] != $member_id && !empty($permission['is_admin']) && !empty($permission['is_mod'])){
-			     
-				 $context['friends'][$row['id_member']] = $context['friendsFetch'][$row['id_member']];
-				 
-			}*/
-		    if(empty($context['friendsFetch'][$user_settings['id_member']]['show_cbar_buddys']) && empty($context['friendsFetch'][$row['id_member']]['show_cbar_buddys'])){
+        $buddies = explode(',', $context['friendsFetch'][$row['id_member']]['buddy_list']);
+		$mybuddies = explode(',', $user_settings['buddy_list']);	
+		
+	    if(empty($context['friendsFetch'][$user_settings['id_member']]['show_cbar_buddys']) && empty($context['friendsFetch'][$row['id_member']]['show_cbar_buddys'])){
 			    
-				$context['friends'][$row['id_member']] = $context['friendsFetch'][$row['id_member']];
-		    }
-            elseif(!empty($context['friendsFetch'][$user_settings['id_member']]['show_cbar_buddys']) && in_array($user_settings['id_member'],$buddies) && in_array($row['id_member'],$mybuddies)){
-			    
-				$context['friends'][$row['id_member']] = $context['friendsFetch'][$row['id_member']];
-		    }
-            		
+			$context['friends'][$row['id_member']] = $context['friendsFetch'][$row['id_member']];
 	    }
-	    $smcFunc['db_free_result']($results);
+        elseif(!empty($context['friendsFetch'][$user_settings['id_member']]['show_cbar_buddys']) && in_array($user_settings['id_member'],$buddies) && in_array($row['id_member'],$mybuddies)){
+			    
+	        $context['friends'][$row['id_member']] = $context['friendsFetch'][$row['id_member']];
+		}
     }
+	$smcFunc['db_free_result']($results);
+		
     if($type=='list'){
 	    $data = buddy_list_template();
 	    return $data;
@@ -610,7 +608,7 @@ function genMemcount() {
 
 function loadDatabase(){
 
-	global $db_persist, $db_connection, $db_server, $db_user, $db_passwd, $db_type, $db_name, $sourcedir, $db_prefix;
+	global $db_persist, $db_connection, $db_server, $db_user, $db_passwd, $db_type, $db_name, $db_count, $sourcedir, $db_prefix;
 
      if (empty($db_type) || !file_exists($sourcedir . '/Subs-Db-' . $db_type . '.php')) {
 		$db_type = 'mysql';
@@ -624,6 +622,71 @@ function loadDatabase(){
 
 	if (!$db_connection) {
 		db_fatal_error();
+	}
+}
+
+function cachegetData($key, $ttl = 120){
+    global $boardurl, $modSettings, $boarddir;
+    
+	if (empty($modSettings['2sichat_cache']))
+		return;
+		
+	$key = md5($boardurl . filemtime($boarddir.'/sachat/functions.php')) . '-SACHAT-' .str_replace(':','_', $key);
+	$cachedir = $boarddir.'/sachat/cache';
+	
+	if (file_exists($cachedir . '/data_' . $key . '.php') && filesize($cachedir . '/data_' . $key . '.php') > 10)
+	{
+		require($cachedir . '/data_' . $key . '.php');
+		if (!empty($expired) && isset($value))
+		{
+			@unlink($cachedir . '/data_' . $key . '.php');
+			unset($value);
+		}
+	}
+
+	if (empty($value))
+		return null;
+	else
+		return @unserialize($value);
+}
+
+function cacheputData($key, $value, $ttl = 120){
+	global $boardurl, $modSettings, $boarddir;
+	
+	if (empty($modSettings['2sichat_cache']))
+		return;
+		
+	$key = md5($boardurl . filemtime($boarddir.'/sachat/functions.php')) . '-SACHAT-' . str_replace(':','_', $key);
+	$value = $value === null ? null : serialize($value);
+	$cachedir = $boarddir.'/sachat/cache';
+	
+	if ($value === null)
+		@unlink($cachedir . '/data_' . $key . '.php');
+	else
+	{
+		
+		//setup the php cache file and make it pretty ish :P
+		$cache_data = '<' . '?' . 'php 
+	if (' . (time() + $ttl) . ' < time()) 
+		$expired = true; 
+	else{
+		$expired = false; 
+		$value = \'' . addcslashes($value, '\\\'') . '\';
+	}
+' .'?' . '>';
+
+		$fh = @fopen($cachedir . '/data_' . $key . '.php', 'w');
+		if ($fh)
+		{
+			set_file_buffer($fh, 0);
+			flock($fh, LOCK_EX);
+			$cache_bytes = fwrite($fh, $cache_data);
+			flock($fh, LOCK_UN);
+			fclose($fh);
+
+			if ($cache_bytes != strlen($cache_data))
+				@unlink($cachedir . '/data_' . $key . '.php');
+		}
 	}
 }
 

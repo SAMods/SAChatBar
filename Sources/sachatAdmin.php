@@ -19,7 +19,7 @@ function twosichatAdmin(){
 		'link' => 'twosichatLinks',
 		'theme' => 'twosichatThemes',
 		'load' => 'twosichatLoad',
-		'chmod' => 'twosichatchmod',
+		'maintain' => 'twosichatchmod',
 	);
 
 	if(isset($_REQUEST['sa'])) {
@@ -30,16 +30,45 @@ function twosichatAdmin(){
 }
 
 function twosichatchmod(){
-    global  $txt, $context;
+    global  $txt,$db_prefix, $smcFunc, $context;
     
 	loadTemplate('sachat');
     $context['sub_template'] = 'twosichatchmod';
-	$context[$context['admin_menu_name']]['tab_data']['title'] = $txt['2sichatchmod'];
-	$context[$context['admin_menu_name']]['tab_data']['description'] = $txt['2sichatchmod1'];
+	$context[$context['admin_menu_name']]['tab_data']['title'] = $txt['2sichatmaintain'] ;
+	$context[$context['admin_menu_name']]['tab_data']['description'] = $txt['2sichatmaintaininfo'];
+    
+	if(isset($_GET['opti'])){
+	    db_extend();
+	    $real_prefix = preg_match('~^(`?)(.+?)\\1\\.(.*?)$~', $db_prefix, $match) === 1 ? $match[3] : $db_prefix;
+	    $temp_tables = $smcFunc['db_list_tables'](false, $real_prefix . '%');
+	    $sichatTables = array($db_prefix.'2sichat',$db_prefix.'2sichat_gadgets',$db_prefix.'2sichat_barlinks');
+	    $tables = array();
+	
+	    foreach ($temp_tables as $table)
+		    $tables[] = array('table_name' => $table);
+		
+        $context['optimized_tables'] = array();
 
-    if(isset($_GET['chmod'])){
+	    foreach ($tables as $table)
+	    {
+		    if(in_array($table['table_name'], $sichatTables)){
+	            $data_freed = $smcFunc['db_optimize_table']($table['table_name']);
+		    }
+	    }
+        redirectexit('action=admin;area=sachat;sa=maintain;done');		
+	}
+	if(isset($_GET['chmod'])){
 	    chmodDirectory('sachat/',0);
-	    redirectexit('action=admin;area=sachat;sa=chmod;done');
+	    redirectexit('action=admin;area=sachat;sa=maintain;done');
+    }
+	if(isset($_GET['cache'])){
+	    twosicleanCache();
+	    redirectexit('action=admin;area=sachat;sa=maintain;done');
+    }
+	if(isset($_GET['purge'])){
+		$smcFunc['db_query']('', 'DELETE FROM {db_prefix}2sichat',array());
+		$smcFunc['db_query']('', 'ALTER TABLE {db_prefix}2sichat AUTO_INCREMENT = 0',array());
+	    redirectexit('action=admin;area=sachat;sa=maintain;done');
     }
 }
  
@@ -67,7 +96,7 @@ function twosichatConfig(){
 			'',
 			array('text', '2sichat_purge', 'size' => 10, 'subtext' => $txt['2sichat_purge_sub']),
 			'',
-			array('check', '2sichat_purge_all', 'subtext' => $txt['2sichat_purge_a_sub']),
+			array('check', '2sichat_cache', 'size' => 10, 'subtext' => $txt['2sichat_cache_sub']),
 			'',
 			array('check', '2sichat_live_online'),
 			//array('check', '2sichat_list_type', 'subtext' => $txt['2sichat_list_t_sub']),
@@ -109,6 +138,7 @@ function twosichatConfig(){
 	if (isset($_GET['save']))
 	{
 		checkSession();
+		twosicleanCache();
 		if (isset($_POST['2sichat_purge_all']) && $_POST['2sichat_purge_all'] == 1) {
 			$_POST['2sichat_purge_all'] = 0;
 			$smcFunc['db_query']('', 'DELETE FROM {db_prefix}2sichat',array());
@@ -171,6 +201,7 @@ function twosichatLoad(){
 	if (isset($_GET['save']))
 	{
 		checkSession();
+		twosicleanCache();
 		$save_vars = $config_vars;
 		saveDBSettings($save_vars);
 		redirectexit('action=admin;area=sachat;sa=load');
@@ -338,6 +369,7 @@ function twosichatGadget(){
 				'did' => (int) $_REQUEST['delete'],
 			)
 		);
+		twosicleanCache();
 		redirectexit('action=admin;area=sachat;sa=gadget');
 	}else if (isset($_REQUEST['edit'])) {
 		$context['sub_template'] = 'twosichatGadAdd';
@@ -370,6 +402,7 @@ function twosichatGadget(){
 				array()
 			);
 		}
+		twosicleanCache();
 		redirectexit('action=admin;area=sachat;sa=gadget');
 	}else{
 		twosigadDis();
@@ -395,6 +428,7 @@ function twosichatlinks(){
 				'did' => (int) $_REQUEST['delete'],
 			)
 		);
+		twosicleanCache();
 		redirectexit('action=admin;area=sachat;sa=link');
 	}else if (isset($_REQUEST['edit'])) {
 		$context['sub_template'] = 'twosichatLinkAdd';
@@ -429,11 +463,26 @@ function twosichatlinks(){
 				array()
 			);
 		}
+		twosicleanCache();
 		redirectexit('action=admin;area=sachat;sa=link');
 	}else{
 		twosigadLink();
 	}
 
+}
+
+function twosicleanCache(){
+    global $boarddir;
+	
+	$cachedir = $boarddir.'/sachat/cache';
+	if (!is_dir($cachedir))
+		return;
+
+    $files = scandir($cachedir);
+	
+    foreach($files as $key => $value){
+		@unlink($cachedir . '/' . $value);
+    }
 }
 
 function twosigadLink(){

@@ -1,14 +1,25 @@
 <?php
+$txt['2sichat_cache'] = 'Enable experimental caching';
+$txt['2sichat_cache_sub'] = '<div class="error">Warning this is experimental and may break things<br />if things fail to work after enbling this disable it and goto mantenance and clear the cache</div>';
 $txt['2sichat_censor'] = 'Enable word censoring';
 $txt['2sichat_disabled_themes'] = 'Disable bar on certain themes<div class="smalltext">Separate each theme with a "|"<br /> Example:<br /> theme1|theme2|theme3</div>';
 $txt['2sichat_censor_words'] = 'Words to censor<div class="smalltext">Separate each word with a "|"<br /> Example:<br /> badword1|badword2|badword3</div>';
 $txt['2sichat_disabled_themes'] = 'Disable bar on certain themes<div class="smalltext">Separate each theme with a "|"<br /> Example:<br /> theme1|theme2|theme3</div>';
 $txt['2sichatchmod'] = 'CHMOD';
 $txt['2sichatchmod1'] = 'CHMOD Files';
-$txt['2sichatchmod2'] = '<div align="center">Cant see the bar? click the link below to attempt to chmod the files<br />
-       <a href="'.$scripturl.'?action=admin;area=sachat;sa=chmod;chmod">CHMOD Files</a></div>';
-$txt['2sichatchmod3'] = 'Success';	   
-
+$txt['2sichatchmod3'] = 'Maintenance Task Compleate';	   
+$txt['2sichatmaintain'] = 'Maintenance';
+$txt['2sichatmaintaininfo'] = 'purge messages, Fix bar, clear cache, optimise tables';
+$txt['2sichatmaintainpurge'] = 'Purge all messages';
+$txt['2sichatmaintainpurge1'] = 'Warning! this will delete all chat messages. This will also reset the auto increment.';
+$txt['2sichatmaintainpurge2'] = 'Purge messages';
+$txt['2sichatmaintaincache'] = 'Clear cache';
+$txt['2sichatmaintaincache1'] = 'This function will empty out the file cache should you need it to be cleared';
+$txt['2sichatmaintainfb'] = 'Fix bar';
+$txt['2sichatmaintainfb1'] = 'If, for example, the bar is missing after a install, this function may help fixing that.';
+$txt['2sichatmaintainopt'] = 'Optimise DB tables';
+$txt['2sichatmaintainopt1'] = 'This task allows you to optimize all tables. This will get rid of overhead, effectively making the tables smaller in size and your chat bar faster!';
+$txt['2sichatmaintainopt2'] = 'Optimise DB tables';
 $txt['2sichatloadbal'] = 'Load Checking';
 $txt['2sichat_loadavg_warning'] = '<span class="error">Please note: the settings below are to be edited with care. The current load average is <strong>%01.2f</strong></span>';
 $txt['2sichat_linkyyy'] = 'Open link in a new window?';

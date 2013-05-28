@@ -49,22 +49,70 @@ function template_twosichatGadgets(){
 }
 
 function template_twosichatchmod(){
-global $txt,$scripturl;
+global $txt,$modSettings,$scripturl;
 
      if(isset($_GET['done'])){echo'<div class="information">'.$txt['2sichatchmod3'].'</div>';}
-     echo' 
+
+	 echo' 
 	    <div class="cat_bar">
 		    <h3 class="catbg">
-			    '.$txt['2sichatchmod'].'
+			   '.$txt['2sichatmaintainopt'].'
 		    </h3>
 	    </div>
 	<div class="windowbg2">
 		<span class="topslice"><span></span></span>
 	        <div class="content">
-			    '.$txt['2sichatchmod2'].'
+			 '.$txt['2sichatmaintainopt1'].'<br /><br />
+			   <button type="button" onclick="javascript:location.href = \''.$scripturl.'?action=admin;area=sachat;sa=maintain;opti\';">'.$txt['2sichatmaintainopt2'] .'</button>
+			</div>
+	    <span class="botslice"><span></span></span>
+	</div><br />';
+	
+	 echo' 
+	    <div class="cat_bar">
+		    <h3 class="catbg">
+			    '.$txt['2sichatmaintainpurge'].'
+		    </h3>
+	    </div>
+	<div class="windowbg2">
+		<span class="topslice"><span></span></span>
+	        <div class="content">
+			  <div class="error">'.$txt['2sichatmaintainpurge1'].'.</div><br />
+			   <button type="button" onclick="javascript:location.href = \''.$scripturl.'?action=admin;area=sachat;sa=maintain;purge\';">'.$txt['2sichatmaintainpurge2'].'</button>
 			</div>
 	    <span class="botslice"><span></span></span>
 	</div>';
+	//if (!empty($modSettings['2sichat_cache'])){
+	  echo'<br /> 
+	    <div class="cat_bar">
+		    <h3 class="catbg">
+			    '.$txt['2sichatmaintaincache'].'
+		    </h3>
+	    </div>
+	<div class="windowbg2">
+		<span class="topslice"><span></span></span>
+	        <div class="content">
+			  '.$txt['2sichatmaintaincache1'].'<br /><br />
+			     <button type="button" onclick="javascript:location.href = \''.$scripturl.'?action=admin;area=sachat;sa=maintain;cache\';">'.$txt['2sichatmaintaincache'].'</button>
+			</div>
+	    <span class="botslice"><span></span></span>
+	</div>';
+	//}
+	 echo' <br />
+	    <div class="cat_bar">
+		    <h3 class="catbg">
+			    '.$txt['2sichatmaintainfb'].'
+		    </h3>
+	    </div>
+	<div class="windowbg2">
+		<span class="topslice"><span></span></span>
+	        <div class="content">
+			    '.$txt['2sichatmaintainfb1'].'<br /><br />
+				<button type="button" onclick="javascript:location.href = \''.$scripturl.'?action=admin;area=sachat;sa=maintain;chmod\';"> '.$txt['2sichatmaintainfb'].'</button>
+			</div>
+	    <span class="botslice"><span></span></span>
+	</div>';
+	
 }
 function template_twosichatLinks(){
 

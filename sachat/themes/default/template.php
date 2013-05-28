@@ -95,7 +95,7 @@ function chat_savemsg_template() { //When you send a message
 
 function chat_bar_template() { //Chat bar template for logged in users, not guest.
 
-	global $boardurl, $themeurl, $modSettings, $context, $OnCount, $txt;
+	global $boardurl, $debug_load, $themeurl, $modSettings, $load_time, $db_count, $context, $OnCount, $txt;
 
 	$data= '
 	    '.(empty($modSettings['2sichat_dis_list']) ? ' <div style="float: right; padding-right: 30px; padding-top: 1px;">':'
@@ -116,12 +116,19 @@ function chat_bar_template() { //Chat bar template for logged in users, not gues
 		<div class="langCont">
 			<div id="2siTranslate"></div>
 		</div>
-		'.(!empty($modSettings['2sichat_dis_list']) ? '':'
+		'.(!empty($modSettings['2sichat_dis_list']) ? '': '
 		<a class="white" href="javascript:void(0)" onclick="javascript:showhide(\'friends\');">
 			<img src="'.$themeurl.'/images/balloon.png" alt="{}" border="0"><strong>'.$txt['whos_on'].' (<span id="cfriends">'.$OnCount.'</span>)</strong>
 		</a> ');
          
 		$data .='&nbsp;&nbsp;<span id="minchats"></span>';
+		 if($debug_load){
+		//just being nosy heh!!!!!!!!!!!!!!!!!
+		//ff 0.01 seconds average
+		//chrome 1.065 seconds average
+		//ie 0.998 seconds  average
+		$data .='&nbsp;&nbsp;<span style="color: #f00;">Bar loaded in, '.$load_time.' seconds with '.$db_count.' queries</span>';
+		}
 		
 	return $data;
 }
@@ -218,7 +225,7 @@ function buddy_list_template() { //The buddy list.
 
 function guest_bar_template() { //Well guest can't access everything.
 
-	global $boardurl, $themeurl, $modSettings, $txt, $context;
+	global $boardurl, $load_time, $debug_load, $db_count, $themeurl, $modSettings, $txt, $context;
 
 			$data = '
 			<div style="float: right; padding-right: 30px; padding-top: 3px;">
@@ -233,7 +240,13 @@ function guest_bar_template() { //Well guest can't access everything.
 		<span class="white">
 		'.$txt['guest_msg'].'
 		</span>';
-	    
+	    if($debug_load){
+		//just being nosy heh!!!!!!!!!!!!!!!!!
+		//ff 0.01 seconds average
+		//chrome 1.065 seconds average
+		//ie 0.998 seconds  average
+		$data .='&nbsp;&nbsp;<span style="color: #f00;">Bar loaded in, '.$load_time.' seconds with '.$db_count.' queries</span>';
+		}
 		$data .='</div>';
 
 	return $data;

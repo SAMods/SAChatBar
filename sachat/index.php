@@ -14,6 +14,12 @@
 */
 	//Define SMF
 	define('SMF', 1);
+	
+	//set the micro start time
+	$time_start = microtime();
+	
+	//debug load time not much to see realy load times and db query count
+	$debug_load = true;
 
 	//Experimental Optimizer
 	define('loadOpt', 1);
@@ -31,7 +37,7 @@
 	if (@version_compare(PHP_VERSION, '5') == -1) {require_once($sourcedir . '/Subs-Compat.php');}
 	
 	//Load our theme
-	list ($themeurl, $themedir, $thjs) = initTheme();
+	list ($themeurl, $themedir, $thjs, $load_time) = initTheme();
 	require_once($themedir.'/template.php');
 	
 	//Load our language strings

@@ -1,2 +1,6 @@
 =====SA Chat RC4 Rev65=====
+experimental cache to links and gadgets
+show bar load times if enbled 
+another rewrite of genMemlist() function
+maintenance page in sa chat admin
 

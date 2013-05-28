@@ -33,14 +33,14 @@ function SAChat_loadtheme(){
 	 
 	loadLanguage('2sichat');
 
-	if ($context['user']['is_logged'] && empty($options['cbar_opt_done'])){
+	/*if ($context['user']['is_logged'] && empty($options['cbar_opt_done'])){
 	   
 		SAChat_InsertOptions($user_info['id'],'show_cbar',0);
         SAChat_InsertOptions($user_info['id'],'show_cbar_buddys',0);
 		SAChat_InsertOptions($user_info['id'],'cbar_theme',0);
 		SAChat_InsertOptions($user_info['id'],'cbar_opt_done',1);
 		
-	}
+	}*/
 	
 	if (!isset($_REQUEST['xml']))
     {
@@ -55,9 +55,6 @@ function SAChat_loadtheme(){
     }
 
     $context['html_headers'] .= SAChat_showBar('head');
-	if($modSettings['2sichat_ico_adthis']){
-	    $context['html_headers'] .= '<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-503f263237ff99da"></script>';
-    }
 }
 
 function SAChat_InsertOptions($chatmem, $chatvar, $chatval){
@@ -178,7 +175,7 @@ function SAChat_admin_areas(&$admin_areas)
 						'link' => array($txt['2sichat_linksd2']),
 						'load' => array($txt['2sichatloadbal']),
 						'theme' => array($txt['2sichat_theme']),
-						'chmod' => array($txt['2sichatchmod']),
+						'maintain' => array($txt['2sichatmaintain']),
 					),
 				 ),	
 		      ),
