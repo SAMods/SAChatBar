@@ -702,7 +702,7 @@ function loadOpt() {
 	// If last connection to the DB is greater than the DB expire stamp die.
 	// If no expire stamp die, usually means no messages availible anyways.
 	if (isset($_SESSION['DBcon_stamp']) && isset($DBcon_exp) && $_SESSION['DBcon_stamp'] > $DBcon_exp || isset($_SESSION['DBcon_stamp']) && !isset($DBcon_exp)) {
-		if (!isset($_REQUEST['msg']) && !isset($_REQUEST['gid']) && !isset($_REQUEST['cid']) && @$_REQUEST['action'] != 'head' && @$_REQUEST['action'] != 'body') {
+		if (!isset($_REQUEST['msg']) && !isset($_REQUEST['gid']) && !isset($_REQUEST['cid']) && @$_REQUEST['action'] != 'head' && @$_REQUEST['action'] != 'heart' && @$_REQUEST['action'] != 'body') {
 			$context['JSON']['STATUS'] = 'IDLE';
 			doOutput();
 		}
