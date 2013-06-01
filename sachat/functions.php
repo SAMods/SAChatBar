@@ -49,22 +49,22 @@ function initCookies(){
 }
 
 function initTheme(){
-    global $boardurl, $time_start, $boarddir;
+    global $boardurl, $time_bstart, $boarddir;
 	
     if (isset($_REQUEST['theme']) && !strstr('..', $_REQUEST['theme']) && is_file('./themes/'.$_REQUEST['theme'].'/template.php') && is_file('./themes/'.$_REQUEST['theme'].'/style.css')) {
 		$themeurl = $boardurl.'/sachat/themes/'.$_REQUEST['theme'];
 		$themedir = $boarddir.'/sachat/themes/'.$_REQUEST['theme'];
 		$thjs = 'theme='.$_REQUEST['theme'].'&';
-		$load_time = round(array_sum(explode(' ', microtime())) - array_sum(explode(' ', $time_start)), 3);
+		$load_btime = round(array_sum(explode(' ', microtime())) - array_sum(explode(' ', $time_bstart)), 3);
 	} 
 	else{
 	    $themeurl = $boardurl.'/sachat/themes/default';
 		$themedir = $boarddir.'/sachat/themes/default';
 		$thjs = '';
-		$load_time = round(array_sum(explode(' ', microtime())) - array_sum(explode(' ', $time_start)), 3);
+		$load_btime = round(array_sum(explode(' ', microtime())) - array_sum(explode(' ', $time_bstart)), 3);
 	}
 	
-	return array($themeurl, $themedir, $thjs, $load_time);
+	return array($themeurl, $themedir, $thjs, $load_btime);
 }
 
 function initLang($lang){
@@ -479,21 +479,13 @@ function loadUserSettings($id) {
 		$temp['groups'] = array($temp['id_group'], $temp['id_post_group']);
 	}
 
-	// Fix avatar
-	if (!$temp['avatar'] && $temp['id_attach']) {
-		if ($temp['attachment_type'] == 0) {
-			$temp['avatar'] = $boardurl.'/index.php?action=dlattach;attach='.$temp['id_attach'].';type=avatar';
-		}
-		if ($temp['attachment_type'] == 1) {
-			$temp['avatar'] = (isset($modSettings['custom_avatar_enabled'])?$modSettings['custom_avatar_url']:$modSettings['avatar_url']).'/'.$temp['filename'];
-		}
-	} else if (!$temp['avatar']) {
-		$temp['avatar'] = $themeurl.'/images/blankuser.png';
-	}
-
-	if (substr($temp['avatar'], 0, 4) != 'http') {
-		$temp['avatar'] = $modSettings['avatar_url'].'/'.$temp['avatar'];
-	} // Allot of junk to fix one avatar, SMF needs to get this right.
+	$temp['avatar'] = fixAvatar(array(
+	    'avatar' => $temp['avatar'],
+		'id_attach' => $temp['id_attach'],
+		'attachment_type' => $temp['attachment_type'],
+		'filename' => $temp['filename'],
+	));
+	
 	return $temp;
 }
 
@@ -537,66 +529,105 @@ function liveOnline() {
 	
 	global $modSettings, $options, $context;
 
-	if (empty($modSettings['2sichat_dis_list']))
-		$context['JSON']['ONLINE'] = genMemList();
+	if (empty($modSettings['2sichat_dis_list'])){
+		$context['JSON']['ONLINE'] = genMemList('list');
+	   $context['JSON']['CONLINE'] = genMemcount('count');
+	}
+}
+
+function fixAvatar($data){
+    global $modSettings, $themeurl, $boardurl;
+	
+    if (!$data['avatar'] && $data['id_attach']) {
+	    if ($data['attachment_type'] == 0) {
+		    $data['avatar'] = $boardurl.'/index.php?action=dlattach;attach='.$data['id_attach'].';type=avatar';
+		}
+		if ($data['attachment_type'] == 1) {
+			$data['avatar'] = (isset($modSettings['custom_avatar_enabled'])?$modSettings['custom_avatar_url']:$modSettings['avatar_url']).'/'.$data['filename'];
+		}
+	} else if (!$data['avatar']) {
+	    $data['avatar'] = $themeurl.'/images/blankuser.png';
+	}
+	if (substr($data['avatar'], 0, 4) != 'http') {
+	    $data['avatar'] = $modSettings['avatar_url'].'/'.$data['avatar'];
+	} // Allot of junk to fix one avatar, SMF needs to get this right.
+	
+	return $data['avatar'];
 }
 
 function genMemList($type='list') {
 
-	global $smcFunc, $member_id, $user_settings, $context;
-
-	$user_settings = loadUserSettings($member_id);
+    global $smcFunc, $member_id, $context;
 	
     $results = $smcFunc['db_query']('', '
-		SELECT id_member
-		FROM {db_prefix}members',
-		array());
-	
+		SELECT m.buddy_list, m.id_member, m.member_name, m.real_name, o.session, m.avatar, IFNULL(a.id_attach, 0) AS id_attach, a.filename, a.attachment_type
+		FROM {db_prefix}members as m
+		LEFT JOIN {db_prefix}log_online AS o ON o.id_member = m.id_member
+		LEFT JOIN {db_prefix}attachments AS a ON a.id_member = m.id_member',
+		array('member_id' => $member_id,));
+	$new_loaded_ids = array();
 	while ($row = $smcFunc['db_fetch_assoc']($results)) {
-		
-		$context['friendsFetch'][$row['id_member']] = loadUserSettings($row['id_member']);	
-		
-		if(!isset($context['friendsFetch'][$row['id_member']]['session']) || $context['friendsFetch'][$row['id_member']]['id_member'] == $user_settings['id_member'])
-            continue;
+	    
+		if(!isset($row['session']))
+		    continue;
 			
-		$request = $smcFunc['db_query']('', '
-			SELECT id_member, variable, value
+		$row['avatar'] = fixAvatar(array(
+		    'avatar' => $row['avatar'],
+			'id_attach' => $row['id_attach'],
+			'attachment_type' => $row['attachment_type'],
+			'filename' => $row['filename'],
+		));
+		
+		$new_loaded_ids[] = $row['id_member'];
+		$row['options'] = array();
+	    $user_profile[$row['id_member']] = $row;
+	}
+	$smcFunc['db_free_result']($results);
+	
+	if (!empty($new_loaded_ids)){
+	
+	    $results = $smcFunc['db_query']('', '
+		    SELECT id_member, variable, value
             FROM {db_prefix}themes
-            WHERE id_member IN ({array_int:members}) OR id_member = ({int:member})
+            WHERE id_member' . (count($new_loaded_ids) == 1 ? ' = {int:loaded_ids}' : ' IN ({array_int:loaded_ids})') .'
             AND variable IN ({array_string:opt})',
 		    array(
-		        'members' => array_keys($context['friendsFetch']),
-			    'member' => $user_settings['id_member'],
+		        'loaded_ids' => count($new_loaded_ids) == 1 ? $new_loaded_ids[0] : $new_loaded_ids,
+			    'member' => $member_id,
 			    'opt' =>  array('show_cbar', 'show_cbar_buddys'),
-			)
-		);
+	        )
+	    );
+	    while ($row = $smcFunc['db_fetch_assoc']($results)){
+            $user_profile[$row['id_member']]['options'][$row['variable']] = $row['value'];
+		}		
+	    $smcFunc['db_free_result']($results);
+	}
+   
+    for ($i = 0, $n = count($new_loaded_ids); $i < $n; $i++){
+	    
+		$mybuddies = explode(',',$user_profile[$member_id]['buddy_list']);
+		$buddies = explode(',',$user_profile[$new_loaded_ids[$i]]['buddy_list']);
 		
-		while ($row1 = $smcFunc['db_fetch_assoc']($request))
-		    $context['friendsFetch'][$row1['id_member']][$row1['variable']] = $row1['value'];
-	    $smcFunc['db_free_result']($request);
-		
-        if(!empty($context['friendsFetch'][$row['id_member']]['show_cbar']))
-            continue;
+		if(!empty($user_profile[$member_id]['options']['show_cbar_buddys']) && empty($user_profile[$new_loaded_ids[$i]]['options']['show_cbar'])){
 			
-        $buddies = explode(',', $context['friendsFetch'][$row['id_member']]['buddy_list']);
-		$mybuddies = explode(',', $user_settings['buddy_list']);	
-		
-	    if(empty($context['friendsFetch'][$user_settings['id_member']]['show_cbar_buddys']) && empty($context['friendsFetch'][$row['id_member']]['show_cbar_buddys'])){
+			if(in_array($member_id,$buddies) && in_array($new_loaded_ids[$i],$mybuddies) && $member_id != $new_loaded_ids[$i]){
 			    
-			$context['friends'][$row['id_member']] = $context['friendsFetch'][$row['id_member']];
-	    }
-        elseif(!empty($context['friendsFetch'][$user_settings['id_member']]['show_cbar_buddys']) && in_array($user_settings['id_member'],$buddies) && in_array($row['id_member'],$mybuddies)){
-			    
-	        $context['friends'][$row['id_member']] = $context['friendsFetch'][$row['id_member']];
+				$context['friends'][$new_loaded_ids[$i]] = !empty($user_profile) ? $user_profile[$new_loaded_ids[$i]] : array();
+			}
 		}
-    }
-	$smcFunc['db_free_result']($results);
-		
-    if($type=='list'){
+		if(empty($user_profile[$member_id]['options']['show_cbar_buddys']) && empty($user_profile[$new_loaded_ids[$i]]['options']['show_cbar']) && empty($user_profile[$new_loaded_ids[$i]]['options']['show_cbar_buddys'])){
+	        
+			if($member_id != $new_loaded_ids[$i]){
+			    
+				$context['friends'][$new_loaded_ids[$i]] = !empty($user_profile) ? $user_profile[$new_loaded_ids[$i]] : array();
+			}
+		}
+	}
+	if($type=='list'){
 	    $data = buddy_list_template();
 	    return $data;
     }
-    else{//must be counting
+    if($type=='count'){
 		return count(isset($context['friends']) ? $context['friends'] : null);
     }
 }
@@ -626,11 +657,11 @@ function loadDatabase(){
 }
 
 function cachegetData($key, $ttl = 120){
-    global $boardurl, $modSettings, $boarddir;
+    global $boardurl, $debug_load, $modSettings, $boarddir;
     
 	if (empty($modSettings['2sichat_cache']))
 		return;
-		
+	
 	$key = md5($boardurl . filemtime($boarddir.'/sachat/functions.php')) . '-SACHAT-' .str_replace(':','_', $key);
 	$cachedir = $boarddir.'/sachat/cache';
 	
@@ -643,8 +674,8 @@ function cachegetData($key, $ttl = 120){
 			unset($value);
 		}
 	}
-
-	if (empty($value))
+	
+    if (empty($value))
 		return null;
 	else
 		return @unserialize($value);
