@@ -568,9 +568,6 @@ function genMemList($type='list') {
 	$new_loaded_ids = array();
 	while ($row = $smcFunc['db_fetch_assoc']($results)) {
 	    
-		if(!isset($row['session']))
-		    continue;
-			
 		$row['avatar'] = fixAvatar(array(
 		    'avatar' => $row['avatar'],
 			'id_attach' => $row['id_attach'],
@@ -609,14 +606,14 @@ function genMemList($type='list') {
 		
 		if(!empty($user_profile[$member_id]['options']['show_cbar_buddys']) && empty($user_profile[$new_loaded_ids[$i]]['options']['show_cbar'])){
 			
-			if(in_array($member_id,$buddies) && in_array($new_loaded_ids[$i],$mybuddies) && $member_id != $new_loaded_ids[$i]){
+			if(in_array($member_id,$buddies) && in_array($new_loaded_ids[$i],$mybuddies) && $member_id != $new_loaded_ids[$i]&& $user_profile[$new_loaded_ids[$i]]['session']){
 			    
 				$context['friends'][$new_loaded_ids[$i]] = !empty($user_profile) ? $user_profile[$new_loaded_ids[$i]] : array();
 			}
 		}
 		if(empty($user_profile[$member_id]['options']['show_cbar_buddys']) && empty($user_profile[$new_loaded_ids[$i]]['options']['show_cbar']) && empty($user_profile[$new_loaded_ids[$i]]['options']['show_cbar_buddys'])){
 	        
-			if($member_id != $new_loaded_ids[$i]){
+			if($member_id != $new_loaded_ids[$i] && $user_profile[$new_loaded_ids[$i]]['session']){
 			    
 				$context['friends'][$new_loaded_ids[$i]] = !empty($user_profile) ? $user_profile[$new_loaded_ids[$i]] : array();
 			}
