@@ -564,7 +564,7 @@ function genMemList($type='list') {
 		FROM {db_prefix}members as m
 		LEFT JOIN {db_prefix}log_online AS o ON o.id_member = m.id_member
 		LEFT JOIN {db_prefix}attachments AS a ON a.id_member = m.id_member',
-		array('member_id' => $member_id,));
+		array());
 	$new_loaded_ids = array();
 	while ($row = $smcFunc['db_fetch_assoc']($results)) {
 	    
@@ -593,7 +593,6 @@ function genMemList($type='list') {
             AND variable IN ({array_string:opt})',
 		    array(
 		        'loaded_ids' => count($new_loaded_ids) == 1 ? $new_loaded_ids[0] : $new_loaded_ids,
-			    'member' => $member_id,
 			    'opt' =>  array('show_cbar', 'show_cbar_buddys'),
 	        )
 	    );
@@ -623,6 +622,7 @@ function genMemList($type='list') {
 			}
 		}
 	}
+	
 	if($type=='list'){
 	    $data = buddy_list_template();
 	    return $data;

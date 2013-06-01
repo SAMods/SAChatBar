@@ -1,4 +1,10 @@
 <?php
+$txt['error_2si'] = 'Error Logs';
+$txt['error_msg'] = 'Error Message';
+$txt['error_file'] = 'File/Line';
+$txt['error_type'] = 'Type of error';
+$txt['remove_all'] = 'Remove All';
+$txt['remove_selection'] = 'Remove Selection';
 $txt['2sichat_cache'] = 'Enable experimental caching';
 $txt['2sichat_cache_sub'] = '<div class="error">Warning this is experimental and may break things<br />if things fail to work after enbling this disable it and goto mantenance and clear the cache</div>';
 $txt['2sichat_censor'] = 'Enable word censoring';

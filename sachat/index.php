@@ -14,9 +14,9 @@
 */
 	//Define SMF
 	define('SMF', 1);
-	
+
 	//set the micro start time
-	$time_start = microtime();
+	$time_bstart = microtime();
 	
 	//debug load time not much to see realy load times and db query count
 	$debug_load = true;
@@ -26,18 +26,23 @@
 	
     session_start();
 	session_cache_limiter('nocache');//Shouldent this be before session_start() http://php.net/manual/en/function.session-cache-limiter.php
-
+	
 	//Lets go head and load the settings here.
 	require_once(str_replace('//','/',dirname(__FILE__).'/').'../Settings.php');
 	
 	//Lets go head and load the functions here.
 	require_once(dirname(__FILE__) . '/functions.php');
 
+	 // Register a error handler
+	require_once(dirname(__FILE__) . '/error_handler.php');
+    set_error_handler('errorHandler');
+    register_shutdown_function('shutdownHandler');
+  
 	//Load SMF's compatibility file for unsupported functions.
 	if (@version_compare(PHP_VERSION, '5') == -1) {require_once($sourcedir . '/Subs-Compat.php');}
 	
 	//Load our theme
-	list ($themeurl, $themedir, $thjs, $load_time) = initTheme();
+	list ($themeurl, $themedir, $thjs, $load_btime) = initTheme();
 	require_once($themedir.'/template.php');
 	
 	//Load our language strings
@@ -147,7 +152,6 @@
  	}
  	if ($member_id && isset($_REQUEST['action']) && $_REQUEST['action'] == 'heart' && !empty($modSettings['2sichat_live_online']) || $member_id && !isset($_REQUEST['action']) && !empty($modSettings['2sichat_live_online'])) {
 		liveOnline();
-		$context['JSON']['CONLINE'] = genMemcount();
 	}
 	// If output function hasn't been declared lets do it.
 	doOutput();

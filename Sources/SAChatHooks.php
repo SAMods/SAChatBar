@@ -69,7 +69,6 @@ function SAChat_InsertOptions($chatmem, $chatvar, $chatval){
 }
 
 function template_sachat_above(){
-
 	echo SAChat_showBar('body');
 }
 
@@ -176,6 +175,7 @@ function SAChat_admin_areas(&$admin_areas)
 						'load' => array($txt['2sichatloadbal']),
 						'theme' => array($txt['2sichat_theme']),
 						'maintain' => array($txt['2sichatmaintain']),
+						'errorlogs' => array($txt['error_2si']),
 					),
 				 ),	
 		      ),

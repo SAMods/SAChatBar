@@ -37,6 +37,50 @@ global $boardurl, $scripturl, $db_prefix, $smcFunc;
         );
 	}
 	
+	$smcFunc['db_create_table']('{db_prefix}2sichat_error',
+	array(
+		array(
+			'name' => 'id',
+			'type' => 'int',
+			'size' => 11,
+			'auto' => true,
+			'null' => false,
+		),
+		array(
+			'name' => 'type',
+			'type' => 'varchar',
+			'size' => 255,
+			'null' => false,
+		),
+		array(
+			'name' => 'line',
+			'type' => 'int',
+			'size' => 4,
+			'null' => false,
+		),
+		array(
+			'name' => 'file',
+			'type' => 'varchar',
+			'size' => 255,
+			'null' => false,
+		),
+		array(
+			'name' => 'info',
+			'type' => 'varchar',
+			'size' => 255,
+			'null' => false,
+		),
+	),
+	array(
+		array(
+			'name' => 'id',
+			'type' => 'primary',
+			'columns' => array('id'),
+		),
+	),
+		array(),
+	'update');
+	
 	$smcFunc['db_create_table']('{db_prefix}2sichat',
 	array(
 		array(

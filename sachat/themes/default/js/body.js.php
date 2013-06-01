@@ -5,7 +5,7 @@ function initchat() {
 
 	if ($member_id && empty($modSettings['2sichat_dis_bar'])) {
 		$bar = addslashes(preg_replace("/\r?\n?\t/m", "", chat_bar_template()));
-		$buddies = addslashes(preg_replace("/\r?\n?\t/m", "", genMemList()));
+		$buddies = addslashes(preg_replace("/\r?\n?\t/m", "", genMemList('list')));
 			
 	} elseif (empty($modSettings['2sichat_dis_bar']) && !$member_id) {
 		$bar = addslashes(preg_replace("/\r?\n?\t/m", "", guest_bar_template()));

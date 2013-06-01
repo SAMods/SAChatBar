@@ -1,4 +1,9 @@
 <?php
+function template_twosichaterror(){
+
+    template_show_list('chat_error');
+
+}
 
 function template_twosichatGadgets(){
 

@@ -20,6 +20,7 @@ function twosichatAdmin(){
 		'theme' => 'twosichatThemes',
 		'load' => 'twosichatLoad',
 		'maintain' => 'twosichatchmod',
+		'errorlogs' => 'twosichaterror',
 	);
 
 	if(isset($_REQUEST['sa'])) {
@@ -29,6 +30,159 @@ function twosichatAdmin(){
 	}
 }
 
+function twosichaterror(){
+    global  $txt, $db_prefix, $scripturl, $sourcedir, $smcFunc, $context;
+    
+	loadTemplate('sachat');
+    $context['sub_template'] = 'twosichaterror';
+	$context[$context['admin_menu_name']]['tab_data']['title'] = $txt['error_2si'];
+	$context[$context['admin_menu_name']]['tab_data']['description'] =  $txt['error_2si'];
+	
+	 $list_options = array(
+		'id' => 'chat_error',
+		'title' =>  $txt['error_2si'],
+		'items_per_page' => 20,
+		'base_href' => $scripturl . '?action=admin;area=sachat;sa=errorlogs',
+		'get_items' => array(
+			'function' => create_function('$start, $items_per_page, $sort', '
+				global $context, $user_info, $memid, $smcFunc;
+		  
+		$request = $smcFunc[\'db_query\'](\'\', \'
+		    SELECT id, type, file, line,info
+            FROM {db_prefix}2sichat_error
+            LIMIT {int:start}, {int:per_page}\',
+            array( 
+			    \'sort\' => $sort,
+			    \'start\' => $start,
+			    \'per_page\' => $items_per_page,
+			));
+		$error = array();
+		while ($row = $smcFunc[\'db_fetch_assoc\']($request))
+			$error[] = $row;   
+		$smcFunc[\'db_free_result\']($request);
+
+		return $error;
+			'),
+		),
+		'get_count' => array(
+			'function' => create_function('', '
+				global $memid, $smcFunc;
+             
+				
+				$request = $smcFunc[\'db_query\'](\'\', \'
+					SELECT COUNT(*)
+					FROM {db_prefix}2sichat_error\',
+			        array(
+					)
+				);
+				
+				list ($total_error) = $smcFunc[\'db_fetch_row\']($request);
+				$smcFunc[\'db_free_result\']($request);
+
+				return $total_error;
+			'),
+		),
+		'no_items_label' => 'No Errors',
+		'columns' => array(
+			'type' => array(
+				'header' => array(
+					'value' => $txt['error_type'] ,
+				),
+				'data' => array(
+					'function' => create_function('$row', '
+					global $settings;
+					
+						return \'\'.$row[\'type\'].\'<br /><br />\';
+					
+					'),
+					'style' => 'width: 1%; text-align: left;',
+				),
+				'sort' =>  array(
+					'default' => 'id DESC',
+					'reverse' => 'id',
+				),
+			),
+			'info' => array(
+				'header' => array(
+					'value' => $txt['error_msg'],
+				),
+				'data' => array(
+					'function' => create_function('$row', '
+					global $scripturl;
+						return \'\'.$row[\'info\'].\'<br /><br />\';
+					'),
+					'style' => 'width: 20%; text-align: left;',
+				),
+				'sort' =>  array(
+					'default' => 'id DESC',
+					'reverse' => 'id',
+				),
+			),
+			'line' => array(
+				'header' => array(
+					'value' => $txt['error_file'],
+				),
+				'data' => array(
+					'function' => create_function('$row', '
+					global $scripturl;
+						return \'File: \'.$row[\'file\'].\' <br />Line: \'.$row[\'line\'].\'<br /><br />\';
+					'),
+					'style' => 'width: 20%; text-align: left;',
+				),
+				'sort' =>  array(
+					'default' => 'id DESC',
+					'reverse' => 'id',
+				),
+			),
+		
+		'action' => array(
+				'header' => array(
+					'value' => '<input type="checkbox" name="all" class="input_check" onclick="invertAll(this, this.form);" />',
+				),
+				'data' => array(
+					'function' => create_function('$row', '
+                         global $sc,$scripturl;
+						return \'<input type="checkbox" class="input_check" name="del[]" value="\' . $row[\'id\'] . \'" />\';
+					'),
+					'style' => 'width: 2%; text-align: center;',
+				),
+	    	),		
+		),
+		'form' => array(
+			'href' => $scripturl.'?action=admin;area=sachat;sa=errorlogs',
+			'include_sort' => true,
+			'include_start' => true,
+			'hidden_fields' => array(
+				$context['session_var'] => $context['session_id'],
+			),
+		),
+		'additional_rows' => array(
+			array(
+				'position' => 'below_table_data',
+				'value' => '
+						
+						<input type="submit" name="del_sel" value="'.$txt['remove_selection'] .'" class="button_submit" onclick="return confirmSubmit();" />
+						<input type="submit" name="del_all" value="'.$txt['remove_all'].'" class="button_submit" onclick="return confirmSubmit();" />'
+			),
+		),
+	);
+	require_once($sourcedir . '/Subs-List.php');
+
+	createList($list_options);
+	if (isset($_POST['del_all']))
+    {
+	   $smcFunc['db_query']('', '
+	       DELETE FROM {db_prefix}2sichat_error',
+	   array());
+	}
+	if (!empty($_POST['del_sel']) && isset($_POST['del'])){
+	    $smcFunc['db_query']('', '
+	       DELETE FROM {db_prefix}2sichat_error
+		   WHERE id IN ({array_string:delete_actions})',
+	    array('delete_actions' => array_unique($_POST['del']),)); 
+	
+	}
+}
 function twosichatchmod(){
     global  $txt,$db_prefix, $smcFunc, $context;
     
