@@ -29,16 +29,7 @@ function SAChat_loadtheme() {
 
     loadLanguage('2sichat');
 
-    /* if ($context['user']['is_logged'] && empty($options['cbar_opt_done'])){
-
-      SAChat_InsertOptions($user_info['id'],'show_cbar',0);
-      SAChat_InsertOptions($user_info['id'],'show_cbar_buddys',0);
-      SAChat_InsertOptions($user_info['id'],'cbar_theme',0);
-      SAChat_InsertOptions($user_info['id'],'cbar_opt_done',1);
-
-      } */
-
-    if (!isset($_REQUEST['xml'])) {
+   if (!isset($_REQUEST['xml'])) {
         $layers = $context['template_layers'];
         $context['template_layers'] = array();
         foreach ($layers as $layer) {
