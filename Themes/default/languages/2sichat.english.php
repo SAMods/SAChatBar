@@ -8,7 +8,7 @@ $txt['remove_selection'] = 'Remove Selection';
 $txt['2sichat_cache'] = 'Enable experimental caching';
 $txt['2sichat_cache_sub'] = '<div class="error">Warning this is experimental and may break things<br />if things fail to work after enbling this disable it and goto mantenance and clear the cache</div>';
 $txt['2sichat_censor'] = 'Enable word censoring';
-$txt['2sichat_disabled_themes'] = 'Disable bar on certain themes<div class="smalltext">Separate each theme with a "|"<br /> Example:<br /> theme1|theme2|theme3</div>';
+$txt['2sichat_disabled_themes'] = 'Disable bar on certain themes<div class="smalltext">Separate each theme with a "|"<br /> Example:<br /> 1|2|3</div>';
 $txt['2sichat_censor_words'] = 'Words to censor<div class="smalltext">Separate each word with a "|"<br /> Example:<br /> badword1|badword2|badword3</div>';
 $txt['2sichat_disabled_themes'] = 'Disable bar on certain themes<div class="smalltext">Separate each theme with a "|"<br /> Example:<br /> theme1|theme2|theme3</div>';
 $txt['2sichatchmod'] = 'CHMOD';
