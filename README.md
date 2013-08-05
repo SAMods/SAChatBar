@@ -3,7 +3,7 @@ SA Chat Bar
 
 MySpace/Facebook style chat bar for Simple Machines Forum.
 
-SMF 2.0x - Spam Blocker 
+SMF 2.0x - Chat Bar
 
 Developed for SMF forums c/o SA @ http://www.facebook.com/devsamods            
 Copyright 2013 SA                                 
