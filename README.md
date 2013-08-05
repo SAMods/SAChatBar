@@ -6,7 +6,7 @@ MySpace/Facebook style chat bar for Simple Machines Forum.
 SMF 2.0x - Chat Bar
 
 Developed for SMF forums c/o SA @ http://www.facebook.com/devsamods            
-Copyright 2013 SA                                 
+Copyright 2013 Wayne Mankertz (SA)                            
 
 SA Chat bar software integrates with SMF and works with SMF without working within SMF. This is done by loading the SMF cookie from the browser and verifying it against data saved in the database. This way of working allows SA Chat to run inside and outside of SMF and throughout your website as long as the user is logged into SMF.
 
