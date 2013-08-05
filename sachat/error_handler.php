@@ -1,5 +1,6 @@
 <?php
-function errorHandler($error_level, $error_message, $error_file, $error_line, $error_context){
+
+function errorHandler($error_level, $error_message, $error_file, $error_line, $error_context) {
 
     switch ($error_level) {
         case E_ERROR:
@@ -11,7 +12,7 @@ function errorHandler($error_level, $error_message, $error_file, $error_line, $e
         case E_USER_ERROR:
         case E_RECOVERABLE_ERROR:
             logError($error_file, $error_line, $error_message, "ERROR");
-        break;
+            break;
         case E_WARNING:
         case E_CORE_WARNING:
         case E_COMPILE_WARNING:
@@ -23,18 +24,16 @@ function errorHandler($error_level, $error_message, $error_file, $error_line, $e
             logError($error_file, $error_line, $error_message, "INFO");
             break;
         case E_STRICT:
-           logError($error_file, $error_line, $error_message, "DEBUG");
+            logError($error_file, $error_line, $error_message, "DEBUG");
             break;
         default:
             logError($error_file, $error_line, $error_message, "WARN");
     }
 }
 
-function shutdownHandler() //will be called when php script ends.
-{
+function shutdownHandler() { //will be called when php script ends.
     $lasterror = error_get_last();
-    switch ($lasterror['type'])
-    {
+    switch ($lasterror['type']) {
         case E_ERROR:
         case E_CORE_ERROR:
         case E_COMPILE_ERROR:
@@ -43,23 +42,20 @@ function shutdownHandler() //will be called when php script ends.
         case E_CORE_WARNING:
         case E_COMPILE_WARNING:
         case E_PARSE:
-        logError($lasterror['file'], $lasterror['line'],  $lasterror['message'], "FATAL");
-
+            logError($lasterror['file'], $lasterror['line'], $lasterror['message'], "FATAL");
     }
 }
 
-function logError($errorfile, $errorline, $errormes, $errortype){
-  global $smcFunc, $last_error;
+function logError($errorfile, $errorline, $errormes, $errortype) {
+    global $smcFunc, $last_error;
 
-   $error_info = array($errortype,$errorfile,$errormes,$errorline); 
-   if (empty($last_error) || $last_error != $error_info){
-       $smcFunc['db_insert']('','
-		      {db_prefix}2sichat_error',
-		      array('type' => 'string','file' => 'string','info' => 'string','line' =>'string'),
-		      $error_info,
-	           array('id')
-	   );
-	   $last_error = $error_info;
-	}
+    $error_info = array($errortype, $errorfile, $errormes, $errorline);
+    if (empty($last_error) || $last_error != $error_info) {
+        $smcFunc['db_insert']('', '
+		      {db_prefix}2sichat_error', array('type' => 'string', 'file' => 'string', 'info' => 'string', 'line' => 'string'), $error_info, array('id')
+        );
+        $last_error = $error_info;
+    }
 }
+
 ?>
