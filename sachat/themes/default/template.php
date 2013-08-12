@@ -1,4 +1,8 @@
 <?php
+/**
+ * @copyright Wayne Mankertz, 2013
+ * I release this code as free software, under the MIT license.
+**/
 /*
 	Since it has been wanted here it is, the chat template.
 	Remember you can change the content of the divs but be aware

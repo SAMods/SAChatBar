@@ -1,4 +1,8 @@
 <?php
+/**
+ * @copyright Wayne Mankertz, 2013
+ * I release this code as free software, under the MIT license.
+**/
 $txt['error_2si'] = 'Error Logs';
 $txt['error_msg'] = 'Error Message';
 $txt['error_file'] = 'File/Line';

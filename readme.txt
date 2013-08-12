@@ -37,7 +37,9 @@ So if I wanted to chat to user id 5
 [code]<a onclick="javascript:chatTo('5');return false;" href="javascript:void(0)">User 5</a>[/code]
 
 [color=red][size=14pt][b]License[/b][/size][/color]
-You are allowed to use and modify SA Chat on your website, however you are not allowed to distribute SA Chat without permission. Any user who offers download of SA Chat without permission will have proper actions taken against them. This includes a take down notice to their host and maybe legal actions. Currently there are two places you may be able to get SA Chat the SMF Site(http://www.simplemachines.org) and the SA Mod Site(http://sa-mods.info). If you downloaded this file from any other source besides the sources mention please report the site you downloaded this mod at http://sa-mods.info.
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THIS PACKAGE IS PROVIDED "AS IS" AND WITHOUT ANY WARRANTY. ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS BE LIABLE TO ANY PARTY FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES ARISING IN ANY WAY OUT OF THE USE OR MISUSE OF THIS PACKAGE.
 

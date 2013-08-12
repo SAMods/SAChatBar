@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * @copyright Wayne Mankertz, 2013
+ * I release this code as free software, under the MIT license.
+**/
 function errorHandler($error_level, $error_message, $error_file, $error_line, $error_context) {
 
     switch ($error_level) {

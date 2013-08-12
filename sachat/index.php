@@ -1,18 +1,10 @@
 <?php
 
-/*
-  This is the chat backend. It should only load chat junk.
-  It should be allot better than loading all that other junk.
+/**
+ * @copyright Wayne Mankertz, 2013
+ * I release this code as free software, under the MIT license.
+**/
 
-  functions performed
-  - Load the database
-  - Verify user against cookie
-  - Load all user information needed
-  - Display output for the chat
-
-  Copyright 2012 SAMods.
-
- */
 //Define SMF
 define('SMF', 1);
 

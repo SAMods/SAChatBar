@@ -1,4 +1,8 @@
 <?php
+/**
+ * @copyright Wayne Mankertz, 2013
+ * I release this code as free software, under the MIT license.
+**/
 function template_twosichaterror(){
 
     template_show_list('chat_error');
