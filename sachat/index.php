@@ -76,7 +76,6 @@ if (!empty($modSettings['2sichat_load_chk'])) {
 // If it is a member lets load some data.
 if ($member_id != 0) {
 
-    $OnCount = genMemcount();
     $user_settings = loadUserSettings($member_id);
 
     if (!empty($modSettings['2sichat_permissions'])) {

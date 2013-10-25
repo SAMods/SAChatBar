@@ -99,7 +99,7 @@ function chat_savemsg_template() { //When you send a message
 
 function chat_bar_template() { //Chat bar template for logged in users, not guest.
 
-	global $boardurl, $debug_load, $themeurl, $cache_count, $modSettings, $load_btime, $db_count, $context, $OnCount, $txt;
+	global $boardurl, $debug_load, $themeurl, $cache_count, $modSettings, $load_btime, $db_count, $context, $txt;
 
 	$data= '
 	    '.(empty($modSettings['2sichat_dis_list']) ? ' <div style="float: right; padding-right: 30px; padding-top: 1px;">':'
@@ -122,7 +122,7 @@ function chat_bar_template() { //Chat bar template for logged in users, not gues
 		</div>
 		'.(!empty($modSettings['2sichat_dis_list']) ? '': '
 		<a class="white" href="javascript:void(0)" onclick="javascript:showhide(\'friends\');">
-			<img src="'.$themeurl.'/images/balloon.png" alt="{}" border="0"><strong>'.$txt['whos_on'].' (<span id="cfriends">'.$OnCount.'</span>)</strong>
+			<img src="'.$themeurl.'/images/balloon.png" alt="{}" border="0"><strong>'.$txt['whos_on'].' <span id="cfriends"></span></strong>
 		</a> ');
 
 		

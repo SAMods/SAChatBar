@@ -87,7 +87,7 @@ function initchat() {
 							});
 						}
 						if (data != null && data.CONLINE != null) {
-                            document.getElementById(\'cfriends\').innerHTML = data.CONLINE;
+                            document.getElementById(\'cfriends\').innerHTML =\'(\'+data.CONLINE+\')\';
 						}
 						if (data != null && data.ONLINE != null) {
 							document.getElementById(\'friends\').innerHTML = data.ONLINE;
@@ -182,7 +182,7 @@ function initchat() {
 							}
 							
 							if (data != null && data.CONLINE != null) {
-                                document.getElementById(\'cfriends\').innerHTML = data.CONLINE;
+                                document.getElementById(\'cfriends\').innerHTML =\'(\'+data.CONLINE+\')\';
 						    }
 							if (data != null && data.ONLINE != null) {
 								document.getElementById(\'friends\').innerHTML = data.ONLINE;
@@ -262,7 +262,7 @@ function initchat() {
 							document.getElementById(\'friends\').innerHTML = data.ONLINE;
 						}
 						if (data != null && data.CONLINE != null) {
-                            document.getElementById(\'cfriends\').innerHTML = data.CONLINE;
+                            document.getElementById(\'cfriends\').innerHTML =\'(\'+data.CONLINE+\')\';
 						}
 					}
 				});
@@ -293,7 +293,7 @@ function initchat() {
 								document.getElementById(\'friends\').innerHTML = data.ONLINE;
 							}
 							if (data != null && data.CONLINE != null) {
-                                document.getElementById(\'cfriends\').innerHTML = data.CONLINE;
+                                document.getElementById(\'cfriends\').innerHTML =\'(\'+data.CONLINE+\')\';
 						    }
 						}
 					});
@@ -393,7 +393,7 @@ function initchat() {
 								document.getElementById(\'friends\').innerHTML = data.ONLINE;
 							}
 							if (data != null && data.CONLINE != null) {
-                                document.getElementById(\'cfriends\').innerHTML = data.CONLINE;
+                                document.getElementById(\'cfriends\').innerHTML =\'(\'+data.CONLINE+\')\';
 						    }
 						}
 					});
