@@ -662,7 +662,7 @@ function cacheputData($key, $value, $ttl = 120) {
     $value = $value === null ? null : serialize($value);
     $cachedir = $boarddir . '/sachat/cache';
 
-    if ($value === null)
+    if (file_exists($cachedir . '/data_' . $key . '.php') && $value === null)
         @unlink($cachedir . '/data_' . $key . '.php');
     else {
 

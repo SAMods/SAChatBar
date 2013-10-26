@@ -175,11 +175,13 @@ function twosichaterror() {
     if (isset($_POST['del_all'])) {
         $smcFunc['db_query']('', '
 	       DELETE FROM {db_prefix}2sichat_error', array());
+		   redirectexit('action=admin;area=sachat;sa=errorlogs');
     }
     if (!empty($_POST['del_sel']) && isset($_POST['del'])) {
         $smcFunc['db_query']('', '
 	       DELETE FROM {db_prefix}2sichat_error
 		   WHERE id IN ({array_string:delete_actions})', array('delete_actions' => array_unique($_POST['del']),));
+		   redirectexit('action=admin;area=sachat;sa=errorlogs');
     }
 }
 
