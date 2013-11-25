@@ -452,14 +452,10 @@ function loadUserSettings($id) {
     $temp['real_name'] = utf8_encode($temp['real_name']);
 
     //Lets do some fusion, Fuussiioooon Ahhhhh!!!!!
-    if ($temp['additional_groups']) {
-        $temp['groups'] = array_merge(array($temp['id_group'], $temp['id_post_group']), explode(',', $temp['additional_groups']));
-    } else {
-        $temp['groups'] = array($temp['id_group'], $temp['id_post_group']);
-    }
+    $temp['groups'] = !empty($temp['additional_groups']) ? array_merge(array($temp['id_group'], $temp['id_post_group']), explode(',', $temp['additional_groups'])) : array($temp['id_group'], $temp['id_post_group']);
 
     $temp['avatar'] = fixAvatar(array(
-        'avatar' => $temp['avatar'],
+        'avatar' => !empty($temp['avatar']) ? $temp['avatar'] : '',
         'id_attach' => $temp['id_attach'],
         'attachment_type' => $temp['attachment_type'],
         'filename' => $temp['filename'],
