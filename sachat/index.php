@@ -77,7 +77,9 @@ if (!empty($modSettings['2sichat_load_chk'])) {
 if ($member_id != 0) {
 
     $user_settings = loadUserSettings($member_id);
-
+	
+    is_banned_check($member_id);
+	
     if (!empty($modSettings['2sichat_permissions'])) {
         $permission = loadPermissions($user_settings['groups']);
     }

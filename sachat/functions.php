@@ -358,6 +358,39 @@ function load_smiles() {
     return $smiles;
 }
 
+function is_banned_check($member) {
+    global $smcFunc, $modSettings;
+	
+	$user_info = loadUserSettings($member,true);
+
+	// Only check the ban every so often. (to reduce load.)
+	if (isset($_SESSION['cban']) || empty($modSettings['banLastUpdated']) || ($_SESSION['cban']['last_checked'] < $modSettings['banLastUpdated']) || $_SESSION['cban']['id_member'] != $user_info['id_member'] || $_SESSION['cban']['ip'] != $user_info['member_ip'] || $_SESSION['cban']['ip2'] != $user_info['member_ip2'] || (isset($user_info['email_address'], $_SESSION['cban']['email']) && $_SESSION['cban']['email'] != $user_info['email_address']))
+	{
+	    // Innocent until proven guilty.  (but we know you are! :P)
+		$_SESSION['cban'] = array(
+			'last_checked' => time(),
+			'id_member' => $user_info['id_member'],
+			'ip' => $user_info['member_ip'],
+			'ip2' => $user_info['member_ip2'],
+			'email' => $user_info['email_address'],
+		);
+		
+	    $results = $smcFunc['db_query']('', '
+	        SELECT name
+		    FROM {db_prefix}ban_groups
+		    WHERE name = {string:current_member}',
+	        array(
+	            'current_member' => $user_info['real_name'],
+	        )
+	    );
+	    $bannedUser = $smcFunc['db_fetch_assoc']($results);
+        $smcFunc['db_free_result']($results);
+	
+	    if($bannedUser)
+	        die;// No point in going on if this user is banned
+	}
+}
+
 function censorMSG($data) {
 
     $replace = '';
@@ -449,7 +482,13 @@ function loadUserSettings($id) {
     $temp = $smcFunc['db_fetch_assoc']($results);
     $smcFunc['db_free_result']($results);
 
-    $temp['real_name'] = utf8_encode($temp['real_name']);
+    if($check)
+	{
+	    $temp['real_name'] = $temp['real_name'];
+	}
+	else{
+	    $temp['real_name'] = utf8_encode($temp['real_name']);
+	}
 
     //Lets do some fusion, Fuussiioooon Ahhhhh!!!!!
     $temp['groups'] = !empty($temp['additional_groups']) ? array_merge(array($temp['id_group'], $temp['id_post_group']), explode(',', $temp['additional_groups'])) : array($temp['id_group'], $temp['id_post_group']);
