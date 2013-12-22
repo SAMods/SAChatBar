@@ -60,6 +60,9 @@ if (!empty($db_character_set)) {
     doCharset($db_character_set);
 }
 
+//cos we are genarating javascript with a php file we need to setup header
+header('Content-Type: application/x-javascript; text/javascript');
+
 //Load modsettings array
 $modSettings = initModSettings();
 
