@@ -6,3 +6,5 @@ fixed Undefined index: id_group
 fixed Undefined index: id_post_group
 fixed Undefined index: avatar
 banned members no longer see the bar
+fixed chrome bug Resource interpreted as Script but transferred with MIME type text/html:
+added caching to smilys

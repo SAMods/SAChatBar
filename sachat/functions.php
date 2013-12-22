@@ -344,16 +344,20 @@ function load_smiles() {
     global $smcFunc, $modSettings;
 
     $smiles = array();
-    $results = $smcFunc['db_query']('', '
-		SELECT code, filename
-		FROM {db_prefix}smileys', array()
-    );
+    if (($smiles = cachegetData('smiless', 90)) == null) {
+	   
+	    $results = $smcFunc['db_query']('', '
+		    SELECT code, filename
+		    FROM {db_prefix}smileys', array()
+        );
 
-    while ($row = $smcFunc['db_fetch_assoc']($results)) {
-        $smiles['code'][] = htmlspecialchars($row['code'], ENT_QUOTES);
-        $smiles['file'][] = '<img src="' . $modSettings['smileys_url'] . '/' . $modSettings['smiley_sets_default'] . '/' . $row['filename'] . '">';
+        while ($row = $smcFunc['db_fetch_assoc']($results)) {
+            $smiles['code'][] = htmlspecialchars($row['code'], ENT_QUOTES);
+            $smiles['file'][] = '<img src="' . $modSettings['smileys_url'] . '/' . $modSettings['smiley_sets_default'] . '/' . $row['filename'] . '">';
+        }
+        $smcFunc['db_free_result']($results);
+	    cacheputData('smiless', $smiles, 90);
     }
-    $smcFunc['db_free_result']($results);
 
     return $smiles;
 }
