@@ -468,7 +468,7 @@ function phaseBBC($data) {
     return $data;
 }
 
-function loadUserSettings($id) {
+function loadUserSettings($id, $check=false) {
 
     global $smcFunc, $modSettings, $themeurl, $boardurl;
 
