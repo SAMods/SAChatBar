@@ -125,21 +125,31 @@ function initchat() {
 		}
 
 		function chatSnd() {
-			var mute = getCookie(\'chatSnd\');
+			
+			jQuery.noConflict()(function($){
+		        mute = $.cookie(\'chatSnd\');
+			});
+			
 			if (mute != null){
 				document.getElementById("chat_Snd").src = \''.$themeurl.'/images/mute1.png\';
-				delCookie(\'chatSnd\');
-			} else {
+				jQuery.noConflict()(function($){
+		            $.cookie(\'chatSnd\',null);
+			    });
+			} 
+			else {
 				document.getElementById("chat_Snd").src = \''.$themeurl.'/images/mute2.png\';
-				
-				var cookie = new setCookie(\'chatSnd\', \'1\', expdate);
+				jQuery.noConflict()(function($){
+		            $.cookie(\'chatSnd\',\'1\',{ expires: expdate});
+			    });
 			}
 		}
 
 		function loadsnd(snd){
-
-          	var mute = getCookie(\'chatSnd\');
           	
+			jQuery.noConflict()(function($){
+		        mute = $.cookie(\'chatSnd\');
+			});
+			
           	if (mute == null) {
 				if (document.getElementById(\'csnd\')){
 					var obj = document.getElementById(\'csnd\');
@@ -198,7 +208,9 @@ function initchat() {
 							var chatmin = document.getElementById(\'minchats\'+ id);
                             if(chatmin){
 							    chatmin.parentNode.removeChild(chatmin);
-					            delCookieArray(\'min\' + id);
+					            jQuery.noConflict()(function($){
+				                    $.cookie(\'2sichat_min\'+id, null);
+			                    });
 							}
 							
 							if (data != null && data.CONLINE != null) {
@@ -220,9 +232,24 @@ function initchat() {
 
 				'.(!empty($modSettings['2sichat_cw_h_enable']) ? 'heartbeat(id);':'').'
 				if (cSession == undefined) {
-                    	var session = new setCookieArray(\'msg_win\'+DId, \'2sichat\', DId);
+				      var myArray = [];
+                      myArray[0] = \'2sichat\';
+					  myArray[1] = \'msg_win\'+DId;
+				      myArray[2] = DId;
+                      jQuery.noConflict()(function($){
+					  $.cookie(\'2sichat\'+DId, escape(myArray.join(\',\')));
+					  });
+						
 				}else{
-					var session = new setCookieArray(\'msg_win\'+DId, \'2sichat\', DId, cSession[3], cSession[4]);
+					  var myArray = [];
+					  myArray[0] = \'2sichat\';
+                      myArray[1] = \'msg_win\'+DId;
+					  myArray[2] = DId;
+					  myArray[3] = cSession[3];
+					  myArray[4] = cSession[4];
+                      jQuery.noConflict()(function($){
+					  $.cookie(\'2sichat\'+DId, escape(myArray.join(\',\')));
+					  });
 				}
 			 }
 		}
@@ -235,11 +262,20 @@ function initchat() {
 			if (window["re" + id]) {
 				clearInterval(window["re" + id]);
 			}
-			delCookieArray(\'msg_win\' + arguments[0]);
+			jQuery.noConflict()(function($){
+			    $.cookie(\'2sichat\'+id, null);
+			});
 			
 			var tsting = \'minchats\'+ id;
 
-			var session = new setCookieArray(\'min\'+id, \'2sichat_min\',+id, name);
+			var myArray = [];
+			myArray[0] = \'2sichat_min\';
+            myArray[1] = \'min\'+id;
+		    myArray[2] = id;
+			myArray[3] = name;
+            jQuery.noConflict()(function($){
+				$.cookie(\'2sichat_min\'+id, escape(myArray.join(\',\')));
+			});
 			
 			jQuery.noConflict()(function($){
 			    if (document.getElementById(\'minchats\'+id) == undefined){
@@ -247,7 +283,7 @@ function initchat() {
 			    }
 			});
 		}
-		
+
 		function xchat(id) {
 
 			var div = document.getElementById(arguments[0]);
@@ -256,8 +292,10 @@ function initchat() {
 			if (window["re" + id]) {
 				clearInterval(window["re" + id]);
 			}
-			delCookieArray(\'msg_win\' + arguments[0]);
-			delCookieArray(\'min\' + id);
+			jQuery.noConflict()(function($){
+			    $.cookie(\'2sichat\'+id, null);
+			    $.cookie(\'2sichat_min\'+id, null);
+			});
 		}
 
 		function jsubmit(id){
@@ -343,11 +381,29 @@ function initchat() {
   				dobj.style.bottom = style3+\'px\';
   				dobj.style.right = style4+\'px\';
 				gadFix = dobj.id.substr(0, 6);
+				
 				if (gadFix != \'Gadget\') {
-	  				var session = new setCookieArray(\'msg_win\'+dobj.id, \'2sichat\', dobj.id, style1, style2);
+					 var myArray = [];
+                      myArray[0] = \'2sichat\';
+					  myArray[1] = \'msg_win\'+dobj.id;
+				      myArray[2] = dobj.id;
+					  myArray[3] = style1;
+					  myArray[4] = style2;
+                      jQuery.noConflict()(function($){
+					      $.cookie(\'2sichat\'+dobj.id, escape(myArray.join(\',\')));
+					  });
 			  	}
 			  	if (gadFix == \'Gadget\') {
-					var session = new setCookieArray(dobj.id, \'2sichat_gadget\', dobj.id, style1, style2);
+					  gadid = dobj.id.substr(6);
+					  var myArray = [];
+					  myArray[0] = \'2sichat_gadget\';
+					  myArray[1] = dobj.id;
+					  myArray[2] = gadid;
+					  myArray[3] = style1;
+					  myArray[4] = style2;
+                      jQuery.noConflict()(function($){
+					      $.cookie(\'2sichat_gadget\'+gadid, escape(myArray.join(\',\')));
+					  });
 				}
 				return false;
 			}
@@ -427,11 +483,26 @@ function initchat() {
 				}
 				
 				if (cSession == undefined) {
-                    	var session = new setCookieArray(\'Gadget\'+id, \'2sichat_gadget\', \'Gadget\'+id);
+				      var myArray = [];
+                      myArray[0] = \'2sichat_gadget\';
+				      myArray[1] = \'Gadget\'+id;
+					  myArray[2] = id;
+                      jQuery.noConflict()(function($){
+					  $.cookie(\'2sichat_gadget\'+id, escape(myArray.join(\',\')));
+					  });
+						
 				}else{
-					var session = new setCookieArray(\'Gadget\'+id, \'2sichat_gadget\', \'Gadget\'+id, cSession[3], cSession[4]);
+					  var myArray = [];
+                      myArray[0] = \'2sichat_gadget\';
+					  myArray[1] = \'Gadget\'+id;
+					  myArray[2] = id;
+					  myArray[3] = cSession[3];
+					  myArray[4] = cSession[4];
+                      jQuery.noConflict()(function($){
+					  $.cookie(\'2sichat_gadget\'+id, escape(myArray.join(\',\')));
+					  });
 				}
-
+			
 				jQuery.noConflict()(function($){
 					cwh = $(\'#Gadget\'+id).height();
 					cww = $(\'#Gadget\'+id).width();
@@ -441,7 +512,9 @@ function initchat() {
 		function closeGadget(id) {
 			var div = document.getElementById(\'Gadget\'+id);
 			div.parentNode.removeChild(div);
-			delCookieArray(\'Gadget\' + arguments[0]);
+			jQuery.noConflict()(function($){
+			    $.cookie(\'2sichat_gadget\'+id, null);
+			});
 		}
 
 		function doScripts(e){
@@ -475,82 +548,30 @@ function initchat() {
 				$.each(document.cookie.split(\';\'), function(i, cookie) {
 					var c = $.trim(cookie), name = c.split(\'=\')[0], value = c.split(\'=\')[1];
 					var cname = name.substring(0, name.length - 1);
-			    		var cSession = new getCookieArray(cname);
-						
-			    	if (cSession[1] == \'2sichat\') {
+			    	var cookie = unescape($.cookie(name));
+					cSession = cookie.split(\',\');
+					
+					if(cSession[0] == \'2sichat_gadget\'){
+				         openGadget(cSession[1].substr(6));
+				         document.getElementById(cSession[1]).style.left = cSession[3]+\'px\';
+				         document.getElementById(cSession[1]).style.top = cSession[4]+\'px\';
+					}
+					
+					if(cSession[0] == \'2sichat\'){
 						chatTo(cSession[2]);
 						document.getElementById(cSession[2]).style.left = cSession[3]+\'px\';
-						document.getElementById(cSession[2]).style.top = cSession[4]+\'px\';
+				        document.getElementById(cSession[2]).style.top = cSession[4]+\'px\';
 					}
-					if (cSession[1] == \'2sichat_gadget\') {
-						openGadget(cSession[2].substr(6));
-						document.getElementById(cSession[2]).style.left = cSession[3]+\'px\';
-						document.getElementById(cSession[2]).style.top = cSession[4]+\'px\';
+					if(cSession[0] == \'2sichat_min\'){
+						var tsting = \'minchats\'+cSession[2];
+			            if (cSession[3] != undefined){
+				            if (document.getElementById(\'minchats\'+cSession[2]) == undefined){
+			                    $(\'#minchats\').append(\'<span id="\'+tsting+\'">&nbsp;<a class="white" href="javascript:void(0)" onclick="javascript:chatTo(\'+cSession[2]+\');return false;"><strong>\'+cSession[3]+\'</strong></a>&nbsp;</span>\');
+			                }  
+                        }				
 					}
-					
-					if (cSession[1] == \'2sichat_min\' && cSession[3] != \'NaN\') {
-					    var tsting = \'minchats\'+cSession[2];
-					    if (document.getElementById(\'minchats\'+cSession[2]) == undefined){
-					       $(\'#minchats\').append(\'<span id="\'+tsting+\'">&nbsp;<a class="white" href="javascript:void(0)" onclick="javascript:chatTo(\'+cSession[2]+\');return false;"><strong>\'+cSession[3]+\'</strong></a>&nbsp;</span>\');
-					    }
-					}
-					
 				});
-			 });
-		}
-
-		function getCookieArray(name){
-			var i = 0;
-			while (getCookie(name + i) != null) {
-				this[i + 1] = getCookie(name + i);
-				i++;
-				this.length = i;
-			}
-		}
-
-		function setCookieArray(name){
-			this.length = setCookieArray.arguments.length - 1;
-			for (var i = 0; i < this.length; i++) {
-				data = setCookieArray.arguments[i + 1];
-				setCookie(name + i, data, expdate);
-			}
-		}
-
-		function delCookieArray(name){
-			var i = 0;
-			while (getCookie(name + i) != null) {
-				var expireNow = new Date();
-				document.cookie = name + i + "=" + "; expires=Thu, 01-Jan-70 00:00:01 GMT" +  "; path=/";
-				i++;
-			}
-		}
-
-		function getCookie(name) {
-			var dcookie = document.cookie;
-			var cname = name + "=";
-			var clen = dcookie.length;
-			var cbegin = 0;
-				while (cbegin < clen) {
-					var vbegin = cbegin + cname.length;
-					if (dcookie.substring(cbegin, vbegin) == cname) {
-						var vend = dcookie.indexOf (";", vbegin);
-						if (vend == -1) vend = clen;
-							return unescape(dcookie.substring(vbegin, vend));
-						}
-						cbegin = dcookie.indexOf(" ", cbegin) + 1;
-						if (cbegin == 0) break;
-					}
-			return null;
-		}
-
-		function setCookie(name, value, expires) {
-			if (!expires) expires = new Date();
-			document.cookie = name + "=" + escape (value) + "; expires=" + expires.toGMTString() +  "; path=/";
-		}
-
-		function delCookie(name) {
-			var expireNow = new Date();
-			document.cookie = name + "=" + "; expires=Thu, 01-Jan-70 00:00:01 GMT" +  "; path=/";
+			});
 		}
 		
 		var expdate = new Date();
