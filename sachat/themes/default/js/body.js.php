@@ -25,20 +25,12 @@ function initchat() {
 		image2.src = \''.$themeurl.'/images/x_hover.png\';
 
 		var msgArray = new Array();
-		var state = \'none\';
 		var ie=document.all;
-		var nn6=document.getElementById&&!document.all;
 		var isIE = /*@cc_on!@*/false;
 
-		var isdrag=false;
 		var cSession;
-		var x,y;
-		var dobj;
-		var cwh;
-		var cww;
 		var zdex = 100;
 		zdex = zdex * 1;
-		var aelem = \'none\';
 
 		var css=document.createElement("link");
 		css.setAttribute("rel", "stylesheet");
@@ -190,7 +182,7 @@ function initchat() {
 				div.style.zIndex = zdex;
 				
 				document.body.appendChild(div);
-
+				
 				jQuery.noConflict()(function($){
 					$.ajax({
 						url: \''.$boardurl.'/sachat/index.php\',
@@ -222,11 +214,9 @@ function initchat() {
 						}
 					});
 					
-				});
-
-				jQuery.noConflict()(function($){
-					cwh = $(\'#\'+id).height();
-					cww = $(\'#\'+id).width();
+					jQuery.noConflict()(function($){
+		                $(window).load(selectmouse());
+		            });
 					
 				});
 
@@ -256,8 +246,9 @@ function initchat() {
 
 		function minchat(id, name) {
 
-			var div = document.getElementById(arguments[0]);
-			div.parentNode.removeChild(div);
+			jQuery.noConflict()(function($){
+			    $(\'#\'+id).remove();
+			});
 
 			if (window["re" + id]) {
 				clearInterval(window["re" + id]);
@@ -285,16 +276,9 @@ function initchat() {
 		}
 
 		function xchat(id) {
-
-			var div = document.getElementById(arguments[0]);
-			div.parentNode.removeChild(div);
-			
-			if (window["re" + id]) {
-				clearInterval(window["re" + id]);
-			}
-			jQuery.noConflict()(function($){
+		    jQuery.noConflict()(function($){
+			    $(\'#\'+id).remove();
 			    $.cookie(\'2sichat\'+id, null);
-			    $.cookie(\'2sichat_min\'+id, null);
 			});
 		}
 
@@ -370,80 +354,51 @@ function initchat() {
 
 		// Guest and Members JavaScript
 		$context['HTML'].= '
-		function movemouse(e){
-			if (isdrag){
-				style1 = nn6 ? tx + e.clientX - x : tx + event.clientX - x;
-				style2 = nn6 ? ty + e.clientY - y : ty + event.clientY - y;
-				style3 = nn6 ? dh - e.clientY + y : dh - event.clientY + y;
-				style4 = nn6 ? dw - e.clientX + x : dw - event.clientX + x;
-  				dobj.style.left = style1+\'px\';
-  				dobj.style.top = style2+\'px\';
-  				dobj.style.bottom = style3+\'px\';
-  				dobj.style.right = style4+\'px\';
-				gadFix = dobj.id.substr(0, 6);
-				
-				if (gadFix != \'Gadget\') {
-					 var myArray = [];
-                      myArray[0] = \'2sichat\';
-					  myArray[1] = \'msg_win\'+dobj.id;
-				      myArray[2] = dobj.id;
-					  myArray[3] = style1;
-					  myArray[4] = style2;
-                      jQuery.noConflict()(function($){
-					      $.cookie(\'2sichat\'+dobj.id, escape(myArray.join(\',\')));
-					  });
-			  	}
-			  	if (gadFix == \'Gadget\') {
-					  gadid = dobj.id.substr(6);
-					  var myArray = [];
-					  myArray[0] = \'2sichat_gadget\';
-					  myArray[1] = dobj.id;
-					  myArray[2] = gadid;
-					  myArray[3] = style1;
-					  myArray[4] = style2;
-                      jQuery.noConflict()(function($){
-					      $.cookie(\'2sichat_gadget\'+gadid, escape(myArray.join(\',\')));
-					  });
-				}
-				return false;
-			}
-		}
+		   function selectmouse(){
+		       jQuery.noConflict()(function($){
+				   $(\'.msg_win\').draggable({
+                       drag: function(event, ui) {
+						
+						   newX = ui.offset.left;
+                           newY = ui.offset.top;
+						   
+				           $(this).css(\'left\', newX);
+                           $(this).css(\'top\', newY);
+							
+						   zdex = (zdex+1);
+				           $(this).css(\'zIndex\', zdex);
 
-		function selectmouse(e){
-			var fobj = nn6 ? e.target : event.srcElement;
+                           cgobj = $(this).attr(\'id\')
+					       gadid = cgobj.substr(6);
+                           gadFix = cgobj.substr(0, 6);
+                                
+                           if (gadFix == \'Gadget\') {
+						       var myArray = [];
+					           myArray[0] = \'2sichat_gadget\';
+					           myArray[1] = cgobj;
+					           myArray[2] = gadid;
+					           myArray[3] = newX;
+					           myArray[4] = newY;
 
-			while (fobj.tagName != "HTML" && fobj.className != "msg_win" && fobj.className != "msg_container"){
-				fobj = nn6 ? fobj.parentNode : fobj.parentElement;
-			}
-
-
-			if (fobj.className=="msg_win"){
-				jQuery.noConflict()(function($){
-					var dpos = $(\'#\'+fobj.id).viewportOffset();
-					var vwidth = $(window).width();
-					var vheight = $(window).height();
-					dobj = fobj;
-					tx = parseInt(dobj.style.left+dpos.left);
-					ty = parseInt(dobj.style.top+dpos.top);
-					th = parseInt(dpos.top+cwh);
-					dh = parseInt(vheight - th);
-					tw = parseInt(dpos.left+cww);
-					dw = parseInt(vwidth - tw);
-				});
-				isdrag = true;
-				zdex = (zdex+1);
-				dobj.style.zIndex = zdex;
-				x = nn6 ? e.clientX : event.clientX;
-				y = nn6 ? e.clientY : event.clientY;
-				document.onmousemove=movemouse;
-				document.body.onselectstart = function (){if (isdrag){return false;} else {return true;}}
-			}
-		}
-
-		document.onmousedown=selectmouse;
-		document.onmouseup=new Function("isdrag=false");
-		document.body.onresize = function (){}
-
+					           $.cookie(\'2sichat_gadget\'+gadid, escape(myArray.join(\',\')));
+					       }
+					       else{
+					           var myArray = [];
+                               myArray[0] = \'2sichat\';
+					           myArray[1] = \'msg_win\'+cgobj;
+				               myArray[2] = cgobj;
+					           myArray[3] = newX;
+					           myArray[4] = newY;
+                               jQuery.noConflict()(function($){
+					               $.cookie(\'2sichat\'+cgobj, escape(myArray.join(\',\')));
+					   
+					          });
+					      }
+                      }
+                  });	
+              });
+          }
+		  
           function openGadget(id) {
 			if (document.getElementById(\'Gadget\'+id) == undefined) {
 				
@@ -478,6 +433,10 @@ function initchat() {
 					});
 				});
 				
+				jQuery.noConflict()(function($){
+		                $(window).load(selectmouse());
+		        });
+				
                 if(document.getElementById("extra").style.display == \'block\'){
 				    showhide(\'extra\');
 				}
@@ -502,19 +461,13 @@ function initchat() {
 					  $.cookie(\'2sichat_gadget\'+id, escape(myArray.join(\',\')));
 					  });
 				}
-			
-				jQuery.noConflict()(function($){
-					cwh = $(\'#Gadget\'+id).height();
-					cww = $(\'#Gadget\'+id).width();
-				});
 			 }
 		}
 		function closeGadget(id) {
-			var div = document.getElementById(\'Gadget\'+id);
-			div.parentNode.removeChild(div);
 			jQuery.noConflict()(function($){
+			    $(\'#Gadget\'+id).remove();
 			    $.cookie(\'2sichat_gadget\'+id, null);
-			});
+			 });
 		}
 
 		function doScripts(e){
