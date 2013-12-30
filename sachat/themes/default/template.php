@@ -17,22 +17,22 @@ function chat_window_template() { //Main chat window, not the bar, the window yo
 	$data ='
 			<div id="top_container" onMouseOver="javascript:this.style.cursor=\'move\';">
 				<div id="top_cont_x">
-					<a href="javascript:void(0)" onclick="javascript:xchat(\''.$buddy_settings['id_member'].'\'); return false;" onMouseOver="document.rollover'.$buddy_settings['id_member'].'.src=image2.src" onMouseOut="document.rollover'.$buddy_settings['id_member'].'.src=image1.src">
-						<img name="rollover'.$buddy_settings['id_member'].'" src="'.$themeurl.'/images/x_inactive.png" border="0" alt="X" />
-					</a>
-					<a href="javascript:void(0)" onclick="javascript:minchat(\''.$buddy_settings['id_member'].'\',\''.$buddy_settings['real_name'].'\'); return false;">
-					&nbsp;<img name="rollover'.$buddy_settings['id_member'].'" src="'.$themeurl.'/images/minimize.png" border="0" alt="-" />
+					
+					<a class="white" href="javascript:void(0)" onclick="javascript:minchat(\''.$buddy_settings['id_member'].'\',\''.$buddy_settings['real_name'].'\'); return false;">
+					&nbsp;-
+					</a><a class="white" href="javascript:void(0)" onclick="javascript:xchat(\''.$buddy_settings['id_member'].'\'); return false;">
+						x
 					</a>
 				</div>
 				<div id="top_cont_avatar">
 					<img align="left" width="40px" height="40px" src="'.$buddy_settings['avatar'].'" /><br />&nbsp;<span class="'.($buddy_settings['session']?'green':'red').'">*&nbsp;</span><span class="white">'.$buddy_settings['real_name'].'</span>
 				</div>
 			</div>
-			<div id="mid_container">
+			<div id="mid_container"><br />
 				<form id="mid_cont_form" action="javascript:void(0)" onsubmit="javascript:jsubmit(\''.$buddy_settings['id_member'].'\');" method="post">
-					<input type="text" name="msg'.$buddy_settings['id_member'].'" id="msg'.$buddy_settings['id_member'].'" style="width: 80%;" maxlength="255" />
+					<input type="text" name="msg'.$buddy_settings['id_member'].'" id="msg'.$buddy_settings['id_member'].'" style="width: 75%;" maxlength="255" />
 					<input type="button" onclick="javascript:jsubmit(\''.$buddy_settings['id_member'].'\'); return false;" value="Send" />
-				</form>
+				</form><br />
 			</div>
 			<div class="bottop_container"></div>
 			<div class="msg_container">

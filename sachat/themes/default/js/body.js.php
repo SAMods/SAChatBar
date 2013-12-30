@@ -16,7 +16,7 @@ function initchat() {
 	}
 
 	$extra = addslashes(preg_replace("/\r?\n?\t/m", "", chat_extra_template()));
-	
+
 	$context['HTML'] = '
 	
 		image1 = new Image;
@@ -32,41 +32,30 @@ function initchat() {
 		var zdex = 100;
 		zdex = zdex * 1;
 
-		var css=document.createElement("link");
-		css.setAttribute("rel", "stylesheet");
-		css.setAttribute("type", "text/css");
-		css.setAttribute("href", "'.$themeurl.'/style.css");
-		document.documentElement.getElementsByTagName("HEAD")[0].appendChild(css);
-        
+		jQuery.noConflict()(function($){
+		    $(\'head\').append(\'<link rel="stylesheet" href="'.$themeurl.'/style.css" type="text/css" />\');
+        });
+		
 		'.(!empty($modSettings['2sichat_dis_bar']) ? '':'
-		var div = document.createElement(\'div\');
-		div.setAttribute(\'id\',\'chat_containter\');
-		div.setAttribute(\'dir\',\'ltr\');
-		div.style.zIndex = 1000;
-		div.innerHTML = \''.$bar.'\';
-		document.body.appendChild(div);
+		    jQuery.noConflict()(function($){
+		        $("<div />" ).attr("id","chat_containter").attr("dir","ltr").attr("style","zIndex: 1000").html(\''.$bar.'\').appendTo($("body"));
+		    });
 		');
 		
 		$context['HTML'].= '
-		var div = document.createElement(\'div\');
-		div.setAttribute(\'id\',\'extra\');
-		div.setAttribute(\'dir\',\'ltr\');
-		div.style.display = \'none\';
-		div.style.zIndex = 1000;
-		div.innerHTML = \''.$extra.'\';
-		document.body.appendChild(div);';
+		    jQuery.noConflict()(function($){
+		        $("<div />" ).attr("id","extra").attr("dir","ltr").attr("style","zIndex: 1000; display: none").html(\''.$extra.'\').appendTo($("body"));
+		    });
+		';
 		
 
 		// Members only JavaScript
 		if ($member_id) {
 			$context['HTML'].= '
-		var div = document.createElement(\'div\');
-		div.setAttribute(\'id\',\'friends\');
-		div.setAttribute(\'dir\',\'ltr\');
-		div.style.display = \'none\';
-		div.style.zIndex = 1000;
-    		div.innerHTML =\''.$buddies.'\';
-		document.body.appendChild(div);
+		jQuery.noConflict()(function($){
+		    $("<div />" ).attr("id","friends").attr("dir","ltr").attr("style","zIndex: 1000; display: none").html(\''.$buddies.'\').appendTo($("body"));
+		});
+	
 
 		setInterval("updatebar()",'.$modSettings['2sichat_mn_heart'].');
 
@@ -74,7 +63,7 @@ function initchat() {
 
 		function updatebar() {
 			jQuery.noConflict()(function($){
-			document.getElementById("test").src = \''.$themeurl.'/images/ajax-loader.gif\';
+			$(\'#test\').attr(\'src\',\''.$themeurl.'/images/ajax-loader.gif\');
 				$.ajax({
 					url: \''.$boardurl.'/sachat/index.php\',
 					data: \'action=heart\',
@@ -104,13 +93,13 @@ function initchat() {
 							});
 						}
 						if (data != null && data.CONLINE != null) {
-                            document.getElementById(\'cfriends\').innerHTML =\'(\'+data.CONLINE+\')\';
+						    $("#cfriends").text(\'(\'+data.CONLINE+\')\');
 						}
 						if (data != null && data.ONLINE != null) {
-							document.getElementById(\'friends\').innerHTML = data.ONLINE;
+							$("#friends").html(data.ONLINE);
 						} 
 						
-						document.getElementById("test").src = \''.$themeurl.'/images/arrow_refresh.png\';
+						$(\'#test\').attr(\'src\',\''.$themeurl.'/images/arrow_refresh.png\');
 					}
 				});
 			});
@@ -122,56 +111,35 @@ function initchat() {
 		        mute = $.cookie(\'chatSnd\');
 			});
 			
-			if (mute != null){
-				document.getElementById("chat_Snd").src = \''.$themeurl.'/images/mute1.png\';
+			if (mute == 1){
 				jQuery.noConflict()(function($){
+				    $(\'#chat_Snd\').attr(\'src\',\''.$themeurl.'/images/mute1.png\');
 		            $.cookie(\'chatSnd\',null);
 			    });
 			} 
 			else {
-				document.getElementById("chat_Snd").src = \''.$themeurl.'/images/mute2.png\';
 				jQuery.noConflict()(function($){
+				    $(\'#chat_Snd\').attr(\'src\',\''.$themeurl.'/images/mute2.png\');
 		            $.cookie(\'chatSnd\',\'1\',{ expires: expdate});
 			    });
 			}
 		}
 
 		function loadsnd(snd){
-          	
 			jQuery.noConflict()(function($){
 		        mute = $.cookie(\'chatSnd\');
+				if(!mute){
+				    $.playSound(\''.$themeurl.'/sounds/\'+snd);
+				}
 			});
-			
-          	if (mute == null) {
-				if (document.getElementById(\'csnd\')){
-					var obj = document.getElementById(\'csnd\');
-					obj.parentNode.removeChild(obj);
-				}
-				if (isIE) {
-					var embed = document.createElement(\'embed\');
-					embed.setAttribute(\'id\', \'csnd\');
-					embed.src = \''.$boardurl.'/sachat/initsound.swf?snd='.$themeurl.'/sounds/\'+snd;
-					embed.width = \'1\';
-					embed.height = \'1\';
-					embed.type = \'application/x-shockwave-flash\';
-					document.body.appendChild(embed);
-				}else{
-					var obj = document.createElement(\'object\');
-					obj.setAttribute(\'id\', \'csnd\');
-					obj.classid = \'clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\';
-					obj.codebase = \'http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0\';
-					obj.width = \'1\';
-					obj.height = \'1\';
-					obj.data = \''.$boardurl.'/sachat/initsound.swf?snd='.$themeurl.'/sounds/\'+snd;
-					document.body.appendChild(obj);
-				}
-			}
 		}
 
 		function chatTo(id) {
 
 			var DId = arguments[0];
 			if (document.getElementById(DId) == undefined && DId != undefined) {
+
+				var div = document.createElement(\'div\');
 
 				div = document.createElement(\'div\');
                 div.id = +DId;
@@ -182,7 +150,7 @@ function initchat() {
 				div.style.zIndex = zdex;
 				
 				document.body.appendChild(div);
-				
+			  
 				jQuery.noConflict()(function($){
 					$.ajax({
 						url: \''.$boardurl.'/sachat/index.php\',
@@ -197,6 +165,7 @@ function initchat() {
 							} else {
 								xchat(DId);
 							}
+							
 							var chatmin = document.getElementById(\'minchats\'+ id);
                             if(chatmin){
 							    chatmin.parentNode.removeChild(chatmin);
@@ -206,19 +175,19 @@ function initchat() {
 							}
 							
 							if (data != null && data.CONLINE != null) {
-                                document.getElementById(\'cfriends\').innerHTML =\'(\'+data.CONLINE+\')\';;
+						        $("#cfriends").text(\'(\'+data.CONLINE+\')\');
 						    }
-							if (data != null && data.ONLINE != null) {
-								document.getElementById(\'friends\').innerHTML = data.ONLINE;
-							}
+						    if (data != null && data.ONLINE != null) {
+							    $("#friends").html(data.ONLINE);
+						    } 
 						}
 					});
 					
-					jQuery.noConflict()(function($){
-		                $(window).load(selectmouse());
-		            });
-					
 				});
+
+				jQuery.noConflict()(function($){
+		            $(window).load(selectmouse());
+		        });
 
 				'.(!empty($modSettings['2sichat_cw_h_enable']) ? 'heartbeat(id);':'').'
 				if (cSession == undefined) {
@@ -243,7 +212,7 @@ function initchat() {
 				}
 			 }
 		}
-
+		
 		function minchat(id, name) {
 
 			jQuery.noConflict()(function($){
@@ -301,12 +270,12 @@ function initchat() {
 							document.getElementById(\'cmsg\'+id).insertBefore(newdiv, document.getElementById(\'cmsg\'+id).firstChild);
 							loadsnd(\'snd_msg\');
 						}
-						if (data != null && data.ONLINE != null) {
-							document.getElementById(\'friends\').innerHTML = data.ONLINE;
-						}
 						if (data != null && data.CONLINE != null) {
-                            document.getElementById(\'cfriends\').innerHTML =\'(\'+data.CONLINE+\')\';
+						    $("#cfriends").text(\'(\'+data.CONLINE+\')\');
 						}
+						if (data != null && data.ONLINE != null) {
+							$("#friends").html(data.ONLINE);
+						} 
 					}
 				});
 			});
@@ -326,18 +295,18 @@ function initchat() {
 								if (msgArray[id] && msgArray[id] < data.ID && data.ID != null || msgArray[id] == undefined && data.ID != null) {
 									var newdiv = document.createElement(\'div\');
 									newdiv.setAttribute(\'dir\',\'ltr\');
-									newdiv.innerHTML = data.DATA;
+									newdiv.innerHTML = data.DATA;		
 									document.getElementById(\'cmsg\'+id).insertBefore(newdiv, document.getElementById(\'cmsg\'+id).firstChild);
 									loadsnd(\'rec_msg\');
 									msgArray[id] = data.ID;
 								}
 							}
-							if (data != null && data.ONLINE != null) {
-								document.getElementById(\'friends\').innerHTML = data.ONLINE;
-							}
 							if (data != null && data.CONLINE != null) {
-                                document.getElementById(\'cfriends\').innerHTML =\'(\'+data.CONLINE+\')\';;
+						        $("#cfriends").text(\'(\'+data.CONLINE+\')\');
 						    }
+						    if (data != null && data.ONLINE != null) {
+							    $("#friends").html(data.ONLINE);
+						    } 
 						}
 					});
 				});
@@ -348,13 +317,13 @@ function initchat() {
 			if (window["re" + id]) {
 				clearInterval(window["re" + id]);
 			}
-			eval (\'window["re" + id] = setInterval("updatemsg(\'+id+\')",'.$modSettings['2sichat_cw_heart'].');\')
+			eval (\'window["re" + id] = setInterval("updatemsg(\'+id+\')",'.$modSettings['2sichat_cw_heart'].');\');
 		}';
 	 	}
 
 		// Guest and Members JavaScript
 		$context['HTML'].= '
-		   function selectmouse(){
+		function selectmouse(){
 		       jQuery.noConflict()(function($){
 				   $(\'.msg_win\').draggable({
                        drag: function(event, ui) {
@@ -368,7 +337,7 @@ function initchat() {
 						   zdex = (zdex+1);
 				           $(this).css(\'zIndex\', zdex);
 
-                           cgobj = $(this).attr(\'id\')
+                           cgobj = $(this).attr(\'id\');
 					       gadid = cgobj.substr(6);
                            gadFix = cgobj.substr(0, 6);
                                 
@@ -389,16 +358,15 @@ function initchat() {
 				               myArray[2] = cgobj;
 					           myArray[3] = newX;
 					           myArray[4] = newY;
-                               jQuery.noConflict()(function($){
-					               $.cookie(\'2sichat\'+cgobj, escape(myArray.join(\',\')));
+					           
+							   $.cookie(\'2sichat\'+cgobj, escape(myArray.join(\',\')));
 					   
-					          });
 					      }
                       }
                   });	
               });
           }
-		  
+
           function openGadget(id) {
 			if (document.getElementById(\'Gadget\'+id) == undefined) {
 				
@@ -409,7 +377,6 @@ function initchat() {
 				div.style.position = \'fixed\';
 				zdex = (zdex+1);
 				div.style.zIndex = zdex;
-                 
 				document.body.appendChild(div);
 
 				jQuery.noConflict()(function($){
@@ -422,25 +389,22 @@ function initchat() {
 							if (data.DATA != null){  
 							   div.innerHTML = data.DATA
 							} 
-							if (data != null && data.ONLINE != null) {
-								document.getElementById(\'friends\').innerHTML = data.ONLINE;
-							}
 							if (data != null && data.CONLINE != null) {
-                                document.getElementById(\'cfriends\').innerHTML =\'(\'+data.CONLINE+\')\';;
+						        $("#cfriends").text(\'(\'+data.CONLINE+\')\');
 						    }
+						    if (data != null && data.ONLINE != null) {
+							    $("#friends").html(data.ONLINE);
+						    } 
 						}
-						
 					});
 				});
-				
+                 
 				jQuery.noConflict()(function($){
-		                $(window).load(selectmouse());
+		            $(window).load(selectmouse());
 		        });
-				
-                if(document.getElementById("extra").style.display == \'block\'){
+				if(document.getElementById("extra").style.display == \'block\'){
 				    showhide(\'extra\');
 				}
-				
 				if (cSession == undefined) {
 				      var myArray = [];
                       myArray[0] = \'2sichat_gadget\';
@@ -461,8 +425,14 @@ function initchat() {
 					  $.cookie(\'2sichat_gadget\'+id, escape(myArray.join(\',\')));
 					  });
 				}
+
+				jQuery.noConflict()(function($){
+					cwh = $(\'#Gadget\'+id).height();
+					cww = $(\'#Gadget\'+id).width();
+				});
 			 }
 		}
+
 		function closeGadget(id) {
 			jQuery.noConflict()(function($){
 			    $(\'#Gadget\'+id).remove();
@@ -470,37 +440,13 @@ function initchat() {
 			 });
 		}
 
-		function doScripts(e){
-
-			if (e.nodeType != 1) {
-				return;
-			}
-
-			if (e.tagName.toLowerCase() == \'script\') {
-				var s = document.createElement(\'script\');
-				s.setAttribute(\'type\', \'text/javascript\');
-				if (e.src != null) {
-					s.setAttribute(\'src\', e.src);
-				}
-				if (e.text != null) {
-					s.text= e.text;
-				}
-				e.parentNode.insertBefore(s, e);
-			} else {
-				var n = e.firstChild;
-				while(n) {
-					doScripts(n);
-					n = n.nextSibling;
-				}
-			}
-		}
-
 		doCookies();
 		function doCookies() {
 			jQuery.noConflict()(function($){
 				$.each(document.cookie.split(\';\'), function(i, cookie) {
-					var c = $.trim(cookie), name = c.split(\'=\')[0], value = c.split(\'=\')[1];
-					var cname = name.substring(0, name.length - 1);
+					
+					var c = $.trim(cookie);
+					name = c.split(\'=\')[0];
 			    	var cookie = unescape($.cookie(name));
 					cSession = cookie.split(\',\');
 					
@@ -511,10 +457,11 @@ function initchat() {
 					}
 					
 					if(cSession[0] == \'2sichat\'){
-						chatTo(cSession[2]);
+						chatTo(cSession[1].substr(7));
 						document.getElementById(cSession[2]).style.left = cSession[3]+\'px\';
 				        document.getElementById(cSession[2]).style.top = cSession[4]+\'px\';
 					}
+					
 					if(cSession[0] == \'2sichat_min\'){
 						var tsting = \'minchats\'+cSession[2];
 			            if (cSession[3] != undefined){
@@ -543,25 +490,25 @@ function initchat() {
 		}';
 		}
 		$context['HTML'].= '
-		
 		function showhide(layer_ref) {
 			jQuery.noConflict()(function($){
 			    if(document.getElementById(layer_ref).style.display == \'none\')
                 {
                     $(document.getElementById(layer_ref)).fadeIn("fast");
 					if(layer_ref == \'extra\'){
-					    document.getElementById("extraimg").src = \''.$themeurl.'/images/control_eject_blue1.png\';
+					    $(\'#extraimg\').attr(\'src\',\''.$themeurl.'/images/control_eject_blue1.png\');
 					}
                 }
                 else
                 {
                     $(document.getElementById(layer_ref)).fadeOut("slow");
 					if(layer_ref == \'extra\'){
-					    document.getElementById("extraimg").src = \''.$themeurl.'/images/control_eject_blue.png\';
+					     $(\'#extraimg\').attr(\'src\',\''.$themeurl.'/images/control_eject_blue.png\');
 					}
                 }	
 			});
 		}
+		
         jQuery.noConflict()(function($){
 			$.getScript(\'http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-503f263237ff99da\');
 		})

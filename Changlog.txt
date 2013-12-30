@@ -1,13 +1,6 @@
-=====SA Chat RC6 Rev**=====
-fixed cacheing issue when no gadgets or links added
-added redirect after deleting errors from logs
-fixed Undefined index: additional_groups
-fixed Undefined index: id_group
-fixed Undefined index: id_post_group
-fixed Undefined index: avatar
-banned members no longer see the bar
-fixed chrome bug Resource interpreted as Script but transferred with MIME type text/html:
-added caching to smilys
-majar update to cookies and the way they were handeled now uses jquery cookie plugin
-now uses jquery draggable plugin less code yay :P
-removed veiwport offset plugin not needed with draggable
+=====SA Chat RC6-1 Rev**=====
+now uses jquery-play-sound plugin
+removed more older/legacy code from theme js files
+chat windows are now a little bigger
+long messages now wrap instead of makeing long scroll
+fixed issue with chat messages not returned after so many messages

@@ -218,7 +218,7 @@ function retmsgs() {
     $results = $smcFunc['db_query']('', '
 		SELECT *
 		FROM {db_prefix}2sichat
-		WHERE ({db_prefix}2sichat.to = {int:member_id} AND {db_prefix}2sichat.from = {int:buddy_id} AND {db_prefix}2sichat.rd = 0) OR ({db_prefix}2sichat.to = {int:member_id} AND {db_prefix}2sichat.from = {int:buddy_id} AND {db_prefix}2sichat.rd > {float:reqTime})
+		WHERE ({db_prefix}2sichat.to = {int:member_id} AND {db_prefix}2sichat.from = {int:buddy_id} AND {db_prefix}2sichat.rd = 0)
 		ORDER BY id DESC', array(
         'member_id' => $member_id,
         'buddy_id' => $buddy_id,

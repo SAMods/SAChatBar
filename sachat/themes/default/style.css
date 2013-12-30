@@ -57,78 +57,81 @@ a.red:visited {color: #000000;border:0px;text-decoration:none;border:0px;text-de
 a.red:hover {color: #800000;border:0px;text-decoration:none;border:0px;text-decoration:none;text-shadow: 2px 2px 3px #fff;}
 
 #top_container{
-	background: url(./images/fbar.png) repeat-x;
+	background: url(./images/fbar.png);
 	height: 50px;
-	width: 225px;
+	width: 260px;
 	color: #346;
 	font-weight: 600;
 }
 #top_cont_x{
 	position: relative;
-	top: 2px;
-	left: 200px;
-	width: 24px;
+	top: 5px;
+	left: 230px;
+	width: 50px;
 }
 #top_cont_avatar{
 	position: relative;
-	bottom: 45px;
-	right: 5px;
+	bottom: 20px;
+	right: 6px;
 	width: 180px;
 	height: 40px;
 }
 #mid_container{
-	background: url(./images/fwin.png) repeat-y;
+	background: url(./images/fwin.png);
 	position: relative;
 	bottom: 12px;
-	width: 225px;
+	width: 260px;
 }
 #mid_cont_form{
 	margin-top: 5px;
-	text-align: center;
+	text-align: left;
 }
 
 .msg_container3{
 	background-color: #D8D8D8;
+	width: 260px;
 }
 
 .msg_container{
-	background: url(./images/fwin.png) repeat-y;
+	background: url(./images/fwin.png);
 	padding-right: 10px;
 	padding-left: 10px;
 	position: relative;
 	bottom: 12px;
 	height: 200px;
-	width: 225px;
+	width: 240px;
 	color: #000000;
 
 }
 .msg_container2{
-	overflow-y:auto;
+	overflow-x:auto;
+    overflow-y:auto;
 	height: 200px;
-	width: 210px;
+	width: 250px;
 }
 .bot_container{
-	background: url(./images/bwin.png) no-repeat;
+	background: url(./images/bwin.png);
 	position: relative;
 	bottom: 12px;
-	width: 225px;
+	width: 260px;
 	height: 15px;
 }
 
 .bottop_container{
-	background: url(./images/bwin.png) no-repeat;
+	background: url(./images/bwin.png);
 	position: relative;
 	bottom: 12px;
-	width: 225px;
+	width: 260px;
 	height: 15px;
 }
 .msg_win{
-	width: 225px;
+	width: 260px;
 	height: 300px;
 	position: fixed;
 	left: 100px;
 	top: 30px;
 	text-align: left;
+	word-wrap: break-word
 }
 #extra_x{
 	position: relative;
