@@ -15,7 +15,7 @@ function chat_window_template() { //Main chat window, not the bar, the window yo
 
 	// The main chat window
 	$data ='
-			<div id="top_container">
+			<div id="top_container" onMouseOver="javascript:this.style.cursor=\'move\';">
 				<div id="top_cont_x">
 					
 					<a class="white" href="javascript:void(0)" onclick="javascript:minchat(\''.$buddy_settings['id_member'].'\',\''.$buddy_settings['real_name'].'\'); return false;">
@@ -35,7 +35,7 @@ function chat_window_template() { //Main chat window, not the bar, the window yo
 				</form><br />
 			</div>
 			<div class="bottop_container"></div>
-			<div class="msg_container"><br />
+			<div class="msg_container">
 				<div id="cmsg'.$buddy_settings['id_member'].'" class="msg_container2">';
 	// Messages from previous chat session that have not been deleted yet, lets show them. :D
 	if(!empty($context['msgs'])) {
@@ -46,14 +46,14 @@ function chat_window_template() { //Main chat window, not the bar, the window yo
 						<img width="20px" height="20px" src="'.$user_settings['avatar'].'" />
 						<strong>'.$user_settings['real_name'].': </strong>
 						'.$message['msg'].'
-					</div><br />';
+					</div>';
 			} else { // Messages sent by my buddy
 				$data .='
 					<div id="u'.$buddy_settings['id_member'].'i'.$message['id'].'">
 						<img width="20px" height="20px" src="'.$buddy_settings['avatar'].'" />
 						<strong>'.$buddy_settings['real_name'].': </strong>
 						'.$message['msg'].'
-					</div><br />';
+					</div>';
 			}
 		 }
 	}
@@ -78,7 +78,7 @@ function chat_retmsg_template() { //When you recieve a message
 					<img width="20px" height="20px" src="'.$buddy_settings['avatar'].'" />
 					<strong>'.$buddy_settings['real_name'].': </strong>
 					'.$message['msg'].'
-				</div><br />';
+				</div>';
 		}
 	return $data;
 	}
@@ -93,7 +93,7 @@ function chat_savemsg_template() { //When you send a message
 					<img width="20px" height="20px" src="'.$user_settings['avatar'].'" />
 					<strong>'.$user_settings['real_name'].': </strong>
 					'.$context['msgs'].'
-				</div><br />';
+				</div>';
 	return $data;
 }
 
@@ -113,7 +113,7 @@ function chat_bar_template() { //Chat bar template for logged in users, not gues
 		    </a>';
 
 				$data.= ''.(empty($modSettings['2sichat_dis_list']) ? ' &nbsp;<a href="javascript:void(0)" onclick="javascript:chatSnd();">
-				<img id="chat_Snd" src="'.(!empty($_COOKIE[$modSettings['2sichat_cookie_name']."_chatSnd"]) ? $themeurl.'/images/mute2.png':$themeurl.'/images/mute1.png').'" />
+				<img id="chat_Snd" src="'.(!empty($_COOKIE["chatSnd"]) ? $themeurl.'/images/mute2.png':$themeurl.'/images/mute1.png').'" />
 				</a>':'').'</div>';
 		
 		$data.= '
@@ -203,7 +203,7 @@ function chat_extra_template() {
 
 function buddy_list_template() { //The buddy list.
 
-	global $context, $user_settings, $txt, $admin, $modSettings, $themeurl;
+	global $context, $user_settings, $themeurl;
 
 	$data ='
 		<div id="friends_top">
@@ -213,9 +213,7 @@ function buddy_list_template() { //The buddy list.
 				</a>
 			</div>
 		</div>
-		<div id="friends_bottom">
-		  '.(!empty($admin['is_admin']) ? '<input type="button" onclick="javascript:snooper(); return false;" value="'.$txt['bar_admin_snoop'].'" /> '.(!empty($_COOKIE[$modSettings['2sichat_cookie_name']."_chatSnoop"]) ? ''.$txt['bar_admin_snoop_on'].'<hr />':''.$txt['bar_admin_snoop_off'].'<hr />').'':'').'
-			';
+		<div id="friends_bottom">';
 
      if(!empty($context['friends'])) {
 		foreach ($context['friends'] as $buddy) {

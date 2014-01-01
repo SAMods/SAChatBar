@@ -89,7 +89,7 @@ a.red:hover {color: #800000;border:0px;text-decoration:none;border:0px;text-deco
 
 .msg_container3{
 	background-color: #D8D8D8;
-	width: 230px;
+	width: 260px;
 }
 
 .msg_container{
@@ -101,13 +101,13 @@ a.red:hover {color: #800000;border:0px;text-decoration:none;border:0px;text-deco
 	height: 200px;
 	width: 240px;
 	color: #000000;
-	overflow-x:auto;
-    overflow-y:auto;
 
 }
 .msg_container2{
+	overflow-x:auto;
+    overflow-y:auto;
 	height: 200px;
-	width: 230px;
+	width: 250px;
 }
 .bot_container{
 	background: url(./images/bwin.png);
@@ -128,9 +128,10 @@ a.red:hover {color: #800000;border:0px;text-decoration:none;border:0px;text-deco
 	width: 260px;
 	height: 300px;
 	position: fixed;
+	left: 100px;
+	top: 30px;
 	text-align: left;
-	word-wrap: break-word;
-	position:expression("absolute");
+	word-wrap: break-word
 }
 #extra_x{
 	position: relative;
@@ -169,14 +170,6 @@ a.red:hover {color: #800000;border:0px;text-decoration:none;border:0px;text-deco
 	height: 100%;
 	background: url(./images/fwin.png) repeat-y;
 	padding-left: 5px;
-}
-.gadget_win{
-	width: 225px;
-	height: 300px;
-	position: fixed;
-	left: 100px;
-	top: 30px;
-	text-align: left;
 }
 .langload{
 	border: 0px;
