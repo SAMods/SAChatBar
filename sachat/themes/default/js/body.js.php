@@ -5,7 +5,7 @@
 **/
 function initchat() {
 
-	global $user_settings, $budCount, $member_id, $boardurl, $options, $modSettings, $themeurl, $thjs, $context;
+	global $user_settings, $budCount, $member_id, $usershowBar, $boardurl, $options, $modSettings, $themeurl, $thjs, $context;
 
 	if ($member_id && empty($modSettings['2sichat_dis_bar'])) {
 		$bar = addslashes(preg_replace("/\r?\n?\t/m", "", chat_bar_template()));
@@ -27,288 +27,332 @@ function initchat() {
 		var msgArray = new Array();
 		var ie=document.all;
 		var isIE = /*@cc_on!@*/false;
-
 		var cSession;
+		var chatBoxeslength = 0;
+		var chatBoxes = new Array();
 		var zdex = 100;
 		zdex = zdex * 1;
-
-		jQuery.noConflict()(function($){
-		    $(\'head\').append(\'<link rel="stylesheet" href="'.$themeurl.'/style.css" type="text/css" />\');
-        });
 		
-		'.(!empty($modSettings['2sichat_dis_bar']) ? '':'
-		    jQuery.noConflict()(function($){
-		        $("<div />" ).attr("id","chat_containter").attr("dir","ltr").attr("style","zIndex: 1000").html(\''.$bar.'\').appendTo($("body"));
-		    });
+		var $sachat = jQuery.noConflict();
+
+	    $sachat(\'head\').append(\'<link rel="stylesheet" href="'.$themeurl.'/style.css" type="text/css" />\');
+		
+		'.(!empty($modSettings['2sichat_dis_bar']) || !empty($usershowBar) ? '':'
+		        $sachat("<div />").attr("id","chat_containter").attr("dir","ltr").attr("style","zIndex: 1000").html(\''.$bar.'\').appendTo($sachat("body"));
 		');
 		
 		$context['HTML'].= '
-		    jQuery.noConflict()(function($){
-		        $("<div />" ).attr("id","extra").attr("dir","ltr").attr("style","zIndex: 1000; display: none").html(\''.$extra.'\').appendTo($("body"));
-		    });
+		    $sachat("<div />" ).attr("id","extra").attr("dir","ltr").attr("style","zIndex: 1000; display: none").html(\''.$extra.'\').appendTo($sachat("body"));
 		';
 		
 
 		// Members only JavaScript
 		if ($member_id) {
 			$context['HTML'].= '
-		jQuery.noConflict()(function($){
-		    $("<div />" ).attr("id","friends").attr("dir","ltr").attr("style","zIndex: 1000; display: none").html(\''.$buddies.'\').appendTo($("body"));
-		});
+		$sachat("<div />" ).attr("id","friends").attr("dir","ltr").attr("style","zIndex: 1000; display: none").html(\''.$buddies.'\').appendTo($sachat("body"));
 	
-
 		setInterval("updatebar()",'.$modSettings['2sichat_mn_heart'].');
 
 		updatebar();
 
 		function updatebar() {
-			jQuery.noConflict()(function($){
-			$(\'#test\').attr(\'src\',\''.$themeurl.'/images/ajax-loader.gif\');
-				$.ajax({
-					url: \''.$boardurl.'/sachat/index.php\',
-					data: \'action=heart\',
-					dataType: "json",
-					cache: false,
-					timeout: '.$modSettings['2sichat_mn_heart'].',
-					success: function(data){
-						if (data != null && data.ids != null){
-							jQuery.each(data.ids, function() {
-							    if (this != null) {
-							        var chatmin1 = document.getElementById(\'minchats\'+this);
-							    }							
-								if (!chatmin1 && !document.getElementById(\'cmsg\'+this) && this != null) {
-									chatTo(this);
+			
+			$sachat(\'#test\').attr(\'src\',\''.$themeurl.'/images/ajax-loader.gif\');
+			
+			$sachat.ajax({
+				url: \''.$boardurl.'/sachat/index.php\',
+				data: \'action=heart\',
+				dataType: "json",
+				cache: false,
+				timeout: '.$modSettings['2sichat_mn_heart'].',
+				success: function(data){
+					if (data != null && data.ids != null){
+						jQuery.each(data.ids, function() {
+							if (this != null) {
+							    var chatmin1 = document.getElementById(\'minchats\'+this);
+							}							
+						    if (!chatmin1 && !document.getElementById(\'cmsg\'+this) && this != null) {
+								chatTo(this);
+							    loadsnd(\'new_msg\');
+							}
+				           
+							if (document.getElementById(\'cmsg\'+this) && this != null) {
+								updatemsg(this);
+							}
+							if(chatmin1){
+								$sachat(\'#minchats\'+ this).fadeOut(\'1000\', function(){
+                                $sachat(this).fadeIn(\'1000\', function(){});});
+								if(document.getElementById(\'theImg\'+this) == null){
+								    $sachat(\'#minchatsimg\'+ this).prepend(\'<img id="theImg\'+this+\'" src="'.$themeurl.'/images/new.png" />\');
 									loadsnd(\'new_msg\');
 								}
-								if (document.getElementById(\'cmsg\'+this) && this != null) {
-									updatemsg(this);
-								}
-								if(chatmin1){
-								    $(\'#minchats\'+ this).fadeOut(\'1000\', function(){
-                                    $(this).fadeIn(\'1000\', function(){});});
-									chatmin1.style.backgroundColor = \'red\';
-									chatmin1.style.margin += \'0.3em 2px 0em 2px\';
-									loadsnd(\'new_msg\');
-				                }
-							});
-						}
-						if (data != null && data.CONLINE != null) {
-						    $("#cfriends").text(\'(\'+data.CONLINE+\')\');
-						}
-						if (data != null && data.ONLINE != null) {
-							$("#friends").html(data.ONLINE);
-						} 
-						
-						$(\'#test\').attr(\'src\',\''.$themeurl.'/images/arrow_refresh.png\');
+				            }
+						});
 					}
-				});
+					if (data != null && data.CONLINE != null) {
+						$sachat("#cfriends").text(\'(\'+data.CONLINE+\')\');
+					}
+					if (data != null && data.ONLINE != null) {
+						$sachat("#friends").html(data.ONLINE);
+					}
+					
+					$sachat(\'#test\').attr(\'src\',\''.$themeurl.'/images/arrow_refresh.png\');
+				}
 			});
 		}
 
 		function chatSnd() {
 			
-			jQuery.noConflict()(function($){
-		        mute = $.cookie(\'chatSnd\');
-			});
+		    mute = $sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'_chatSnd\');
 			
 			if (mute == 1){
-				jQuery.noConflict()(function($){
-				    $(\'#chat_Snd\').attr(\'src\',\''.$themeurl.'/images/mute1.png\');
-		            $.cookie(\'chatSnd\',null);
-			    });
+				$sachat(\'#chat_Snd\').attr(\'src\',\''.$themeurl.'/images/mute1.png\');
+		        $sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'_chatSnd\',null);
 			} 
 			else {
-				jQuery.noConflict()(function($){
-				    $(\'#chat_Snd\').attr(\'src\',\''.$themeurl.'/images/mute2.png\');
-		            $.cookie(\'chatSnd\',\'1\',{ expires: expdate});
-			    });
+				$sachat(\'#chat_Snd\').attr(\'src\',\''.$themeurl.'/images/mute2.png\');
+		        $sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'_chatSnd\',\'1\',{ expires: expdate});
 			}
 		}
 
 		function loadsnd(snd){
-			jQuery.noConflict()(function($){
-		        mute = $.cookie(\'chatSnd\');
-				if(!mute){
-				    $.playSound(\''.$themeurl.'/sounds/\'+snd);
-				}
-			});
+		    mute = $sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'_chatSnd\');
+		    if(!mute){
+				$sachat.playSound(\''.$themeurl.'/sounds/\'+snd);
+			}
 		}
 
-		function chatTo(id) {
-
-			var DId = arguments[0];
-			if (document.getElementById(DId) == undefined && DId != undefined) {
-
-				var div = document.createElement(\'div\');
-
-				div = document.createElement(\'div\');
-                div.id = +DId;
-				div.dir = \'ltr\';
-				div.className = \'msg_win\';
-				div.style.position = \'fixed\';
-				zdex = (zdex+1);
-				div.style.zIndex = zdex;
+		function snooper(){
+		    snoop = $sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'_chatSnoop\');
+			if(snoop == 1){
+			    $sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'_chatSnoop\',null);
+			}
+			else{
+			    $sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'_chatSnoop\',\'1\',{ expires: expdate});
+			}
+			updatebar();
+		}
+		
+		
+	   
+	   function restructureChatBoxes() {
+	       align = 0;
+	       for (x in chatBoxes) {
+		       chatboxtitle = chatBoxes[x];
+		       if ($sachat("#"+chatboxtitle).css(\'display\') != \'none\') {
+			       if (align == 0) {
+				       $sachat("#"+chatboxtitle).css(\'right\', \'0px\');
+			       } 
+			       else {
+			           width = (align)*(265+7)+0;
+			           $sachat("#"+chatboxtitle).css(\'right\', width+\'px\');
+			       }
+			       align++;
+		      }
+	      }
+        }
+	    function chatTo(id) {
+            var DId = arguments[0];
+			
+			if ($sachat("#"+id).length > 0) {
+		        if ($sachat("#"+id).css(\'display\') == \'none\') {
+			        $sachat("#"+id).css(\'display\',\'block\');
+			        restructureChatBoxes();
+		       }
+	        }
+			
+			if ($sachat("#"+id)){
 				
-				document.body.appendChild(div);
-			  
-				jQuery.noConflict()(function($){
-					$.ajax({
-						url: \''.$boardurl.'/sachat/index.php\',
-						data: \''.$thjs.'cid=\'+DId,
-						dataType: "json",
-						cache: false,
-						success: function(data){
-							if (data.DATA != null) {
-								div.setAttribute(\'id\', data.BID); // For IE7&8 need to reset div id because arguments are not passed.
-								div.innerHTML=data.DATA;
-								// msgArray[id] = data.ID;
-							} else {
-								xchat(DId);
-							}
-							
-							var chatmin = document.getElementById(\'minchats\'+ id);
-                            if(chatmin){
-							    chatmin.parentNode.removeChild(chatmin);
-					            jQuery.noConflict()(function($){
-				                    $.cookie(\'2sichat_min\'+id, null);
-			                    });
-							}
-							
-							if (data != null && data.CONLINE != null) {
-						        $("#cfriends").text(\'(\'+data.CONLINE+\')\');
-						    }
-						    if (data != null && data.ONLINE != null) {
-							    $("#friends").html(data.ONLINE);
-						    } 
-						}
-					});
-					
-				});
-
-				jQuery.noConflict()(function($){
-		            $(window).load(selectmouse());
-		        });
+			    $sachat("#"+id).show();
+				$sachat(window).load(selectmouse());
+				
+				var chatmin = document.getElementById(\'minchats\'+ id);
+                if(chatmin){
+				    $sachat(chatmin).remove();
+				    $sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'_min\'+id, null);
+				}
 
 				'.(!empty($modSettings['2sichat_cw_h_enable']) ? 'heartbeat(id);':'').'
 				if (cSession == undefined) {
-				      var myArray = [];
-                      myArray[0] = \'2sichat\';
-					  myArray[1] = \'msg_win\'+DId;
-				      myArray[2] = DId;
-                      jQuery.noConflict()(function($){
-					  $.cookie(\'2sichat\'+DId, escape(myArray.join(\',\')));
-					  });
-						
+				    var myArray = [];
+                    myArray[0] = \''.$modSettings['2sichat_cookie_name'].'\';
+					myArray[1] = \'msg_win\'+DId;
+				    myArray[2] = DId;
+					$sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'\'+DId, escape(myArray.join(\',\')));	
 				}else{
-					  var myArray = [];
-					  myArray[0] = \'2sichat\';
-                      myArray[1] = \'msg_win\'+DId;
-					  myArray[2] = DId;
-					  myArray[3] = cSession[3];
-					  myArray[4] = cSession[4];
-                      jQuery.noConflict()(function($){
-					  $.cookie(\'2sichat\'+DId, escape(myArray.join(\',\')));
-					  });
-				}
-			 }
+					var myArray = [];
+					myArray[0] = \''.$modSettings['2sichat_cookie_name'].'\';
+                    myArray[1] = \'msg_win\'+DId;
+					myArray[2] = DId;
+					myArray[3] = cSession[3];
+					myArray[4] = cSession[4];
+					$sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'\'+DId, escape(myArray.join(\',\')));;
+			    }
+			}
+			
+			if (document.getElementById(DId) == undefined && DId != undefined) {
+                
+				
+				zdex = (zdex+1);
+
+			    var div = $sachat("<div />").attr("id",+DId).attr("dir","ltr").attr("class","msg_win").attr("style","position: fixed; zIndex: " +zdex+ ";").appendTo($sachat("body"));
+
+				$sachat.ajax({
+					url: \''.$boardurl.'/sachat/index.php\',
+					data: \''.$thjs.'cid=\'+DId,
+					dataType: "json",
+					cache: false,
+					success: function(data){
+						if (data.DATA != null) {
+						    $sachat(div).attr("id",+data.BID);
+							$sachat(div).html(data.DATA);
+							
+							$sachat("#"+data.BID).css(\'bottom\', \'55px\');
+
+							for (x in chatBoxes) {
+							    if ($sachat("#"+chatBoxes[x]).css(\'display\') != \'none\'){
+			                        chatBoxeslength++;
+									
+		                        }
+							}
+							
+							if (chatBoxeslength == 0) {
+		                        $sachat("#"+data.BID).css(\'right\', \'0px\');
+	                        } else {
+		                        width = (chatBoxeslength)*(265+7)+0;
+		                        $sachat("#"+data.BID).css(\'right\', width+\'px\');
+	                        }
+							
+							chatBoxes.push(data.BID);
+                            restructureChatBoxes();
+							// msgArray[id] = data.ID;
+						} 
+						else {
+							xchat(DId);
+						}
+						
+						var chatmin = document.getElementById(\'minchats\'+ id);
+                        if(chatmin){
+							$sachat(chatmin).remove();
+				            $sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'_min\'+id, null);
+						}
+							
+						if (data != null && data.CONLINE != null) {
+						    $sachat("#cfriends").text(\'(\'+data.CONLINE+\')\');
+						}
+						if (data != null && data.ONLINE != null) {
+							$sachat("#friends").html(data.ONLINE);
+						} 
+					}
+				});
+
+		        $sachat(window).load(selectmouse());
+
+				'.(!empty($modSettings['2sichat_cw_h_enable']) ? 'heartbeat(id);':'').'
+				if (cSession == undefined) {
+				    var myArray = [];
+                    myArray[0] = \''.$modSettings['2sichat_cookie_name'].'\';
+					myArray[1] = \'msg_win\'+DId;
+				    myArray[2] = DId;
+					$sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'\'+DId, escape(myArray.join(\',\')));	
+				}else{
+					var myArray = [];
+					myArray[0] = \''.$modSettings['2sichat_cookie_name'].'\';
+                    myArray[1] = \'msg_win\'+DId;
+					myArray[2] = DId;
+					myArray[3] = cSession[3];
+					myArray[4] = cSession[4];
+					$sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'\'+DId, escape(myArray.join(\',\')));;
+			    }
+			}
 		}
 		
 		function minchat(id, name) {
-
-			jQuery.noConflict()(function($){
-			    $(\'#\'+id).remove();
-			});
+		
+			$sachat(\'#\'+id).css(\'display\',\'none\');
+			restructureChatBoxes();
 
 			if (window["re" + id]) {
 				clearInterval(window["re" + id]);
 			}
-			jQuery.noConflict()(function($){
-			    $.cookie(\'2sichat\'+id, null);
-			});
+			
+			$sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'\'+id, null);
 			
 			var tsting = \'minchats\'+ id;
+			var tstin = \'minchatsimg\'+ id;
 
 			var myArray = [];
-			myArray[0] = \'2sichat_min\';
+			myArray[0] = \''.$modSettings['2sichat_cookie_name'].'_min\';
             myArray[1] = \'min\'+id;
 		    myArray[2] = id;
 			myArray[3] = name;
-            jQuery.noConflict()(function($){
-				$.cookie(\'2sichat_min\'+id, escape(myArray.join(\',\')));
-			});
+			$sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'_min\'+id, escape(myArray.join(\',\')));
 			
-			jQuery.noConflict()(function($){
-			    if (document.getElementById(\'minchats\'+id) == undefined){
-                    $(\'#minchats\').append(\'<span id="\'+tsting+\'">&nbsp;<a class="white" href="javascript:void(0)" onclick="javascript:chatTo(\'+id+\');return false;"><strong>\' + name + \'</strong></a>&nbsp;</span>\');
-			    }
-			});
+			if (document.getElementById(\'minchats\'+id) == undefined){
+                $sachat(\'#minchats\').append(\'<span id="\'+tsting+\'">&nbsp;<a class="white" href="javascript:void(0)" onclick="javascript:chatTo(\'+id+\');return false;"><strong><span id="\'+tstin+\'">\' + name + \'</span></strong></a>&nbsp;</span>\');
+			}
 		}
 
 		function xchat(id) {
-		    jQuery.noConflict()(function($){
-			    $(\'#\'+id).remove();
-			    $.cookie(\'2sichat\'+id, null);
-			});
+			$sachat(\'#\'+id).css(\'display\',\'none\');
+			restructureChatBoxes();
+			$sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'\'+id, null);		
 		}
 
 		function jsubmit(id){
-			var textbox = \'msg\'+id;
-		    	var msg = document.getElementById(textbox).value;
-		    	document.getElementById(textbox).value = \'\';
+		    var textbox = \'msg\'+id;
+		    var msg = document.getElementById(textbox).value;
+		    document.getElementById(textbox).value = \'\';
 
-			jQuery.noConflict()(function($){
-				$.ajax({
-					url: \''.$boardurl.'/sachat/index.php\',
-					data: \''.$thjs.'cid=\'+id+\'&msg=\'+encodeURIComponent(msg),
-					dataType: "json",
-					cache: false,
-					success: function(data){
-						if (data.DATA != null){
-							var newdiv = document.createElement(\'div\');
-							newdiv.setAttribute(\'dir\',\'ltr\');
-							newdiv.innerHTML = data.DATA;
-							document.getElementById(\'cmsg\'+id).insertBefore(newdiv, document.getElementById(\'cmsg\'+id).firstChild);
-							loadsnd(\'snd_msg\');
-						}
-						if (data != null && data.CONLINE != null) {
-						    $("#cfriends").text(\'(\'+data.CONLINE+\')\');
-						}
-						if (data != null && data.ONLINE != null) {
-							$("#friends").html(data.ONLINE);
-						} 
+			$sachat.ajax({
+				url: \''.$boardurl.'/sachat/index.php\',
+				data: \''.$thjs.'cid=\'+id+\'&msg=\'+encodeURIComponent(msg),
+				dataType: "json",
+				cache: false,
+				success: function(data){
+				    if (data.DATA != null){
+						var newdiv = document.createElement(\'div\');
+						newdiv.setAttribute(\'dir\',\'ltr\');
+						newdiv.innerHTML = data.DATA;
+						document.getElementById(\'cmsg\'+id).insertBefore(newdiv, document.getElementById(\'cmsg\'+id).firstChild);
+						loadsnd(\'snd_msg\');
 					}
-				});
+					if (data != null && data.CONLINE != null) {
+						$sachat("#cfriends").text(\'(\'+data.CONLINE+\')\');
+					}
+					if (data != null && data.ONLINE != null) {
+					    $sachat("#friends").html(data.ONLINE);
+					} 
+				}
 			});
 		}
 
 		function updatemsg(id){
 			if (document.getElementById(\'cmsg\'+id)) {
-				jQuery.noConflict()(function($){
-					$.ajax({
-						url: \''.$boardurl.'/sachat/index.php\',
-						data: \''.$thjs.'update=\'+id,
-						dataType: "json",
-						cache: false,
-						timeout: '.$modSettings['2sichat_cw_heart'].',
-						success: function(data){
-							if (data.DATA != null) {
-								if (msgArray[id] && msgArray[id] < data.ID && data.ID != null || msgArray[id] == undefined && data.ID != null) {
-									var newdiv = document.createElement(\'div\');
-									newdiv.setAttribute(\'dir\',\'ltr\');
-									newdiv.innerHTML = data.DATA;		
-									document.getElementById(\'cmsg\'+id).insertBefore(newdiv, document.getElementById(\'cmsg\'+id).firstChild);
-									loadsnd(\'rec_msg\');
-									msgArray[id] = data.ID;
-								}
+				$sachat.ajax({
+					url: \''.$boardurl.'/sachat/index.php\',
+					data: \''.$thjs.'update=\'+id,
+					dataType: "json",
+					cache: false,
+					timeout: '.$modSettings['2sichat_cw_heart'].',
+					success: function(data){
+						if (data.DATA != null) {
+							if (msgArray[id] && msgArray[id] < data.ID && data.ID != null || msgArray[id] == undefined && data.ID != null) {
+								var newdiv = document.createElement(\'div\');
+								newdiv.setAttribute(\'dir\',\'ltr\');
+								newdiv.innerHTML = data.DATA;
+                                document.getElementById(\'cmsg\'+id).insertBefore(newdiv, document.getElementById(\'cmsg\'+id).firstChild);
+								loadsnd(\'rec_msg\');
+								msgArray[id] = data.ID;
 							}
-							if (data != null && data.CONLINE != null) {
-						        $("#cfriends").text(\'(\'+data.CONLINE+\')\');
-						    }
-						    if (data != null && data.ONLINE != null) {
-							    $("#friends").html(data.ONLINE);
-						    } 
 						}
-					});
+						if (data != null && data.CONLINE != null) {
+						    $sachat("#cfriends").text(\'(\'+data.CONLINE+\')\');
+						}
+						if (data != null && data.ONLINE != null) {
+							$sachat("#friends").html(data.ONLINE);
+						} 
+					}
 				});
 			}
 		}
@@ -323,156 +367,133 @@ function initchat() {
 
 		// Guest and Members JavaScript
 		$context['HTML'].= '
-		function selectmouse(){
-		       jQuery.noConflict()(function($){
-				   $(\'.msg_win\').draggable({
-                       drag: function(event, ui) {
+		    function selectmouse(){
+			    $sachat(\'.msg_win\').draggable({
+				    handle: \'#top_container\',
+					opacity: 0.35,
+                    drag: function(event, ui) {
 						
-						   newX = ui.offset.left;
-                           newY = ui.offset.top;
+					    newX = ui.offset.left;
+                        newY = ui.offset.top;
 						   
-				           $(this).css(\'left\', newX);
-                           $(this).css(\'top\', newY);
+				        $sachat(this).css(\'left\', newX);
+                        $sachat(this).css(\'top\', newY);
 							
-						   zdex = (zdex+1);
-				           $(this).css(\'zIndex\', zdex);
+						zdex = (zdex+1);
+				        $sachat(this).css(\'zIndex\', zdex);
 
-                           cgobj = $(this).attr(\'id\');
-					       gadid = cgobj.substr(6);
-                           gadFix = cgobj.substr(0, 6);
+                        cgobj = $sachat(this).attr(\'id\');
+					    gadid = cgobj.substr(6);
+                        gadFix = cgobj.substr(0, 6);
                                 
-                           if (gadFix == \'Gadget\') {
-						       var myArray = [];
-					           myArray[0] = \'2sichat_gadget\';
-					           myArray[1] = cgobj;
-					           myArray[2] = gadid;
-					           myArray[3] = newX;
-					           myArray[4] = newY;
-
-					           $.cookie(\'2sichat_gadget\'+gadid, escape(myArray.join(\',\')));
-					       }
-					       else{
-					           var myArray = [];
-                               myArray[0] = \'2sichat\';
-					           myArray[1] = \'msg_win\'+cgobj;
-				               myArray[2] = cgobj;
-					           myArray[3] = newX;
-					           myArray[4] = newY;
-					           
-							   $.cookie(\'2sichat\'+cgobj, escape(myArray.join(\',\')));
-					   
-					      }
-                      }
-                  });	
-              });
+                        if (gadFix == \'Gadget\') {
+						    var myArray = [];
+					        myArray[0] = \''.$modSettings['2sichat_cookie_name'].'_gadget\';
+					        myArray[1] = cgobj;
+					        myArray[2] = gadid;
+					        myArray[3] = newX;
+					        myArray[4] = newY;
+					        $sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'_gadget\'+gadid, escape(myArray.join(\',\')));
+					    }
+					    else{
+					        var myArray = [];
+                            myArray[0] = \''.$modSettings['2sichat_cookie_name'].'\';
+					        myArray[1] = \'msg_win\'+cgobj;
+				            myArray[2] = cgobj;
+					        myArray[3] = newX;
+					        myArray[4] = newY;
+                            $sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'\'+cgobj, escape(myArray.join(\',\')));
+					   }
+                   }
+              });  
           }
 
           function openGadget(id) {
-			if (document.getElementById(\'Gadget\'+id) == undefined) {
-				
-				var div = document.createElement(\'div\');
-				div.id = \'Gadget\'+id;
-				div.dir = \'ltr\';
-				div.className = \'msg_win\';
-				div.style.position = \'fixed\';
-				zdex = (zdex+1);
-				div.style.zIndex = zdex;
-				document.body.appendChild(div);
+              if (document.getElementById(\'Gadget\'+id) == undefined) {
 
-				jQuery.noConflict()(function($){
-					$.ajax({
-						url: \''.$boardurl.'/sachat/index.php\',
-						data: \''.$thjs.'gid=\'+id,
-						dataType: "json",
-						cache: false,
-						success: function(data){
-							if (data.DATA != null){  
-							   div.innerHTML = data.DATA
-							} 
-							if (data != null && data.CONLINE != null) {
-						        $("#cfriends").text(\'(\'+data.CONLINE+\')\');
-						    }
-						    if (data != null && data.ONLINE != null) {
-							    $("#friends").html(data.ONLINE);
-						    } 
-						}
-					});
+				  zdex = (zdex+1);
+				  
+                  var div = $sachat("<div />").attr("id","Gadget"+id).attr("dir","ltr").attr("class","msg_win").attr("style","position: fixed; zIndex: " +zdex+ ";").appendTo($sachat("body"));
+				  
+				  $sachat.ajax({
+				      url: \''.$boardurl.'/sachat/index.php\',
+					  data: \''.$thjs.'gid=\'+id,
+					  dataType: "json",
+					  cache: false,
+					  success: function(data){
+					      if (data.DATA != null){  
+						      $sachat(div).html(data.DATA);
+						  } 
+						  if (data != null && data.CONLINE != null) {
+						      $sachat("#cfriends").text(\'(\'+data.CONLINE+\')\');
+						  }
+						  if (data != null && data.ONLINE != null) {
+							  $sachat("#friends").html(data.ONLINE);
+						  } 
+					 }
 				});
                  
-				jQuery.noConflict()(function($){
-		            $(window).load(selectmouse());
-		        });
+		        $sachat(window).load(selectmouse());
+				
 				if(document.getElementById("extra").style.display == \'block\'){
 				    showhide(\'extra\');
 				}
 				if (cSession == undefined) {
-				      var myArray = [];
-                      myArray[0] = \'2sichat_gadget\';
-				      myArray[1] = \'Gadget\'+id;
-					  myArray[2] = id;
-                      jQuery.noConflict()(function($){
-					  $.cookie(\'2sichat_gadget\'+id, escape(myArray.join(\',\')));
-					  });
-						
+				    var myArray = [];
+                    myArray[0] = \''.$modSettings['2sichat_cookie_name'].'_gadget\';
+				    myArray[1] = \'Gadget\'+id;
+					myArray[2] = id;
+					$sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'_gadget\'+id, escape(myArray.join(\',\')));	
 				}else{
-					  var myArray = [];
-                      myArray[0] = \'2sichat_gadget\';
-					  myArray[1] = \'Gadget\'+id;
-					  myArray[2] = id;
-					  myArray[3] = cSession[3];
-					  myArray[4] = cSession[4];
-                      jQuery.noConflict()(function($){
-					  $.cookie(\'2sichat_gadget\'+id, escape(myArray.join(\',\')));
-					  });
+					var myArray = [];
+                    myArray[0] = \''.$modSettings['2sichat_cookie_name'].'_gadget\';
+					myArray[1] = \'Gadget\'+id;
+					myArray[2] = id;
+					myArray[3] = cSession[3];
+					myArray[4] = cSession[4];
+					$sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'_gadget\'+id, escape(myArray.join(\',\')));
 				}
-
-				jQuery.noConflict()(function($){
-					cwh = $(\'#Gadget\'+id).height();
-					cww = $(\'#Gadget\'+id).width();
-				});
-			 }
+			}
 		}
 
 		function closeGadget(id) {
-			jQuery.noConflict()(function($){
-			    $(\'#Gadget\'+id).remove();
-			    $.cookie(\'2sichat_gadget\'+id, null);
-			 });
+			$sachat(\'#Gadget\'+id).remove();
+			$sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'_gadget\'+id, null);
 		}
 
 		doCookies();
 		function doCookies() {
-			jQuery.noConflict()(function($){
-				$.each(document.cookie.split(\';\'), function(i, cookie) {
+		    $sachat.each(document.cookie.split(\';\'), function(i, cookie) {
 					
-					var c = $.trim(cookie);
-					name = c.split(\'=\')[0];
-			    	var cookie = unescape($.cookie(name));
-					cSession = cookie.split(\',\');
+			var c = $sachat.trim(cookie);
+			name = c.split(\'=\')[0];
+			var cookie = unescape($sachat.cookie(name));
+		    cSession = cookie.split(\',\');
 					
-					if(cSession[0] == \'2sichat_gadget\'){
-				         openGadget(cSession[1].substr(6));
-				         document.getElementById(cSession[1]).style.left = cSession[3]+\'px\';
-				         document.getElementById(cSession[1]).style.top = cSession[4]+\'px\';
-					}
+			if(cSession[0] == \''.$modSettings['2sichat_cookie_name'].'_gadget\'){
+		        openGadget(cSession[1].substr(6));
+				document.getElementById(cSession[1]).style.left = cSession[3]+\'px\';
+				document.getElementById(cSession[1]).style.top = cSession[4]+\'px\';
+			}
 					
-					if(cSession[0] == \'2sichat\'){
-						chatTo(cSession[1].substr(7));
-						document.getElementById(cSession[2]).style.left = cSession[3]+\'px\';
-				        document.getElementById(cSession[2]).style.top = cSession[4]+\'px\';
-					}
+			if(cSession[0] == \''.$modSettings['2sichat_cookie_name'].'\'){
+			    chatTo(cSession[1].substr(7));
+				document.getElementById(cSession[2]).style.left = cSession[3]+\'px\';
+				document.getElementById(cSession[2]).style.top = cSession[4]+\'px\';
+			}
 					
-					if(cSession[0] == \'2sichat_min\'){
-						var tsting = \'minchats\'+cSession[2];
-			            if (cSession[3] != undefined){
-				            if (document.getElementById(\'minchats\'+cSession[2]) == undefined){
-			                    $(\'#minchats\').append(\'<span id="\'+tsting+\'">&nbsp;<a class="white" href="javascript:void(0)" onclick="javascript:chatTo(\'+cSession[2]+\');return false;"><strong>\'+cSession[3]+\'</strong></a>&nbsp;</span>\');
-			                }  
-                        }				
-					}
-				});
-			});
-		}
+			if(cSession[0] == \''.$modSettings['2sichat_cookie_name'].'_min\'){
+			    var tsting = \'minchats\'+cSession[2];
+				var tstin = \'minchatsimg\'+ cSession[2];
+				
+			    if (cSession[3] != undefined){
+				    if (document.getElementById(\'minchats\'+cSession[2]) == undefined){
+			            $sachat(\'#minchats\').append(\'<span id="\'+tsting+\'">&nbsp;<a class="white" href="javascript:void(0)" onclick="javascript:chatTo(\'+cSession[2]+\');return false;"><strong><span id="\'+tstin+\'">\'+cSession[3]+\'</span></strong></a>&nbsp;</span>\');
+			         }  
+                }				
+			}
+		});
+	}
 		
 		var expdate = new Date();
 		expdate.setTime (expdate.getTime() +  (24 * 60 * 60 * 1000 * 365));
@@ -480,9 +501,8 @@ function initchat() {
 
 		if ($modSettings['2sichat_gad_trans']){
 			$context['HTML'].= '
-		jQuery.noConflict()(function($){
-			$.getScript(\'http://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit\');
-		})
+		$sachat.getScript(\'http://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit\');
+
 		document.getElementById(\'2siTranslate\').innerHTML = \'<img class=\"langload\" src="'.$themeurl.'/images/loadingBar.gif"/>\';
 		function googleTranslateElementInit() {
 			document.getElementById(\'2siTranslate\').innerHTML = \'\';
@@ -491,27 +511,23 @@ function initchat() {
 		}
 		$context['HTML'].= '
 		function showhide(layer_ref) {
-			jQuery.noConflict()(function($){
-			    if(document.getElementById(layer_ref).style.display == \'none\')
-                {
-                    $(document.getElementById(layer_ref)).fadeIn("fast");
-					if(layer_ref == \'extra\'){
-					    $(\'#extraimg\').attr(\'src\',\''.$themeurl.'/images/control_eject_blue1.png\');
-					}
-                }
-                else
-                {
-                    $(document.getElementById(layer_ref)).fadeOut("slow");
-					if(layer_ref == \'extra\'){
-					     $(\'#extraimg\').attr(\'src\',\''.$themeurl.'/images/control_eject_blue.png\');
-					}
-                }	
-			});
+			if(document.getElementById(layer_ref).style.display == \'none\')
+            {
+                $sachat(document.getElementById(layer_ref)).fadeIn("fast");
+			    if(layer_ref == \'extra\'){
+					$sachat(\'#extraimg\').attr(\'src\',\''.$themeurl.'/images/control_eject_blue1.png\');
+				}
+            }
+            else
+            {
+                $sachat(document.getElementById(layer_ref)).fadeOut("slow");
+				if(layer_ref == \'extra\'){
+					 $sachat(\'#extraimg\').attr(\'src\',\''.$themeurl.'/images/control_eject_blue.png\');
+				}
+            }	
 		}
 		
-        jQuery.noConflict()(function($){
-			$.getScript(\'http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-503f263237ff99da\');
-		})
+	    $sachat.getScript(\'http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-503f263237ff99da\');
 		
 		function getSocial (social) {
 			if (social == \'myspace\') {

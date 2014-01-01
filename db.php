@@ -134,7 +134,9 @@ $smcFunc['db_insert']('ignore', '{db_prefix}settings', array(
     array('2sichat_ico_adthis', '1'),
     array('2sichat_board_index', 'everywhere'),
     array('2sichat_theme', 'default'),
-    array('2sichat_live_online', '1')
+    array('2sichat_live_online', '1'),
+	array('2sichat_e_logs', '1'),
+	array('2sichat_cookie_name', '2sichat')
         ), array()
 );
 

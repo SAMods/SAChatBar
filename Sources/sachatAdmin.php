@@ -235,7 +235,7 @@ function twosichatConfig() {
     $context['page_title'] = $txt['2sichat_admin'];
     $context[$context['admin_menu_name']]['tab_data']['title'] = $txt['2sichat_config'];
     $context[$context['admin_menu_name']]['tab_data']['description'] = $txt['2sichat_config_des'];
-
+	
     $config_vars = array(
         array('check', '2sichat_disable', 'subtext' => $txt['2sichat_disable_sub']),
         '',
@@ -253,6 +253,10 @@ function twosichatConfig() {
         array('check', '2sichat_cache', 'size' => 10, 'subtext' => $txt['2sichat_cache_sub']),
         '',
         array('check', '2sichat_live_online'),
+		'',
+        array('text', '2sichat_cookie_name'),
+		'',
+        array('check', '2sichat_e_logs'),
         //array('check', '2sichat_list_type', 'subtext' => $txt['2sichat_list_t_sub']),
         '',
         array('check', '2sichat_dis_list', 'subtext' => $txt['2sichat_dis_l_sub']),

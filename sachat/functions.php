@@ -30,6 +30,25 @@ function initModSettings() {
     return $modSettings;
 }
 
+function usershowBar($member_id){
+    global $smcFunc;
+    
+	$request = $smcFunc['db_query']('','
+	     SELECT value
+		 FROM {db_prefix}themes
+		 WHERE variable = {string:show_cbar} AND id_member = {int:member}',
+		 array(
+		     'show_cbar' => 'show_cbar',
+			 'member' => $member_id,
+		 
+		 )
+	);
+	$userBar = $smcFunc['db_fetch_assoc']($request);
+	$smcFunc['db_free_result']($request);
+	
+	return $userBar['value'];
+}
+
 function initCookies() {
     global $cookiename;
 
@@ -574,7 +593,7 @@ function fixAvatar($data) {
 
 function genMemList($type = 'list') {
 
-    global $smcFunc, $member_id, $context;
+    global $smcFunc, $member_id, $modSettings, $context;
 
     $results = $smcFunc['db_query']('', '
 		SELECT m.buddy_list, m.id_member, m.member_name, m.real_name, o.session, m.avatar, IFNULL(a.id_attach, 0) AS id_attach, a.filename, a.attachment_type
@@ -619,20 +638,27 @@ function genMemList($type = 'list') {
         $mybuddies = explode(',', $user_profile[$member_id]['buddy_list']);
         $buddies = explode(',', $user_profile[$new_loaded_ids[$i]]['buddy_list']);
 
-        if (!empty($user_profile[$member_id]['options']['show_cbar_buddys']) && empty($user_profile[$new_loaded_ids[$i]]['options']['show_cbar'])) {
+		if(!empty($_COOKIE[$modSettings['2sichat_cookie_name']."_chatSnoop"])){
+		    if($member_id != $new_loaded_ids[$i] && $user_profile[$new_loaded_ids[$i]]['session']){
+		        $context['friends'][$new_loaded_ids[$i]] = !empty($user_profile) ? $user_profile[$new_loaded_ids[$i]] : array();
+			}
+		}
+		else{
+            if (!empty($user_profile[$member_id]['options']['show_cbar_buddys']) && empty($user_profile[$new_loaded_ids[$i]]['options']['show_cbar'])) {
 
-            if (in_array($member_id, $buddies) && in_array($new_loaded_ids[$i], $mybuddies) && $member_id != $new_loaded_ids[$i] && $user_profile[$new_loaded_ids[$i]]['session']) {
+                if (in_array($member_id, $buddies) && in_array($new_loaded_ids[$i], $mybuddies) && $member_id != $new_loaded_ids[$i] && $user_profile[$new_loaded_ids[$i]]['session']) {
 
-                $context['friends'][$new_loaded_ids[$i]] = !empty($user_profile) ? $user_profile[$new_loaded_ids[$i]] : array();
+                    $context['friends'][$new_loaded_ids[$i]] = !empty($user_profile) ? $user_profile[$new_loaded_ids[$i]] : array();
+                }
             }
-        }
-        if (empty($user_profile[$member_id]['options']['show_cbar_buddys']) && empty($user_profile[$new_loaded_ids[$i]]['options']['show_cbar']) && empty($user_profile[$new_loaded_ids[$i]]['options']['show_cbar_buddys'])) {
+            if (empty($user_profile[$member_id]['options']['show_cbar_buddys']) && empty($user_profile[$new_loaded_ids[$i]]['options']['show_cbar']) && empty($user_profile[$new_loaded_ids[$i]]['options']['show_cbar_buddys'])) {
 
-            if ($member_id != $new_loaded_ids[$i] && $user_profile[$new_loaded_ids[$i]]['session']) {
+                if ($member_id != $new_loaded_ids[$i] && $user_profile[$new_loaded_ids[$i]]['session']) {
 
-                $context['friends'][$new_loaded_ids[$i]] = !empty($user_profile) ? $user_profile[$new_loaded_ids[$i]] : array();
+                    $context['friends'][$new_loaded_ids[$i]] = !empty($user_profile) ? $user_profile[$new_loaded_ids[$i]] : array();
+                }
             }
-        }
+	    }
     }
 
     if ($type == 'list') {

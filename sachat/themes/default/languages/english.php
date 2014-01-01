@@ -6,6 +6,9 @@
 global $boardurl;
 
 $txt = array();
+$txt['bar_admin_snoop'] = 'Admin Mode';
+$txt['bar_admin_snoop_on'] = 'On';
+$txt['bar_admin_snoop_off'] = 'Off';
 $txt['bar_setings'] = 'Chat Bar Settings';
 $txt['bar_social'] = 'Social';
 $txt['bar_links'] = 'Links';

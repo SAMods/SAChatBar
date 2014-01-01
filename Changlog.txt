@@ -1,6 +1,11 @@
-=====SA Chat RC6-1 Rev**=====
-now uses jquery-play-sound plugin
-removed more older/legacy code from theme js files
-chat windows are now a little bigger
-long messages now wrap instead of makeing long scroll
-fixed issue with chat messages not returned after so many messages
+=====SA Chat RC6-2 Rev**=====
+removed all jQuery.noConflict() calls now uses custom var
+finished admin snoop mode allowed admins to see all regardless of user settings, buddys and ignore list
+removed unused function from sachathook.php
+finished option to disable error logs 
+finished custom cookie name prefix this can help with conflicts with older versions were cookies was handeld different
+more improves to the chat box styling
+more imporves to minimised chats now only bleeps once when new messsage but show a new image all the time untill that message is read
+chat windows now open like facebook and are fixed to the bar they can also restructer themself if a chatbox is closed
+added draggable handle can only be dragged by this handel 
+dragged windows now fade

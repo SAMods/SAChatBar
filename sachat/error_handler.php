@@ -50,15 +50,17 @@ function shutdownHandler() { //will be called when php script ends.
 }
 
 function logError($errorfile, $errorline, $errormes, $errortype) {
-    global $smcFunc, $last_error;
+    global $smcFunc, $modSettings, $last_error;
 
-    $error_info = array($errortype, $errorfile, $errormes, $errorline);
-    if (empty($last_error) || $last_error != $error_info) {
-        $smcFunc['db_insert']('', '
-		      {db_prefix}2sichat_error', array('type' => 'string', 'file' => 'string', 'info' => 'string', 'line' => 'string'), $error_info, array('id')
-        );
-        $last_error = $error_info;
-    }
+	if(!empty($modSettings['2sichat_e_logs'])){
+        $error_info = array($errortype, $errorfile, $errormes, $errorline);
+        if (empty($last_error) || $last_error != $error_info) {
+            $smcFunc['db_insert']('', '
+		          {db_prefix}2sichat_error', array('type' => 'string', 'file' => 'string', 'info' => 'string', 'line' => 'string'), $error_info, array('id')
+            );
+            $last_error = $error_info;
+        }
+	}
 }
 
 ?>

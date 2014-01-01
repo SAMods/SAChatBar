@@ -45,13 +45,6 @@ function SAChat_loadtheme() {
     $context['html_headers'] .= SAChat_showBar('head');
 }
 
-function SAChat_InsertOptions($chatmem, $chatvar, $chatval) {
-    global $smcFunc;
-
-    $smcFunc['db_insert']('ignore', '{db_prefix}themes', array('id_member' => 'int', 'id_theme' => 'int', 'variable' => 'string', 'value' => 'string',), array($chatmem, 1, $chatvar, $chatval,), array('id_member', 'id_theme')
-    );
-}
-
 function template_sachat_above() {
     echo SAChat_showBar('body');
 }
@@ -88,9 +81,9 @@ function SAChat_showBar($type) {
     SAChat_getActions($actions);
 
     //work out where the bar should be shown
-    if (in_array($context['current_action'], $actions) && !empty($modSettings['2sichat_board_index']) && empty($options['show_cbar']))//certain actions
+    if (in_array($context['current_action'], $actions) && !empty($modSettings['2sichat_board_index']))//certain actions
         $bar = '<script type="text/javascript" src="' . $boardurl . '/sachat/index.php?action=' . $type . '&amp;theme=' . $sachatTheme . '"></script>';
-    elseif (in_array('everywhere', $actions) && !empty($modSettings['2sichat_board_index']) && empty($options['show_cbar']))//show everywhere
+    elseif (in_array('everywhere', $actions) && !empty($modSettings['2sichat_board_index']))//show everywhere
         $bar = '<script type="text/javascript" src="' . $boardurl . '/sachat/index.php?action=' . $type . '&amp;theme=' . $sachatTheme . '"></script>';
     else//nothing defined
         $bar = '';
@@ -163,6 +156,8 @@ function SAChat_admin_areas(&$admin_areas) {
         ),
             )
     );
+	if(empty($modSettings['2sichat_e_logs']))
+	        unset($admin_areas['sachat']['areas']['sachat']['subsections']['errorlogs']);	
 }
 
 function SAChat_LoadTemes() {

@@ -3,6 +3,8 @@
  * @copyright Wayne Mankertz, 2013
  * I release this code as free software, under the MIT license.
 **/
+$txt['2sichat_cookie_name'] = 'Cookie Name Prefix';
+$txt['2sichat_e_logs'] = 'Enable error logging';
 $txt['error_2si'] = 'Error Logs';
 $txt['error_msg'] = 'Error Message';
 $txt['error_file'] = 'File/Line';

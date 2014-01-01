@@ -12,7 +12,7 @@ define('SMF', 1);
 $time_bstart = microtime();
 
 //debug load time not much to see realy load times and db query count
-$debug_load = false;
+$debug_load = true;
 
 //Experimental Optimizer
 define('loadOpt', 1);
@@ -85,9 +85,18 @@ if ($member_id != 0) {
 	
     is_banned_check($member_id);
 	
+	$usershowBar = usershowBar($member_id);
+		
     if (!empty($modSettings['2sichat_permissions'])) {
         $permission = loadPermissions($user_settings['groups']);
     }
+	
+	//need admin/mod perms the above will not be avalible if permission are disabled
+	if (($admin = cachegetData('admin', 90)) == null) {
+	    $admin = loadPermissions($user_settings['groups']);
+	    cacheputData('admin', $admin, 90);
+    }
+	
     // Load $buddy_settigns if we are chatting.
     if (isset($_REQUEST['cid']) || isset($_REQUEST['update'])) {
         if (isset($_REQUEST['cid']) && is_numeric($_REQUEST['cid'])) {
