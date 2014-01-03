@@ -18,12 +18,6 @@ function initchat() {
 	$extra = addslashes(preg_replace("/\r?\n?\t/m", "", chat_extra_template()));
 
 	$context['HTML'] = '
-	
-		image1 = new Image;
-		image2 = new Image;
-		image1.src = \''.$themeurl.'/images/x_inactive.png\';
-		image2.src = \''.$themeurl.'/images/x_hover.png\';
-
 		var msgArray = new Array();
 		var ie=document.all;
 		var isIE = /*@cc_on!@*/false;
@@ -39,18 +33,18 @@ function initchat() {
 	    $sachat(\'head\').append(\'<link rel="stylesheet" href="'.$themeurl.'/style.css" type="text/css" />\');
 		
 		'.(!empty($modSettings['2sichat_dis_bar']) || !empty($usershowBar) ? '':'
-		        $sachat("<div />").attr("id","chat_containter").attr("dir","ltr").attr("style","zIndex: 1000").html(\''.$bar.'\').appendTo($sachat("body"));
+		        $sachat("<div />").attr("id","chat_containter").attr("class","chatBar_containter").attr("dir","ltr").attr("style","zIndex: 1000").html(\''.$bar.'\').appendTo($sachat("body"));
 		');
 		
 		$context['HTML'].= '
-		    $sachat("<div />" ).attr("id","extra").attr("dir","ltr").attr("style","zIndex: 1000; display: none").html(\''.$extra.'\').appendTo($sachat("body"));
+		    $sachat("<div />" ).attr("id","extra").attr("class","extrabox").attr("dir","ltr").attr("style","zIndex: 1000; display: none").html(\''.$extra.'\').appendTo($sachat("body"));
 		';
 		
 
 		// Members only JavaScript
 		if ($member_id) {
 			$context['HTML'].= '
-		$sachat("<div />" ).attr("id","friends").attr("dir","ltr").attr("style","zIndex: 1000; display: none").html(\''.$buddies.'\').appendTo($sachat("body"));
+		$sachat("<div />" ).attr("id","friends").attr("class","buddybox").attr("dir","ltr").attr("style","zIndex: 1000; display: none").html(\''.$buddies.'\').appendTo($sachat("body"));
 	
 		setInterval("updatebar()",'.$modSettings['2sichat_mn_heart'].');
 
@@ -146,7 +140,7 @@ function initchat() {
 				       $sachat("#"+chatboxtitle).css(\'right\', \'0px\');
 			       } 
 			       else {
-			           width = (align)*(265+7)+0;
+			           width = (align)*(275+7)+0;
 			           $sachat("#"+chatboxtitle).css(\'right\', width+\'px\');
 			       }
 			       align++;
@@ -157,30 +151,30 @@ function initchat() {
 	    function chatTo(id, minimised) {
             var DId = arguments[0];
 			
-			if ($sachat("#"+id).length > 0) {
-		        if ($sachat("#"+id).css(\'display\') == \'none\') {
-			        $sachat("#"+id).css(\'display\',\'block\');
-			        restructureChatBoxes();
-		       }
-	        }
+			if(DId != undefined){
+			    if ($sachat("#"+id).length > 0) {
+		            if ($sachat("#"+id).css(\'display\') == \'none\') {
+			            $sachat("#"+id).css(\'display\',\'block\');
+			            restructureChatBoxes();
+		           }
+	            }
 			
-            if(minimised == 1){
-			    
-				$sachat(\'#minchats\'+id).remove();
-				$sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'_min\'+id, null);
-				
-				var myArray = [];
+                if(minimised == 1){
+				    $sachat(\'#minchats\'+id).remove();
+				    $sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'_min\'+id, null);
+			    }
+			
+			    var myArray = [];
                 myArray[0] = \''.$modSettings['2sichat_cookie_name'].'\';
 			    myArray[1] = \'msg_win\'+DId;
-				myArray[2] = DId;
-				$sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'\'+DId, escape(myArray.join(\',\')));	
+		        myArray[2] = DId;
+		        $sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'\'+DId, escape(myArray.join(\',\')));
 			}
-			
 			if ($sachat("#"+id).css(\'display\') == \'none\' || document.getElementById(DId) == undefined && DId != undefined) {
 				
 				zdex = (zdex+1);
 
-			    var div = $sachat("<div />").attr("id",+DId).attr("dir","ltr").attr("class","msg_win").attr("style","position: fixed; zIndex: " +zdex+ ";").appendTo($sachat("body"));
+			    var div = $sachat("<div />").attr("id",+DId).attr("dir","ltr").attr("class","chatbox").attr("style","position: fixed; zIndex: " +zdex+ ";").appendTo($sachat("body"));
                 $sachat("#"+id).show();
 				
 				$sachat.ajax({
@@ -193,7 +187,7 @@ function initchat() {
 						    $sachat(div).attr("id",+data.BID);
 							$sachat(div).html(data.DATA);
 							
-							$sachat("#"+data.BID).css(\'bottom\', \'55px\');
+							$sachat("#"+data.BID).css(\'bottom\', \'27px\');
 
 							for (x in chatBoxes) {
 							    if ($sachat("#"+chatBoxes[x]).css(\'display\') != \'none\'){
@@ -204,7 +198,7 @@ function initchat() {
 							if (chatBoxeslength == 0) {
 		                        $sachat("#"+data.BID).css(\'right\', \'0px\');
 	                        } else {
-		                        width = (chatBoxeslength)*(265+7)+0;
+		                        width = (chatBoxeslength)*(275+7)+0;
 		                        $sachat("#"+data.BID).css(\'right\', width+\'px\');
 	                        }
 							
@@ -225,12 +219,6 @@ function initchat() {
 				});
 
 				'.(!empty($modSettings['2sichat_cw_h_enable']) ? 'heartbeat(id);':'').'
-				
-				    var myArray = [];
-                    myArray[0] = \''.$modSettings['2sichat_cookie_name'].'\';
-					myArray[1] = \'msg_win\'+DId;
-				    myArray[2] = DId;
-					$sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'\'+DId, escape(myArray.join(\',\')));	
 			}
 		}
 		
@@ -256,7 +244,7 @@ function initchat() {
 			$sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'_min\'+id, escape(myArray.join(\',\')));
 			
 			if (document.getElementById(\'minchats\'+id) == undefined){
-                $sachat(\'#minchats\').append(\'<span id="\'+tsting+\'">&nbsp;<a class="white" href="javascript:void(0)" onclick="javascript:chatTo(\'+id+\',1);return false;"><strong><span id="\'+tstin+\'">\' + name + \'</span></strong></a>&nbsp;</span>\');
+                $sachat(\'#minchats\').append(\'<span id="\'+tsting+\'">&nbsp;<a href="javascript:void(0)" onclick="javascript:chatTo(\'+id+\',1);return false;"><strong><span id="\'+tstin+\'">\' + name + \'</span></strong></a>&nbsp;</span>\');
 			}
 		}
 
@@ -322,7 +310,7 @@ function initchat() {
 						} 
 					}
 				});
-				var chatmin1 = document.getElementById(\'minchats\'+this);
+				var chatmin1 = document.getElementById(\'minchats\'+id);
 				if(!chatmin1){
 				    var myArray = [];
                     myArray[0] = \''.$modSettings['2sichat_cookie_name'].'\';
@@ -345,7 +333,7 @@ function initchat() {
 		$context['HTML'].= '
 		    function selectmouse(){
 			    $sachat(\'.gadget_win\').draggable({
-				    handle: \'#top_container\',
+				    handle: \'.gadgetboxhead\',
 					opacity: 0.35,
                     drag: function(event, ui) {
 						
@@ -411,9 +399,6 @@ function initchat() {
                  
 		        $sachat(window).load(selectmouse());
 				
-				if(document.getElementById("extra").style.display == \'block\'){
-				    showhide(\'extra\');
-				}
 				if (cSession == undefined) {
 				    var myArray = [];
                     myArray[0] = \''.$modSettings['2sichat_cookie_name'].'_gadget\';

@@ -6,6 +6,13 @@
 if (!defined('SMF'))
     die('Hacking attempt...');
 
+function SAChat_InsertOptions($chatmem, $chatvar, $chatval) {
+    global $smcFunc;
+
+    $smcFunc['db_insert']('ignore', '{db_prefix}themes', array('id_member' => 'int', 'id_theme' => 'int', 'variable' => 'string', 'value' => 'string',), array($chatmem, 1, $chatvar, $chatval,), array('id_member', 'id_theme')
+    );
+}
+
 function twosichatAdmin() {
 
     global $context, $txt, $scripturl, $modSettings, $settings, $sourcedir;

@@ -1,4 +1,3 @@
-=====SA Chat RC6-3 Rev**=====
-added old theme to package
-new theme js fixes
+=====SA Chat RC7 Rev**=====
+redone the templates and css in new theme
 
