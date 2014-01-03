@@ -12,7 +12,7 @@ define('SMF', 1);
 $time_bstart = microtime();
 
 //debug load time not much to see realy load times and db query count
-$debug_load = true;
+$debug_load = false;
 
 //Experimental Optimizer
 define('loadOpt', 1);
