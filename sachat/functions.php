@@ -639,7 +639,7 @@ function genMemList($type = 'list') {
         $buddies = explode(',', $user_profile[$new_loaded_ids[$i]]['buddy_list']);
 
 		if(!empty($_COOKIE[$modSettings['2sichat_cookie_name']."_chatSnoop"])){
-		    if($member_id != $new_loaded_ids[$i]){
+		    if($member_id != $new_loaded_ids[$i] && $user_profile[$new_loaded_ids[$i]]['session']){
 		        $context['friends'][$new_loaded_ids[$i]] = !empty($user_profile) ? $user_profile[$new_loaded_ids[$i]] : array();
 			}
 		}
