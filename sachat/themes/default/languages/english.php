@@ -6,6 +6,9 @@
 global $boardurl;
 
 $txt = array();
+$txt['bar_isTyping'] = 'Is typing...';
+$txt['bar_sent_at'] = 'Sent at';
+$txt['bar_submitt_form'] = 'Send';
 $txt['bar_admin_snoop'] = 'Admin Mode';
 $txt['bar_admin_snoop_on'] = 'On';
 $txt['bar_admin_snoop_off'] = 'Off';

@@ -27,6 +27,7 @@ function twosichatAdmin() {
     $subActions = array(
         'config' => 'twosichatConfig',
         'gadget' => 'twosichatGadget',
+		'chat' => 'twosichatChat',
         'link' => 'twosichatLinks',
         'theme' => 'twosichatThemes',
         'load' => 'twosichatLoad',
@@ -250,25 +251,11 @@ function twosichatConfig() {
         '',
         array('check', '2sichat_permissions', 'subtext' => $txt['2sichat_permissions_sub']),
         '',
-        array('text', '2sichat_mn_heart', 'size' => 10, 'subtext' => $txt['2sichat_mn_heart_sub']),
-        '',
-        array('check', '2sichat_cw_h_enable', 'subtext' => $txt['2sichat_cw_h_e_sub']),
-        array('text', '2sichat_cw_heart', 'size' => 10, 'subtext' => $txt['2sichat_cw_heart_sub']),
-        '',
-        array('text', '2sichat_purge', 'size' => 10, 'subtext' => $txt['2sichat_purge_sub']),
-        '',
         array('check', '2sichat_cache', 'size' => 10, 'subtext' => $txt['2sichat_cache_sub']),
-        '',
-        array('check', '2sichat_live_online'),
 		'',
         array('text', '2sichat_cookie_name'),
 		'',
         array('check', '2sichat_e_logs'),
-        //array('check', '2sichat_list_type', 'subtext' => $txt['2sichat_list_t_sub']),
-        '',
-        array('check', '2sichat_dis_list', 'subtext' => $txt['2sichat_dis_l_sub']),
-        '',
-        array('check', '2sichat_simple_bbc'),
         '',
         array('check', '2sichat_gad_trans'),
         array('text', '2sichat_gad_lang', 'size' => 10, 'subtext' => $txt['2sichat_gad_lang_sub']),
@@ -312,6 +299,57 @@ function twosichatConfig() {
         redirectexit('action=admin;area=sachat;sa=config');
     }
     prepareDBSettingContext($config_vars);
+}
+
+function twosichatChat() {
+
+    global $txt, $scripturl, $context, $settings, $sc, $modSettings, $smcFunc;
+
+    $context['sub_template'] = 'show_settings';
+    $context['page_title'] = $txt['twosichatChat'];
+	$context[$context['admin_menu_name']]['tab_data']['title'] = $txt['twosichatChat'];
+    $context[$context['admin_menu_name']]['tab_data']['description'] = $txt['twosichatChat'];
+	
+	$config_vars = array(
+	    array('text', '2sichat_mn_heart', 'size' => 10, 'subtext' => $txt['2sichat_mn_heart_sub']),
+		array('text', '2sichat_mn_heartmin', 'size' => 10, 'subtext' => $txt['2sichat_mn_heart_submin']),
+		array('text', '2sichat_mn_heart_timeout', 'size' => 10, 'subtext' => $txt['2sichat_mn_heart_timeout_sub']),
+        '',
+        array('check', '2sichat_cw_h_enable', 'subtext' => $txt['2sichat_cw_h_e_sub']),
+        array('text', '2sichat_cw_heart', 'size' => 10, 'subtext' => $txt['2sichat_cw_heart_sub']),
+        '',
+        array('text', '2sichat_purge', 'size' => 10, 'subtext' => $txt['2sichat_purge_sub']),
+        '',
+		array('check', '2sichat_dis_list', 'subtext' => $txt['2sichat_dis_l_sub']),
+        array('check', '2sichat_simple_bbc'),
+		array('check', '2sichat_live_online'),
+		array('check', '2sichat_live_notfy'),
+		array('check', '2sichat_live_type', 'subtext' => $txt['2sichat_live_type_sub']),
+		'',
+		array('check', '2sichat_e_last3min'),
+		array('text', '2sichat_e_last3minv', 'size' => 10, 'subtext' => $txt['2sichat_e_last3minv_sub']),
+    );
+	
+	if (!empty($return_config))
+        return $config_vars;
+
+    $context['post_url'] = $scripturl . '?action=admin;area=sachat;save;sa=chat';
+    $context['settings_title'] = $txt['twosichatChat'];
+
+    if (empty($config_vars)) {
+        $context['settings_save_dont_show'] = true;
+        $context['settings_message'] = '<div class="centertext">' . $txt['modification_no_misc_settings'] . '</div>';
+        return prepareDBSettingContext($config_vars);
+    }
+
+    if (isset($_GET['save'])) {
+        checkSession();
+        twosicleanCache();
+        $save_vars = $config_vars;
+        saveDBSettings($save_vars);
+        redirectexit('action=admin;area=sachat;sa=chat');
+    }
+	prepareDBSettingContext($config_vars);
 }
 
 function twosichatLoad() {

@@ -3,6 +3,13 @@
  * @copyright Wayne Mankertz, 2013
  * I release this code as free software, under the MIT license.
 **/
+$txt['2sichat_live_notfy'] = 'Show message notifaction on page title if not in focus';
+$txt['2sichat_live_type'] = 'Show when buddy is typing in chat';
+$txt['2sichat_live_type_sub'] = '<div class="error">NOT FULLY IMPLEMENTED</div>';
+$txt['2sichat_e_last3min'] = 'Show sent at in chat if inactive for x mins';
+$txt['2sichat_e_last3minv'] = 'When buddy is considerd inactive';
+$txt['2sichat_e_last3minv_sub'] = 'how long in seconds till buddy is considerd inactive <br />180 seconds = 3 mins';
+$txt['twosichatChat'] = 'Chat settings';
 $txt['2sichat_cookie_name'] = 'Cookie Name Prefix';
 $txt['2sichat_e_logs'] = 'Enable error logging';
 $txt['error_2si'] = 'Error Logs';
@@ -89,7 +96,11 @@ $txt['permissionname_2sichat_bar_theme'] = 'Allowed to change themes';
 $txt['permissionname_2sichat_bar_buddys'] = 'Allowed to choose who to talk to';
 $txt['2silempty'] = 'Left Empty!';
 $txt['2silempty1'] = 'Must Be Numeric!';
-$txt['2sichat_mn_heart'] = 'Main heartbeat';
+$txt['2sichat_mn_heart_timeout'] = 'Heartbeat timeout';
+$txt['2sichat_mn_heart_timeout_sub'] = 'In ms how long before the heartbeat timesout<br />Example: 30000 = 30 seconds.';
+$txt['2sichat_mn_heart'] = 'Min heartbeat';
+$txt['2sichat_mn_heart_submin'] = 'In ms<br />Example: 30000 = 30 seconds.';
+$txt['2sichat_mn_heartmin'] = 'Max heartbeat';
 $txt['2sichat_mn_heart_sub'] = 'In ms<br />Example: 30000 = 30 seconds<br />Note: Setting too low may cause database load problems.';
 $txt['2sichat_cw_h_enable'] = 'Enable chat window heartbeat';
 $txt['2sichat_cw_h_e_sub'] = 'Have a seperate heartbeat for each chat window';

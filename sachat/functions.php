@@ -109,7 +109,7 @@ function initJs($jsType) {
 
 function initLink() {
 
-    global $smcFunc, $context, $member_id;
+    global $smcFunc, $member_id, $context;
 
     if (($context['gadgetslink'] = cachegetData('gadgetslink', 3600)) === null) {
         $results = $smcFunc['db_query']('', '
@@ -160,15 +160,16 @@ function initGadgets() {
 
 function gadget() {
 
-    global $smcFunc, $sourcedir, $modSettings, $boarddir, $context;
+    global $smcFunc, $context;
 
     $results = $smcFunc['db_query']('', '
 		SELECT *
 		FROM {db_prefix}2sichat_gadgets
 		WHERE {db_prefix}2sichat_gadgets.id = {int:gid}
-		LIMIT 1', array(
-        'gid' => $_REQUEST['gid'],
-            )
+		LIMIT 1', 
+		array(
+			'gid' => $_REQUEST['gid'],
+        )
     );
 
     $context['gadget'] = $smcFunc['db_fetch_assoc']($results);
@@ -200,16 +201,19 @@ function gadget() {
 function initChatSess() {
 
     global $smcFunc, $member_id, $buddy_id, $context;
-
+	
+	getBuddySession();
+	CheckTyping();
     // Now on to the messages
     $results = $smcFunc['db_query']('', '
 		SELECT *
 		FROM {db_prefix}2sichat
 		WHERE ({db_prefix}2sichat.to = {int:buddy_id} AND {db_prefix}2sichat.from = {int:member_id}) OR ({db_prefix}2sichat.to = {int:member_id} AND {db_prefix}2sichat.from = {int:buddy_id})
-		ORDER BY id DESC', array(
-        'member_id' => $member_id,
-        'buddy_id' => $buddy_id,
-            )
+		ORDER BY id DESC', 
+		array(
+			'member_id' => $member_id,
+			'buddy_id' => $buddy_id,
+		)
     );
 
     $lastID = 0;
@@ -233,22 +237,24 @@ function retmsgs() {
     global $smcFunc, $member_id, $buddy_id, $context, $modSettings;
 
     $reqTime = $_REQUEST['_'] - $modSettings['2sichat_cw_heart'];
-
-    $results = $smcFunc['db_query']('', '
+	getBuddySession();
+	CheckTyping();
+	$results = $smcFunc['db_query']('', '
 		SELECT *
 		FROM {db_prefix}2sichat
 		WHERE ({db_prefix}2sichat.to = {int:member_id} AND {db_prefix}2sichat.from = {int:buddy_id} AND {db_prefix}2sichat.rd = 0)
-		ORDER BY id DESC', array(
-        'member_id' => $member_id,
-        'buddy_id' => $buddy_id,
-        'reqTime' => $reqTime,
-            )
+		ORDER BY id DESC',
+		array(
+			'member_id' => $member_id,
+			'buddy_id' => $buddy_id,
+			'reqTime' => $reqTime,
+		)
     );
 
     $lastID = 0;
 
     if ($results) {
-        mread(); // Mark messages read since we are displaying them.
+       mread(); // Mark messages read since we are displaying them.
         while ($row = $smcFunc['db_fetch_assoc']($results)) {
             $row['msg'] = phaseMSG($row['msg']);
             $context['msgs'][] = $row;
@@ -280,8 +286,41 @@ function savemsg() {
     }
 
     if (str_replace(' ', '', $_REQUEST['msg']) != '') {
-        $smcFunc['db_insert']('', '{db_prefix}2sichat', array('to' => 'int', 'from' => 'int', 'msg' => 'string', 'sent' => 'string'), array($buddy_id, $member_id, htmlspecialchars(stripslashes($_REQUEST['msg']), ENT_QUOTES), date("YmdHis")), array()
-        );
+		
+		$smcFunc['db_insert']('', '{db_prefix}2sichat', 
+		    array(
+			    'to' => 'int',
+			    'from' => 'int',
+			    'msg' => 'string',
+			    'sent' => 'string',
+				'isrd' => 'int'
+			), 
+			array(
+				$buddy_id, $member_id, htmlspecialchars(stripslashes($_REQUEST['msg']), ENT_QUOTES),date("Y-m-d H:i:s"),0
+			), 
+			array()
+		);	
+		$request = $smcFunc['db_query']('', '
+			SELECT member_id
+			FROM {db_prefix}2sichat_typestaus
+			WHERE member_id = {int:member_id}',
+			array(
+				'member_id' => $buddy_id,
+			)
+		);
+
+		$temp = $smcFunc['db_fetch_assoc']($request);
+		$smcFunc['db_free_result']($request);
+			
+		if(!empty($temp)){
+			$smcFunc['db_query']('', '
+				DELETE FROM {db_prefix}2sichat_typestaus
+				WHERE member_id = {int:member_id}', 
+				array(
+					'member_id' => $buddy_id,
+				)
+			);
+		}
 
         $context['msgs'] = phaseMSG(htmlspecialchars(stripslashes($_REQUEST['msg']), ENT_QUOTES));
 
@@ -296,26 +335,23 @@ function mread() {
 
     global $smcFunc, $member_id, $buddy_id;
 
-    if (isset($_REQUEST['_'])) {
-        $read = $_REQUEST['_'];
-    }
-    if (!isset($read)) {
-        $read = 1;
-    }
+    if (isset($_REQUEST['_'])) {$read = $_REQUEST['_'];}
+    
+	if (!isset($read)) {$read = 1;}
 
     // Mark messages read.
     $smcFunc['db_query']('', '
 		UPDATE {db_prefix}2sichat
 		SET {db_prefix}2sichat.rd = {float:read}
-		WHERE {db_prefix}2sichat.to = {int:member_id} AND {db_prefix}2sichat.from = {int:buddy_id} AND {db_prefix}2sichat.rd = 0', array(
-        'member_id' => $member_id,
-        'buddy_id' => $buddy_id,
-        'read' => $read,
-            )
+		WHERE {db_prefix}2sichat.to = {int:member_id} AND {db_prefix}2sichat.from = {int:buddy_id} AND {db_prefix}2sichat.rd = 0',
+		array(
+			'member_id' => $member_id,
+			'buddy_id' => $buddy_id,
+			'read' => $read,
+		)
     );
-    if (defined('loadOpt')) {
-        doOptDBrec();
-    }
+    
+	if (defined('loadOpt')) {doOptDBrec();}
 }
 
 function initCleanup() {
@@ -324,32 +360,169 @@ function initCleanup() {
 
     $smcFunc['db_query']('', '
 		DELETE FROM {db_prefix}2sichat
-		WHERE {db_prefix}2sichat.rd != 0 AND {db_prefix}2sichat.sent < {int:purge}', array(
-        'purge' => date("Ymd", strtotime('-' . $modSettings['2sichat_purge'] . ' days', strtotime(date("Ymd")))),
-            )
+		WHERE {db_prefix}2sichat.rd != 0 AND {db_prefix}2sichat.sent < {int:purge}', 
+		array(
+			'purge' => date("Ymd", strtotime('-' . $modSettings['2sichat_purge'] . ' days', strtotime(date("Ymd")))),
+		)
     );
 }
+
+function closechat(){
+
+	if(!empty($_SESSION['buddy_id'])){
+		unset($_SESSION['buddy_id']);
+	}
+}
+
+function CheckActive(){
+    
+	global $smcFunc, $member_id, $modSettings, $txt, $context;
+	
+    if(!empty($_SESSION['buddy_id']) && !empty($modSettings['2sichat_e_last3min'])){
+	
+		$results = $smcFunc['db_query']('', '
+			SELECT *
+			FROM {db_prefix}2sichat
+			WHERE {db_prefix}2sichat.from = {int:member_id}
+			ORDER BY id DESC
+			LIMIT 1', 
+			array( 
+				'member_id' => $_SESSION['buddy_id'],
+			)
+		);
+
+		if ($results && $smcFunc['db_num_rows']($results) != 0) {
+			while ($row = $smcFunc['db_fetch_assoc']($results)) {
+		    
+				$now = time()-strtotime($row['sent']);
+				$row['sent'] = date('g:iA M dS', strtotime($row['sent']));
+				$message = $txt['bar_sent_at'].' '.$row['sent'];
+				$timeout = !empty($modSettings['2sichat_e_last3minv']) ? $modSettings['2sichat_e_last3minv'] : 180;
+				if ($now > $timeout) {
+
+					$context['JSON']['SENTMSGTIME'] = $message;
+					$context['JSON']['SENTMSGID'] = $row['id'];
+				
+					$smcFunc['db_query']('', '
+						UPDATE {db_prefix}2sichat
+						SET {db_prefix}2sichat.inactive = {int:one}
+						WHERE {db_prefix}2sichat.id = {int:idmsg} AND {db_prefix}2sichat.from = {int:from} AND {db_prefix}2sichat.to = {int:member_id}', 
+						array(
+							'from' => $_SESSION['buddy_id'],
+							'member_id' => $member_id,
+							'one' => 1,
+							'idmsg' => $row['id'],
+						)
+					);
+				}
+			}
+			$smcFunc['db_free_result']($results);
+		}
+	}
+}
+
+function typestatus() {
+
+    global $smcFunc, $modSettings, $member_id;
+
+	if(!empty($modSettings['2sichat_live_type'])){
+		if(isset($_REQUEST['status']) && $_REQUEST['status'] == 'true'){
+			
+			$request = $smcFunc['db_query']('', '
+				SELECT member_id
+				FROM {db_prefix}2sichat_typestaus
+				WHERE member_id = {int:member_id}',
+				array(
+					'member_id' => $member_id,
+				)
+			);
+
+			$temp = $smcFunc['db_fetch_assoc']($request);
+			$smcFunc['db_free_result']($request);
+
+			if(empty($temp)){
+				$smcFunc['db_insert']('', '{db_prefix}2sichat_typestaus', 
+					array(
+						'member_id' => 'int',
+						'status' => 'int',
+					), 
+					array($member_id, 1),
+					array()
+				);
+			}
+		}
+		else{
+			$smcFunc['db_query']('', '
+				DELETE FROM {db_prefix}2sichat_typestaus
+				WHERE member_id = {int:member_id}', 
+				array(
+				'member_id' => $member_id,
+				)
+			);
+		}
+	}
+}
+
+function CheckTyping(){
+    
+	global $smcFunc, $modSettings, $context, $txt, $member_id;
+
+	if(!empty($_SESSION['buddy_id']) && !empty($modSettings['2sichat_live_type'])){
+		$request = $smcFunc['db_query']('', '
+			SELECT member_id
+			FROM {db_prefix}2sichat_typestaus
+			WHERE member_id = {int:member_id}',
+			array(
+				'member_id' => $_SESSION['buddy_id'],
+			)
+		);
+
+		$temp = $smcFunc['db_fetch_assoc']($request);
+		$smcFunc['db_free_result']($request);
+			
+		if ($temp) {
+			$context['JSON']['userTyping'] = $temp['member_id'];
+			$context['JSON']['userTypingSay'] = ' '.$txt['bar_isTyping'];
+		}
+	}
+}
+
+function getBuddySession(){
+	global $context;
+	
+	if(!empty($_SESSION['buddy_id'])){
+		$buddy_settings = loadUserSettings($_SESSION['buddy_id']);
+		$context['JSON']['buddySESSION'] = $buddy_settings['session'];	
+	}
+}
+
 
 function doheart() {
 
     global $smcFunc, $member_id, $context;
 
+    CheckActive();
+	CheckTyping();
+	getBuddySession();
+	
     $results = $smcFunc['db_query']('', '
 		SELECT *
 		FROM {db_prefix}2sichat
-		WHERE {db_prefix}2sichat.to = {int:member_id} AND {db_prefix}2sichat.rd = 0', array(
-        'member_id' => $member_id,
-            )
+		WHERE {db_prefix}2sichat.to = {int:member_id} AND {db_prefix}2sichat.rd = 0', 
+		array(
+			'member_id' => $member_id,
+        )
     );
 
     if ($results && $smcFunc['db_num_rows']($results) != 0) {
         $context['JSON']['ids'] = array();
         while ($row = $smcFunc['db_fetch_assoc']($results)) {
-            if (!in_array($row['from'], $context['JSON']['ids'])) {
-                $context['JSON']['ids'][] = $row['from'];
-            }
-        }
-        $smcFunc['db_free_result']($results);
+			if (!in_array($row['from'], $context['JSON']['ids'])) {
+				$context['JSON']['ids'][] = $row['from'];
+			}
+			
+      }
+      $smcFunc['db_free_result']($results);
     } else {
         if (defined('loadOpt')) {
             doOptDBrec();
@@ -489,7 +662,7 @@ function phaseBBC($data) {
 
 function loadUserSettings($id, $check=false) {
 
-    global $smcFunc, $modSettings, $themeurl, $boardurl;
+    global $smcFunc;
 
     // Load $user_settings
     $results = $smcFunc['db_query']('', '
@@ -498,9 +671,10 @@ function loadUserSettings($id, $check=false) {
 		LEFT JOIN {db_prefix}log_online AS o ON o.id_member = m.id_member
 		LEFT JOIN {db_prefix}attachments AS a ON a.id_member = {int:member_id}
 		WHERE m.id_member = {int:member_id}
-		LIMIT 1', array(
-        'member_id' => $id,
-            )
+		LIMIT 1', 
+		array(
+			'member_id' => $id,
+        )
     );
     $temp = $smcFunc['db_fetch_assoc']($results);
     $smcFunc['db_free_result']($results);
@@ -549,9 +723,10 @@ function loadPermissions($data) {
     $results = $smcFunc['db_query']('', '
 		SELECT *
 		FROM {db_prefix}permissions
-		WHERE FIND_IN_SET(id_group, {string:groups})', array(
-        'groups' => $data,
-            )
+		WHERE FIND_IN_SET(id_group, {string:groups})', 
+		array(
+			'groups' => $data,
+        )
     );
 
     while ($row = $smcFunc['db_fetch_row']($results)) {
@@ -563,7 +738,7 @@ function loadPermissions($data) {
 
 function liveOnline() {
 
-    global $modSettings, $options, $context;
+    global $modSettings, $context;
 
     if (empty($modSettings['2sichat_dis_list'])) {
         $context['JSON']['ONLINE'] = genMemList('list');
@@ -695,7 +870,7 @@ function loadDatabase() {
 }
 
 function cachegetData($key, $ttl = 120) {
-    global $boardurl, $debug_load, $modSettings, $boarddir;
+    global $boardurl, $modSettings, $boarddir;
 
     if (empty($modSettings['2sichat_cache']))
         return;
@@ -769,7 +944,7 @@ function loadOpt() {
     // If last connection to the DB is greater than the DB expire stamp die.
     // If no expire stamp die, usually means no messages availible anyways.
     if (isset($_SESSION['DBcon_stamp']) && isset($DBcon_exp) && $_SESSION['DBcon_stamp'] > $DBcon_exp || isset($_SESSION['DBcon_stamp']) && !isset($DBcon_exp)) {
-        if (!isset($_REQUEST['msg']) && !isset($_REQUEST['gid']) && !isset($_REQUEST['cid']) && @$_REQUEST['action'] != 'head' && @$_REQUEST['action'] != 'heart' && @$_REQUEST['action'] != 'body') {
+        if (!isset($_REQUEST['msg']) && !isset($_REQUEST['gid']) && !isset($_REQUEST['cid']) && @$_REQUEST['action'] != 'closechat' && @$_REQUEST['action'] != 'typing' && @$_REQUEST['action'] != 'head' && @$_REQUEST['action'] != 'heart' && @$_REQUEST['action'] != 'body') {
             $context['JSON']['STATUS'] = 'IDLE';
             doOutput();
         }
@@ -801,7 +976,7 @@ function doOptDBrec() {
 
 function doLoadCHK() {
 
-    global $modSettings, $themeurl, $txt, $context;
+    global $modSettings, $context;
 
     ob_start();
     passthru('typeperf -sc 1 "\processor(_total)\% processor time"', $status);
@@ -879,7 +1054,7 @@ function doOutput() {
     if (isset($context['HTML'])) {
         echo $context['HTML'];
     } else if (isset($context['JSON']) && !isset($context['HTML'])) {
-        header('Content-type: application/json');
+       header('Content-type: application/json');
         echo doJSON($context['JSON']); // PHP "Here's my array."
         // JavaScript "Well thank you PHP, I can use this data in here."
     } else if (!isset($context['JSON']) && !isset($context['HTML'])) {

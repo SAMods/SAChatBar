@@ -4,7 +4,7 @@
  * @copyright Wayne Mankertz, 2013
  * I release this code as free software, under the MIT license.
 **/
-
+ 
 //Define SMF
 define('SMF', 1);
 
@@ -12,7 +12,7 @@ define('SMF', 1);
 $time_bstart = microtime();
 
 //debug load time not much to see realy load times and db query count
-$debug_load = false;
+$debug_load = true;
 
 //Experimental Optimizer
 define('loadOpt', 1);
@@ -107,9 +107,16 @@ if ($member_id != 0) {
             die(); // Something fishy about a non numeric buddy id.
         }
         if ($buddy_id) {
+		    $_SESSION['buddy_id'] = $buddy_id;
             $buddy_settings = loadUserSettings($buddy_id);
+			$context['JSON']['NAME'] = $buddy_settings['real_name'];	
         }
     }
+	
+	if(!empty($_SESSION['buddy_id'])){
+	    $context['JSON']['userTyping'] = $_SESSION['buddy_id'];
+	}
+	
 } else if (!empty($modSettings['2sichat_permissions'])) {
     $permission = loadPermissions(-1); // -1 is guest.
 }
@@ -150,6 +157,12 @@ if (isset($_REQUEST['action'])) {
     if ($_REQUEST['action'] == 'heart' && $member_id) {
         doheart();
     }
+	if ($_REQUEST['action'] == 'typing' && $_REQUEST['action'] != 'heart' && $member_id) {
+        typestatus();
+    }
+	if ($_REQUEST['action'] == 'closechat') {
+		closechat();	
+    }
     if ($_REQUEST['action'] == 'head') {
         initJs('head');
         $context['HTML'] = ' ';
@@ -166,7 +179,9 @@ if (isset($_REQUEST['action'])) {
     } else if (isset($_REQUEST['gid'])) {
         gadget();
     }
+	
 }
+
 if ($member_id && isset($_REQUEST['action']) && $_REQUEST['action'] == 'heart' && !empty($modSettings['2sichat_live_online']) || $member_id && !isset($_REQUEST['action']) && !empty($modSettings['2sichat_live_online'])) {
     liveOnline();
 }

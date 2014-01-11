@@ -11,12 +11,12 @@
 */
 function chat_window_template() { //Main chat window, not the bar, the window you chat to your friends with, duh :P
 
-	global $user_settings, $buddy_settings, $boardurl, $context, $themeurl;
+	global $user_settings, $buddy_settings, $modSettings, $txt, $context;
 
 	// The main chat window
 	$data = '
-	<div class="chatboxhead">
-	    <div class="chatboxtitle">'.$buddy_settings['real_name'].'</div>
+	<div id="ch'.$buddy_settings['id_member'].'" class="chatboxhead">
+	    <div class="chatboxtitle"><span id="session'.$buddy_settings['id_member'].'"></span>&nbsp;'.$buddy_settings['real_name'].'<span id="typeon'.$buddy_settings['id_member'].'"></span></div>
 		    <div class="chatboxoptions">
 			    <a href="javascript:void(0)" onclick="javascript:minchat(\''.$buddy_settings['id_member'].'\',\''.$buddy_settings['real_name'].'\')">-</a> 
 			    <a href="javascript:void(0)" onclick="javascript:xchat(\''.$buddy_settings['id_member'].'\')">X</a>
@@ -30,7 +30,7 @@ function chat_window_template() { //Main chat window, not the bar, the window yo
 		foreach ($context['msgs'] as $message) {
 			if ($message['from'] == $user_settings['id_member']) { // Messages sent from me.	
 				$data .=' 
-				    <strong>'.$user_settings['real_name'].' </strong>
+				    <strong>'.$user_settings['real_name'].'</strong>
 				    <div class="chatboxmsg_optionright">
 				       <img width="15px" height="15px" src="'.$user_settings['avatar'].'" />
 				    </div>
@@ -41,7 +41,8 @@ function chat_window_template() { //Main chat window, not the bar, the window yo
 			} 
 			else 
 			{ // Messages sent by my buddy
-				$data .='
+				$data .=''.(!empty($modSettings['2sichat_e_last3min']) ? ''.(!empty($message['inactive']) ? '<div class="chatboxtime"><br />'.$txt['bar_sent_at'].' '.date('g:iA M dS', strtotime($message['sent'])).'</div><br />':'').'' : '').'
+				
 				    <strong>'.$buddy_settings['real_name'].' </strong>
 				    <div class="chatboxmsg_optionright">
 				        <img width="15px" height="15px" src="'.$buddy_settings['avatar'].'" />
@@ -52,6 +53,7 @@ function chat_window_template() { //Main chat window, not the bar, the window yo
 					       '.$message['msg'].'
 					   </div></div>';	   
 			}
+			$data .='';
 		 }	 
 	}
 	$data .='
@@ -59,7 +61,7 @@ function chat_window_template() { //Main chat window, not the bar, the window yo
 	    <div class="chatboxinput">
 	        <form id="mid_cont_form" action="javascript:void(0)" onsubmit="javascript:jsubmit(\''.$buddy_settings['id_member'].'\');" method="post">
 	           <input type="text" name="msg'.$buddy_settings['id_member'].'" id="msg'.$buddy_settings['id_member'].'" style="width: 75%;" maxlength="255" />
-			    <input type="button" onclick="javascript:jsubmit(\''.$buddy_settings['id_member'].'\'); return false;" value="Send" />
+			    <input type="button" onclick="javascript:jsubmit(\''.$buddy_settings['id_member'].'\'); return false;" value="'.$txt['bar_submitt_form'].'" />
 		    </form>
 	   </div>';
 	
@@ -73,7 +75,7 @@ function chat_retmsg_template() { //When you recieve a message
 	// This is where someone sends you a message when your online.
     if(!empty($context['msgs'])) {
 		foreach ($context['msgs'] as $message) {
-			$data =' 
+			$data =' <div class="chatboxtime" id="sent'.$message['id'].'"></div>
 			    <strong>'.$buddy_settings['real_name'].' </strong>
 			    <div class="chatboxmsg_optionright">
 				    <img width="15px" height="15px" src="'.$buddy_settings['avatar'].'" />
@@ -83,7 +85,7 @@ function chat_retmsg_template() { //When you recieve a message
 				    <div id="u'.$buddy_settings['id_member'].'i'.$message['id'].'">
 					    '.$message['msg'].'
 				    </div>
-			   </div>';   
+			   </div>';
 	    }
 	    return $data;
 	}
@@ -109,7 +111,7 @@ function chat_savemsg_template() { //When you send a message
 
 function chat_bar_template() { //Chat bar template for logged in users, not guest.
 
-	global $boardurl, $debug_load, $themeurl, $cache_count, $modSettings, $load_btime, $db_count, $context, $txt;
+	global $debug_load, $themeurl, $modSettings, $load_btime, $txt, $db_count;
 
 	$data= '
 	    '.(empty($modSettings['2sichat_dis_list']) ? ' <div class="chatBar_content">':'<div class="chatBar_content_other">').'';
@@ -167,7 +169,7 @@ function chat_bar_template() { //Chat bar template for logged in users, not gues
 
 function chat_extra_template() { 
 
-	global $txt, $member_id, $scripturl, $options, $modSettings, $context, $themeurl;
+	global $txt, $member_id, $modSettings, $context, $themeurl;
      
 	 $data = ' 
 	     <div class="extraboxhead">
@@ -239,7 +241,7 @@ function chat_extra_template() {
 
 function buddy_list_template() { //The buddy list.
 
-	global $context, $user_settings, $txt, $admin, $modSettings, $themeurl;
+	global $context, $txt, $admin, $modSettings;
 
 	$data = ' 
 	     <div class="buddyboxhead">
@@ -283,7 +285,7 @@ function buddy_list_template() { //The buddy list.
 
 function guest_bar_template() { //Well guest can't access everything.
 
-	global $boardurl, $load_btime, $debug_load, $db_count, $themeurl, $modSettings, $txt, $context;
+	global $load_btime, $debug_load, $db_count, $themeurl, $txt;
 
     $data = '
 	    <div class="chatBar_content_right">
@@ -312,13 +314,13 @@ function guest_bar_template() { //Well guest can't access everything.
 
 function gadget_template() {
 	
-	global $boardurl, $themeurl, $context;
+	global $boardurl, $context;
 
 	$data ='
 	    <div class="gadgetboxhead">
 	        <div class="gadgetboxtitle">'.$context['gadget']['title'].'</div>
 		        <div class="gadgetboxoptions">
-			        <a href="javascript:void(0)" onclick="javascript:closeGadget(\''.$context['gadget']['id'].'\'); return false;" onMouseOver="document.rolloverGad'.$context['gadget']['id'].'.src=image2.src" onMouseOut="document.rolloverGad'.$context['gadget']['id'].'.src=image1.src">
+			        <a href="javascript:void(0)" onclick="javascript:closeGadget(\''.$context['gadget']['id'].'\'); return false;">
                         X
 					</a>
 			</div>

@@ -144,7 +144,8 @@ function SAChat_admin_areas(&$admin_areas) {
                     'permission' => array('admin_forum'),
                     'subsections' => array(
                         'config' => array($txt['twosichatConfig']),
-                        'gadget' => array($txt['twosichatGadget']),
+						'chat' => array($txt['twosichatChat']),
+						'gadget' => array($txt['twosichatGadget']),
                         'link' => array($txt['2sichat_linksd2']),
                         'load' => array($txt['2sichatloadbal']),
                         'theme' => array($txt['2sichat_theme']),
