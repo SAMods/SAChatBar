@@ -49,9 +49,7 @@ function template_sachat_above() {
     echo SAChat_showBar('body');
 }
 
-function template_sachat_below() {
-    
-}
+function template_sachat_below() {}
 
 function SAChat_showBar($type) {
     global $modSettings, $options, $settings, $boardurl, $context;

@@ -18,7 +18,7 @@ function chat_window_template() { //Main chat window, not the bar, the window yo
 	<div id="ch'.$buddy_settings['id_member'].'" class="chatboxhead">
 	    <div class="chatboxtitle"><span id="session'.$buddy_settings['id_member'].'"></span>&nbsp;'.$buddy_settings['real_name'].'<span id="typeon'.$buddy_settings['id_member'].'"></span></div>
 		    <div class="chatboxoptions">
-			    <a href="javascript:void(0)" onclick="javascript:minchat(\''.$buddy_settings['id_member'].'\',\''.$buddy_settings['real_name'].'\')">-</a> 
+			    <a href="javascript:void(0)" onclick="javascript:upDownchat(\''.$buddy_settings['id_member'].'\',\''.$buddy_settings['real_name'].'\')"><span id="slideup'.$buddy_settings['id_member'].'" class="slideup">&#x25B2;</span><span id="slidedown'.$buddy_settings['id_member'].'" class="slidedown">&#x25BC;</span></a> 
 			    <a href="javascript:void(0)" onclick="javascript:xchat(\''.$buddy_settings['id_member'].'\')">X</a>
 			</div>
 			<br clear="all"/>
@@ -58,7 +58,7 @@ function chat_window_template() { //Main chat window, not the bar, the window yo
 	}
 	$data .='
 	    </div>
-	    <div class="chatboxinput">
+	    <div class="chatboxinput" id="bddy'.$buddy_settings['id_member'].'">
 	        <form id="mid_cont_form" action="javascript:void(0)" onsubmit="javascript:jsubmit(\''.$buddy_settings['id_member'].'\');" method="post">
 	           <input type="text" name="msg'.$buddy_settings['id_member'].'" id="msg'.$buddy_settings['id_member'].'" style="width: 75%;" maxlength="255" />
 			    <input type="button" onclick="javascript:jsubmit(\''.$buddy_settings['id_member'].'\'); return false;" value="'.$txt['bar_submitt_form'].'" />
@@ -204,6 +204,17 @@ function chat_extra_template() {
 			     <img src="'.$themeurl.'/images/facebook.png" width="17" height="17" alt="'.$txt['facebook'].'" border="0"> <strong>'.$txt['facebook1'].'</strong></a><br />':'').'
 		    <hr />';
 				
+			if(!empty($context['rooms'])) {
+				$data.= '
+			        <strong>Chatrooms</strong><br /><br />';
+				foreach ($context['rooms'] as $room) {
+			         $data.= '
+				         <a  href="javascript:void(0)" onclick="javascript:createRoom(\'1\');">
+				             <strong>'.$room['name'].'</strong>
+				         </a><br />';
+				 }$data.= '<hr />';
+			}
+			
 			if(!empty($context['gadgetslink'])) {
                 $data.= '
 			        <strong>'.$txt['bar_links'].'</strong><br /><br />';
@@ -267,7 +278,7 @@ function buddy_list_template() { //The buddy list.
 				    $data .= ''.$txt['bar_admin_snoop_off'].'<hr />';
 				}
 			 }
-			 
+			  
 			 if(!empty($context['friends'])) {
 				foreach ($context['friends'] as $buddy) {
 			         $data.= '

@@ -1,6 +1,79 @@
 /*
+start misc styles
+*/
+.green {
+    color: #008000;
+	border:0px;
+	text-decoration:none;
+	text-shadow: 2px 2px 3px #008000;
+}
+
+.red {
+    color: #FF0000;
+	border:0px;
+	text-decoration:none;
+	text-shadow: 2px 2px 3px #ff0000;
+}
+
+#slideRight{
+	display: none;
+	position: absolute;
+	font-size: 18px; 
+	bottom:47px;
+	cursor: pointer;
+	color :#00B4FF; 
+	left: 10px
+}
+#slideLeft{
+	display: none;
+	position: absolute;
+	font-size: 18px; 
+	bottom:27px;
+	cursor: pointer;
+	color :#00B4FF;
+	left: 10px;
+}
+
+#ChatBoxtemplate{
+	display: none
+}
+
+.chatBoxWrap{
+	float: left;  
+	position: relative 
+}
+.chatBoxslider{
+    float: right;
+	position: relative;
+}
+
+.chatoverFlow{
+	top: 9000px !important
+}
+
+.chatoverFlowHide{
+	display: none
+}
+.slideup{
+	display: none;
+
+}
+
+.slidedown{
+	display: none;
+
+}
+
+/*
+End misc styles
+*/
+
+/**************/
+
+/*
 Start bar styles
 */
+
 .chatBar_containter{
 	background: url(./images/cbar.png) repeat-x;
 	padding-left: 10px;
@@ -56,28 +129,6 @@ Start bar styles
 }
 /*
 End bar styles
-*/
-
-/**************/
-
-/*
-start misc styles
-*/
-.green {
-    color: #008000;
-	border:0px;
-	text-decoration:none;
-	text-shadow: 2px 2px 3px #008000;
-}
-
-.red {
-    color: #FF0000;
-	border:0px;
-	text-decoration:none;
-	text-shadow: 2px 2px 3px #ff0000;
-}
-/*
-End misc styles
 */
 
 /**************/
@@ -240,43 +291,6 @@ End extra box styles
 /*
 Start chat box styles
 */
-
-.chatBoxWrap{
-    float: left;  
-	position: relative 
-}
- 
-#slideRight{
-	display: none;
-	position: absolute;
-	font-size: 18px; 
-	bottom:27px;
-	cursor: pointer;
-	color :#00B4FF; 
-	left: 10px
-}
-#slideLeft{
-	display: none;
-	position: absolute;
-	font-size: 18px; 
-	bottom:27px;
-	cursor: pointer;
-	color :#00B4FF;
-	left: 10px;
-}
-
-.chatBoxslider{
-    float: right;
-	position: relative;
-}
-
-.chatoverFlow{
-	top: 9000px !important
-}
-
-.chatoverFlowHide{
-	display: none
-}
 
 .chatbox {
     position: fixed;

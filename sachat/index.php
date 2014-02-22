@@ -12,7 +12,7 @@ define('SMF', 1);
 $time_bstart = microtime();
 
 //debug load time not much to see realy load times and db query count
-$debug_load = true;
+$debug_load = false;
 
 //Experimental Optimizer
 define('loadOpt', 1);
@@ -101,7 +101,7 @@ if ($member_id != 0) {
     if (isset($_REQUEST['cid']) || isset($_REQUEST['update'])) {
         if (isset($_REQUEST['cid']) && is_numeric($_REQUEST['cid'])) {
             $buddy_id = $_REQUEST['cid'];
-        } else if (is_numeric($_REQUEST['update'])) {
+        } else if (isset($_REQUEST['update']) && is_numeric($_REQUEST['update'])) {
             $buddy_id = $_REQUEST['update'];
         } else {
             die(); // Something fishy about a non numeric buddy id.
@@ -157,7 +157,7 @@ if (isset($_REQUEST['action'])) {
     if ($_REQUEST['action'] == 'heart' && $member_id) {
         doheart();
     }
-	if ($_REQUEST['action'] == 'typing' && $_REQUEST['action'] != 'heart' && $member_id) {
+	if ($_REQUEST['action'] == 'typing' && $member_id) {
         typestatus();
     }
 	if ($_REQUEST['action'] == 'closechat') {
@@ -179,7 +179,6 @@ if (isset($_REQUEST['action'])) {
     } else if (isset($_REQUEST['gid'])) {
         gadget();
     }
-	
 }
 
 if ($member_id && isset($_REQUEST['action']) && $_REQUEST['action'] == 'heart' && !empty($modSettings['2sichat_live_online']) || $member_id && !isset($_REQUEST['action']) && !empty($modSettings['2sichat_live_online'])) {

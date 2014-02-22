@@ -221,7 +221,7 @@ function initChatSess() {
     if ($results) {
         mread(); // Mark messages read since we are displaying them.
         while ($row = $smcFunc['db_fetch_assoc']($results)) {
-            $row['msg'] = phaseMSG($row['msg']);
+            $row['msg'] = htmlspecialchars_decode(phaseMSG($row['msg']));
             $context['msgs'][] = $row;
             $lastID = $row['id'];
         }
@@ -300,27 +300,15 @@ function savemsg() {
 			), 
 			array()
 		);	
-		$request = $smcFunc['db_query']('', '
-			SELECT member_id
-			FROM {db_prefix}2sichat_typestaus
-			WHERE member_id = {int:member_id}',
-			array(
-				'member_id' => $buddy_id,
-			)
-		);
-
-		$temp = $smcFunc['db_fetch_assoc']($request);
-		$smcFunc['db_free_result']($request);
-			
-		if(!empty($temp)){
+		
 			$smcFunc['db_query']('', '
 				DELETE FROM {db_prefix}2sichat_typestaus
 				WHERE member_id = {int:member_id}', 
 				array(
-					'member_id' => $buddy_id,
+					'member_id' => $member_id,
 				)
 			);
-		}
+		
 
         $context['msgs'] = phaseMSG(htmlspecialchars(stripslashes($_REQUEST['msg']), ENT_QUOTES));
 
@@ -425,8 +413,18 @@ function typestatus() {
 
     global $smcFunc, $modSettings, $member_id;
 
-	if(!empty($modSettings['2sichat_live_type'])){
-		if(isset($_REQUEST['status']) && $_REQUEST['status'] == 'true'){
+	if (!empty($_POST['typing']) && !empty($modSettings['2sichat_live_type'])) 
+	{
+		if ($member_id) 
+		{
+			if (empty($_POST['untype'])) 
+			{
+				$typing_insert = time();
+			}
+			else 
+			{
+				$typing_insert = '0';
+			}
 			
 			$request = $smcFunc['db_query']('', '
 				SELECT member_id
@@ -439,26 +437,28 @@ function typestatus() {
 
 			$temp = $smcFunc['db_fetch_assoc']($request);
 			$smcFunc['db_free_result']($request);
-
-			if(empty($temp)){
+			
+			if(empty($temp['member_id'])){
 				$smcFunc['db_insert']('', '{db_prefix}2sichat_typestaus', 
 					array(
 						'member_id' => 'int',
-						'status' => 'int',
+						'status' => 'string',
 					), 
-					array($member_id, 1),
+					array($member_id, $typing_insert),
 					array()
 				);
+			}else{
+				$smcFunc['db_query']('', '
+					UPDATE {db_prefix}2sichat_typestaus
+					SET status = {string:one}
+					WHERE member_id = {int:member_id}', 
+					array(
+						'member_id' => $member_id,
+						'one' => $typing_insert,
+					)
+				);
+			
 			}
-		}
-		else{
-			$smcFunc['db_query']('', '
-				DELETE FROM {db_prefix}2sichat_typestaus
-				WHERE member_id = {int:member_id}', 
-				array(
-				'member_id' => $member_id,
-				)
-			);
 		}
 	}
 }
@@ -466,24 +466,37 @@ function typestatus() {
 function CheckTyping(){
     
 	global $smcFunc, $modSettings, $context, $txt, $member_id;
-
+	
 	if(!empty($_SESSION['buddy_id']) && !empty($modSettings['2sichat_live_type'])){
+		
 		$request = $smcFunc['db_query']('', '
-			SELECT member_id
+			SELECT status, member_id
 			FROM {db_prefix}2sichat_typestaus
 			WHERE member_id = {int:member_id}',
 			array(
-				'member_id' => $_SESSION['buddy_id'],
+				'member_id' =>  $_SESSION['buddy_id'],
 			)
 		);
 
-		$temp = $smcFunc['db_fetch_assoc']($request);
-		$smcFunc['db_free_result']($request);
+		while ($row = $smcFunc['db_fetch_assoc']($request)) {
 			
-		if ($temp) {
-			$context['JSON']['userTyping'] = $temp['member_id'];
-			$context['JSON']['userTypingSay'] = ' '.$txt['bar_isTyping'];
+			$timer = $row['status'] + 60;
+						
+			if ($row['status'] == "0" || time() > $timer ) 
+			{
+				// If the user is not typing
+				$context['JSON']['userTyping'] = $row['member_id'];
+			    $context['JSON']['userTypingSay'] = null;
+
+			} 
+			else 
+			{
+				// If the user is typing
+				$context['JSON']['userTyping'] = $row['member_id'];
+			    $context['JSON']['userTypingSay'] = ' '.$txt['bar_isTyping'];
+			}
 		}
+		$smcFunc['db_free_result']($request);
 	}
 }
 
@@ -603,14 +616,12 @@ function censorMSG($data) {
 function phaseMSG($data) {
     global $modSettings;
 
-    if (!empty($modSettings['2sichat_simple_bbc'])) {
-        $data = phaseBBC($data);
-        $data = preg_replace("#((http|https|ftp)://(\S*?\.\S*?))(\s|\;|\)|\]|\[|\{|\}|,|\"|'|:|\<|$|\.\s)#ie", "'<a href=\"$1\" target=\"_blank\">$3</a>$4'", $data);
-    } else {
-        $data = preg_replace("#((http|https|ftp)://(\S*?\.\S*?))(\s|\;|\)|\]|\[|\{|\}|,|\"|'|:|\<|$|\.\s)#ie", "'<a href=\"$1\" target=\"_blank\">$3</a>$4'", $data);
-    }
-
-    // Load up the smileys
+    if (!empty($modSettings['2sichat_simple_bbc']))
+		$data = phaseBBC($data); 
+	
+	$data = preg_replace('!(((f|ht)tp(s)?://)[-a-zA-Zа-яА-Я()0-9@:%_+.~#?&;//=]+)!i', '<a href="$1" target=\"_blank\">$1</a>', $data);
+	
+	// Load up the smileys
     $smiles = load_smiles();
     $data = str_replace($smiles['code'], $smiles['file'], $data);
 
@@ -769,7 +780,7 @@ function fixAvatar($data) {
 function genMemList($type = 'list') {
 
     global $smcFunc, $member_id, $modSettings, $context;
-
+	
     $results = $smcFunc['db_query']('', '
 		SELECT m.buddy_list, m.id_member, m.member_name, m.real_name, o.session, m.avatar, IFNULL(a.id_attach, 0) AS id_attach, a.filename, a.attachment_type
 		FROM {db_prefix}members as m
@@ -835,7 +846,6 @@ function genMemList($type = 'list') {
             }
 	    }
     }
-
     if ($type == 'list') {
         $data = buddy_list_template();
         return $data;

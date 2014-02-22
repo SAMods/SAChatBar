@@ -1,14 +1,9 @@
-=====SA Chat 0.1 Rev**=====
-added auto back off polling policy(heart beat slows when chat activity is low)
-displays x says when window is not in focus
-displays Sent at after x minutes of inactivity from the last message
-added typing listener displayes x is typing in chat(not fully impleamented as of yet it is WIP)
-added new page in admin for chat settings
-removed hard coded txt strings
-show buddy online/offline in chat (updates automaticly never used to)
-added option to set max heart beat aswell as min heartbeat
-added option to set heatbeat timeout
-removed setInterval in favar of setTimeout (this fixes issue where the rather erratic behavior it presents when being forced to miss a beat or two)
-chat windows now take into accout brouser width and on resize  and stops anymore opening and shows left and right arrows to cycle thru chat boxes simular to facebook
-fixed issue with sound and firefox asking for a plugin now uses jquery play() function
-fixed issues with ie compat mode (bar was not showing complained about a stray , comma)
+=====SA Chat 0.1.1 Rev**=====
+fixed issue cycling thru chatboxes open chatboxes
+friends box now resizes with browser height
+buddy box now resizes with browser height
+fixed issue in safari (chat boxes wernt organsing properly)
+links posted in chat are now clickable
+minamised chatboxes are now fixed to bar like the chat windows(can be disabled in admin)
+fixed php5.5 deprectiated warning
+added spanish_es-utf8 translation (thanks sunilimon)

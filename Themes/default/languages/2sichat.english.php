@@ -5,7 +5,7 @@
 **/
 $txt['2sichat_live_notfy'] = 'Show message notifaction on page title if not in focus';
 $txt['2sichat_live_type'] = 'Show when buddy is typing in chat';
-$txt['2sichat_live_type_sub'] = '<div class="error">NOT FULLY IMPLEMENTED</div>';
+$txt['2sichat_live_type_sub'] = '<div class="error">May cause server load issues!!</div>';
 $txt['2sichat_e_last3min'] = 'Show sent at in chat if inactive for x mins';
 $txt['2sichat_e_last3minv'] = 'When buddy is considerd inactive';
 $txt['2sichat_e_last3minv_sub'] = 'how long in seconds till buddy is considerd inactive <br />180 seconds = 3 mins';
