@@ -8,6 +8,16 @@ social text no longer shows if none enabled
 user is typing function now works a little better but this can still cause server load issues use at own risk
 
 =====SA Chat 0.1.1 Rev**=====
+fixed issue cycling thru chatboxes open chatboxes
+friends box now resizes with browser height
+buddy box now resizes with browser height
+fixed issue in safari (chat boxes wernt organsing properly)
+links posted in chat are now clickable
+minamised chatboxes are now fixed to bar like the chat windows(can be disabled in admin)
+fixed php5.5 deprectiated warning
+added spanish_es-utf8 translation (thanks sunilimon)
+
+=====SA Chat 0.1 Rev**=====
 added auto back off polling policy(heart beat slows when chat activity is low)
 displays x says when window is not in focus
 displays Sent at after x minutes of inactivity from the last message
