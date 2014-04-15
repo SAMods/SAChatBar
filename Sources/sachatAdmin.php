@@ -7,9 +7,12 @@ if (!defined('SMF'))
     die('Hacking attempt...');
 
 function SAChat_InsertOptions($chatmem, $chatvar, $chatval) {
-    global $smcFunc;
+    global $settings, $smcFunc;
 
-    $smcFunc['db_insert']('ignore', '{db_prefix}themes', array('id_member' => 'int', 'id_theme' => 'int', 'variable' => 'string', 'value' => 'string',), array($chatmem, 1, $chatvar, $chatval,), array('id_member', 'id_theme')
+    $smcFunc['db_insert']('replace', '{db_prefix}themes', 
+		array('id_member' => 'int', 'id_theme' => 'int', 'variable' => 'string', 'value' => 'string',), 
+		array($chatmem, $settings['theme_id'], $chatvar, $chatval,), 
+		array('id_member', 'id_theme')
     );
 }
 
@@ -429,10 +432,13 @@ function twosichatThemes() {
             $request = $smcFunc['db_query']('', '
 		        SELECT id_member
 	            FROM {db_prefix}members', array());
-
-            list ($id_member) = $smcFunc['db_fetch_row']($request);
-            $smcFunc['db_free_result']($request);
-            SAChat_InsertOptions($id_member, 'cbar_theme', $_POST['sachatTheme']);
+				
+            
+            while ($row = $smcFunc['db_fetch_assoc']($request)) {
+				SAChat_InsertOptions($row['id_member'], 'cbar_theme', $_POST['sachatThemer']);
+			
+            }$smcFunc['db_free_result']($request);
+			
         }
 
         redirectexit('action=admin;area=sachat;sa=theme;done');

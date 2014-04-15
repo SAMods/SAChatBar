@@ -176,8 +176,9 @@ function gadget() {
     $smcFunc['db_free_result']($results);
 
     //type = php
-    if ($context['gadget']['type'] == 0) {
-        $context['gadget']['url'] = trim($context['gadget']['url']);
+	if ($context['gadget']['type'] == 0) {
+		
+		$context['gadget']['url'] = trim($context['gadget']['url']);
         $context['gadget']['url'] = trim($context['gadget']['url'], '<?php');
         $context['gadget']['url'] = trim($context['gadget']['url'], '?>');
         ob_start();
@@ -187,7 +188,9 @@ function gadget() {
     }
     //type = html
     if ($context['gadget']['type'] == 1) {
-        $context['gadget']['url'] = $context['gadget']['url'];
+        
+		$context['gadget']['url'] = $context['gadget']['url'];
+		
     }
 
     if (isset($_REQUEST['src']) && $_REQUEST['src'] == 'true') {
@@ -209,7 +212,7 @@ function initChatSess() {
 		SELECT *
 		FROM {db_prefix}2sichat
 		WHERE ({db_prefix}2sichat.to = {int:buddy_id} AND {db_prefix}2sichat.from = {int:member_id}) OR ({db_prefix}2sichat.to = {int:member_id} AND {db_prefix}2sichat.from = {int:buddy_id})
-		ORDER BY id DESC', 
+		ORDER BY id ASC', 
 		array(
 			'member_id' => $member_id,
 			'buddy_id' => $buddy_id,
@@ -243,7 +246,7 @@ function retmsgs() {
 		SELECT *
 		FROM {db_prefix}2sichat
 		WHERE ({db_prefix}2sichat.to = {int:member_id} AND {db_prefix}2sichat.from = {int:buddy_id} AND {db_prefix}2sichat.rd = 0)
-		ORDER BY id DESC',
+		ORDER BY id ASC',
 		array(
 			'member_id' => $member_id,
 			'buddy_id' => $buddy_id,
@@ -1065,8 +1068,7 @@ function doOutput() {
         echo $context['HTML'];
     } else if (isset($context['JSON']) && !isset($context['HTML'])) {
        header('Content-type: application/json');
-        echo doJSON($context['JSON']); // PHP "Here's my array."
-        // JavaScript "Well thank you PHP, I can use this data in here."
+        echo doJSON($context['JSON']); 
     } else if (!isset($context['JSON']) && !isset($context['HTML'])) {
         $context['JSON']['STATUS'] = 'NO DATA';
         header('Content-type: application/json');

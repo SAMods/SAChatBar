@@ -41,8 +41,8 @@ function chat_window_template() { //Main chat window, not the bar, the window yo
 			} 
 			else 
 			{ // Messages sent by my buddy
-				$data .=''.(!empty($modSettings['2sichat_e_last3min']) ? ''.(!empty($message['inactive']) ? '<div class="chatboxtime"><br />'.$txt['bar_sent_at'].' '.date('g:iA M dS', strtotime($message['sent'])).'</div><br />':'').'' : '').'
-				
+				$data .='
+				'.(!empty($modSettings['2sichat_e_last3min']) ? ''.(!empty($message['inactive']) ? '<div class="chatboxtime"><br />'.$txt['bar_sent_at'].' '.date('g:iA M dS', strtotime($message['sent'])).'</div><br />':'').'' : '').'
 				    <strong>'.$buddy_settings['real_name'].' </strong>
 				    <div class="chatboxmsg_optionright">
 				        <img width="15px" height="15px" src="'.$buddy_settings['avatar'].'" />
@@ -117,7 +117,7 @@ function chat_bar_template() { //Chat bar template for logged in users, not gues
 	    '.(empty($modSettings['2sichat_dis_list']) ? ' <div class="chatBar_content">':'<div class="chatBar_content_other">').'';
 			
 	$data .= '
-	    <a href="javascript:void(0)" onclick="javascript:updatebar();">
+	    <a href="javascript:void(0)" onclick="javascript:updatebar(true);">
 		    <img id="test" src="'.$themeurl.'/images/arrow_refresh.png" width="17" height="17" alt="" border="0">
 		</a>&nbsp;
 			
@@ -189,9 +189,15 @@ function chat_extra_template() {
  		         $data.= '<br /><a href="?action=profile;area=lists;u='.$member_id.'"><strong>'.$txt['bil'].'</strong></a>';
 		         $data.= '<hr />';
 		     }
-				 
+				if (!empty($modSettings['2sichat_ico_adthis']) || !empty($modSettings['2sichat_ico_gplus']) || !empty($modSettings['2sichat_ico_myspace']) || !empty($modSettings['2sichat_ico_twit']) || !empty($modSettings['2sichat_ico_fb'])) {
+				    $ssocial=$txt['bar_social'];
+				}
+				else{
+				 $ssocial= '';
+				}
 		     $data.= '
-			     <strong>'.$txt['bar_social'].'</strong><br /><br />
+				  '.($ssocial ? '<strong>'.$ssocial.'</strong><br /><br />' :'').'
+			    
 			     '.($modSettings['2sichat_ico_adthis'] ? '<a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;pubid=xa-503f263237ff99da">
 			     <img src="'.$themeurl.'/images/add-this.png" width="17" height="17" alt="Bookmark and Share" style="border:0"/> <strong>'.$txt['addthis'].'</strong></a><br />':'').'
 			     '.($modSettings['2sichat_ico_gplus'] ? '<a href="javascript:void(0)" onclick="javascript:getSocial(\'gplus\');">
@@ -202,19 +208,8 @@ function chat_extra_template() {
 			     <img src="'.$themeurl.'/images/twitter.png" width="17" height="17" alt="'.$txt['twitter'].'" border="0"> <strong>'.$txt['twitter1'].'</strong></a><br />':'').'
 			     '.($modSettings['2sichat_ico_fb'] ? '<a href="javascript:void(0)" onclick="javascript:getSocial(\'facebook\');">
 			     <img src="'.$themeurl.'/images/facebook.png" width="17" height="17" alt="'.$txt['facebook'].'" border="0"> <strong>'.$txt['facebook1'].'</strong></a><br />':'').'
-		    <hr />';
+		    '.($ssocial ? '<hr />' :'').' ';
 				
-			if(!empty($context['rooms'])) {
-				$data.= '
-			        <strong>Chatrooms</strong><br /><br />';
-				foreach ($context['rooms'] as $room) {
-			         $data.= '
-				         <a  href="javascript:void(0)" onclick="javascript:createRoom(\'1\');">
-				             <strong>'.$room['name'].'</strong>
-				         </a><br />';
-				 }$data.= '<hr />';
-			}
-			
 			if(!empty($context['gadgetslink'])) {
                 $data.= '
 			        <strong>'.$txt['bar_links'].'</strong><br /><br />';
@@ -241,7 +236,7 @@ function chat_extra_template() {
 			
 	  /*$data .= '
 	      <div class="extraboxbottom">
-		      Powerd by SA Chat &copy; 2014 <a href="https://www.facebook.com/devsamods">SA Mods</a>
+		      Powerd by SA Chat &copy; 2010 - 2014 <a href="https://www.facebook.com/devsamods">SA Mods</a>
 		  </div>';*/
 			  
 	 $data .= '
@@ -287,7 +282,7 @@ function buddy_list_template() { //The buddy list.
 				         </a><br />';
 				 }
 			}
-		 
+			
 	    $data .= '
 	        </div>';
 			  
