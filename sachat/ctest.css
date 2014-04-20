@@ -1,0 +1,18 @@
+/* Normal, standard links. */
+a:link, a:visited
+{
+	color: #346;
+	text-decoration: none;
+}
+a:hover
+{
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+body
+{
+	font: 78%/130% "Verdana", "Arial", "Helvetica", sans-serif;
+	margin: 5 auto;
+	padding: 15px 0;
+}
