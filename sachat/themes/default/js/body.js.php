@@ -195,7 +195,6 @@ function initchat() {
 			}
 		}
 		
-		
 		function chatKeydown(typing) {
 			var gpa;
 			var gfa;
