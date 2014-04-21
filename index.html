@@ -16,7 +16,14 @@
     <title>SA Chat Bar by SAMods</title>
   </head>
 
-  <body>
+  <body><div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_GB/all.js#xfbml=1&appId=1415047115403364";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
     <header>
       <div class="inner">
         <h1>SA Chat Bar</h1>
@@ -79,7 +86,7 @@ Copyright 2013 Wayne Mankertz (SA)                            </p>
 <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. </p>
         </section>
 
-        <aside id="sidebar">
+        <aside id="sidebar"><div class="fb-like" data-href="https://www.facebook.com/devsamods" data-width="250" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>
           <a href="https://github.com/SAMods/SAChatBar/zipball/master" class="button">
             <small>Download</small>
             .zip file
