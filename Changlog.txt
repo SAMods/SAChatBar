@@ -1,5 +1,7 @@
 =====SA Chat 0.1.3 Rev**=====
-
+fixed issue with themes reseting to default after hearbeat functions fires
+added a wip default xml JSON theme
+older themes compatabilty removed
 
 =====SA Chat 0.1.2 Rev**=====
 chats are now displayed from bottom to top like facebook

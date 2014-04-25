@@ -103,7 +103,7 @@ function initJs($jsType) {
     if (file_exists($themedir . '/js/' . $jsType . '.js.php')) {
         require_once($themedir . '/js/' . $jsType . '.js.php');
     } else {
-        require_once('js/' . $jsType . '.js.php');
+        require_once($boarddir . '/sachat/themes/default/js/' . $jsType . '.js.php');
     }
 }
 

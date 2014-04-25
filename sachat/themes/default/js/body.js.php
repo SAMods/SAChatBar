@@ -111,7 +111,7 @@ function initchat() {
 			
 			$sachat.ajax({
 				url: \''.$boardurl.'/sachat/index.php\',
-				data: \'action=heart\',
+				data: \''.$thjs.'action=heart\',
 				dataType: "json",
 				cache: false,
 				timeout: '.$modSettings['2sichat_mn_heart_timeout'].',
