@@ -16,13 +16,18 @@ function initchat() {
 	
 	$context['HTML'] = '	
 		var $sachat = jQuery.noConflict();
-	    
+		var HeartbeatCount = 0;
+		var minHeartbeat = '.$modSettings['2sichat_mn_heart'].';
+		var maxHeartbeat = '.$modSettings['2sichat_mn_heartmin'].';
+		var HeartbeatTime = minHeartbeat;
+		var itemsfound = 0;
+			
 		var css=document.createElement("link");
 		css.setAttribute("rel", "stylesheet");
 		css.setAttribute("type", "text/css");
 		css.setAttribute("href", "'.$themeurl.'/style.css");
 		document.documentElement.getElementsByTagName("HEAD")[0].appendChild(css);
-		
+			
 		var div = document.createElement(\'div\');
 		div.setAttribute(\'id\',\'chat_containter\');
 		div.setAttribute(\'dir\',\'ltr\');
@@ -40,69 +45,124 @@ function initchat() {
 			div.setAttribute(\'dir\',\'ltr\');
 			div.setAttribute(\'class\',\'buddybox\');
 			div.style.display = \'none\';
-    		div.innerHTML =\''.$buddies.'\';
+			div.innerHTML =\''.$buddies.'\';
 			document.body.appendChild(div);
-			
+				
 			//setup the basic html template structer for the chat boxes
 			var div = document.createElement(\'div\');
 			div.setAttribute(\'id\',\'ChatBoxtemplate\');
 			div.setAttribute(\'dir\',\'ltr\');
 			document.body.appendChild(div);
-			
+				
 			var div = document.createElement(\'div\');
 			div.setAttribute(\'class\',\'chatbox\');
 			div.setAttribute(\'dir\',\'ltr\');
 			div.setAttribute(\'style\',\'position: fixed\');
 			ChatBoxtemplate.appendChild(div);
-			
+				
 			var div = document.createElement(\'div\');
 			div.setAttribute(\'class\',\'chatBoxWrap\');
 			div.setAttribute(\'id\',\'chatBoxWrap\');
 			document.body.appendChild(div);
-			
+				
 			var div = document.createElement(\'div\');
 			div.setAttribute(\'class\',\'chatBoxslider\');
 			div.setAttribute(\'id\',\'chatBoxslider\');
 			chatBoxWrap.appendChild(div);
-			
+				
 			var div = document.createElement(\'div\');;
 			div.setAttribute(\'id\',\'slideLeft\');
 			div.innerHTML =\'<img src="'.$themeurl.'/images/arrow_right.png" />\';
-			document.body.appendChild(div);
-			
+			chat_containter.appendChild(div);
+				
 			var div = document.createElement(\'div\');;
 			div.setAttribute(\'id\',\'slideRight\');
 			div.innerHTML =\'<img src="'.$themeurl.'/images/arrow_left.png" />\';
-			document.body.appendChild(div);
+			chat_containter.appendChild(div);
 			
-			$sachat(\'#slideLeft\').on(\'click\',function(){
-				$sachat(\'.chatBoxslider .chatbox:visible:first\').addClass(\'chatoverFlowHide\');
-				$sachat(\'.chatBoxslider .chatbox.chatoverFlow\').removeClass(\'chatoverFlow\');
-				updateChatBoxPosition();
-			});
+			var isVisible = function(obj){
+				var style;
 
-			$sachat(\'#slideRight\').on(\'click\',function(){
-				$sachat(\'.chatBoxslider .chatbox.chatoverFlowHide:last\').removeClass(\'chatoverFlowHide\');
-				updateChatBoxPosition();
-			});
+				if (obj == document) return true;
+
+				if (!obj) return false;
+				if (!obj.parentNode) return false;
+				if (obj.style) {
+					if (obj.style.display == \'none\') return false;
+					if (obj.style.visibility == \'hidden\') return false;
+				}
+
+				//Try the computed style in a standard way
+				if (window.getComputedStyle) {
+					style = window.getComputedStyle(obj, "")
+					if (style.display == \'none\') return false;
+					if (style.visibility == \'hidden\') return false;
+				} else {
+					//Or get the computed style using IE\'s silly proprietary way
+					style = obj.currentStyle;
+					if (style) {
+						if (style[\'display\'] == \'none\') return false;
+						if (style[\'visibility\'] == \'hidden\') return false;
+				   }
+				}
+				return isVisible(obj.parentNode);
+			};
+			
+			var addEvent = function(elem, type, eventHandle) {
+				if (elem == null || typeof(elem) == \'undefined\') return;
+				
+				if ( elem.addEventListener ) {
+					elem.addEventListener( type, eventHandle, false );
+				} else if ( elem.attachEvent ) {
+					elem.attachEvent( "on" + type, eventHandle );
+				} else {
+					elem["on"+type]=eventHandle;
+				}
+			};
      
-			$sachat(window).resize(function(){
+			addEvent(window, "resize", resizeCallBack);
+			addEvent(slideRight, "click", slideRightCallBack);
+			addEvent(slideLeft, "click", slideLeftCallBack);
+			
+			function resizeCallBack(){
 				updateChatBoxPosition();
 				$sachat(\'.buddybox\').css({
 					\'max-height\':$sachat(window).height()-50
 				}) 
-				$sachat(\'.extrabox\').css({
-					\'max-height\':$sachat(window).height()-50
-				}) 
-			});
+			}
 			
 			$sachat(\'.buddybox\').css({
 				\'max-height\':$sachat(window).height()-50
 			}) 
 			
+			function slideLeftCallBack(){
+				
+				el = document.querySelectorAll(\'.chatBoxslider .chatbox\');
+				Array.prototype.forEach.call(el, function(el, i){
+					if(el.offsetWidth > 0 && el.offsetHeight > 0){
+						el.classList.add(\'chatoverFlowHide\');
+					}
+					if(el.classList.contains(\'chatoverFlow\')){
+						el.classList.remove(\'chatoverFlow\');
+					}
+				});
+				updateChatBoxPosition();
+			}
+		    
+			function slideRightCallBack(){
+			
+				el = document.querySelectorAll(\'.chatBoxslider .chatbox.chatoverFlowHide\');
+				Array.prototype.forEach.call(el, function(el, i){
+					if(el.classList.contains(\'chatoverFlowHide\')){
+						el.classList.remove(\'chatoverFlowHide\');
+					}
+				});
+				updateChatBoxPosition();
+			}
+			
 			var doUpdate = function () {
 				updatebar();
-				setTimeout(doUpdate, 5000);
+				setTimeout(doUpdate, HeartbeatTime);
 			};
 			doUpdate();
 			
@@ -125,15 +185,18 @@ function initchat() {
 						}
 						if (data != null && data.ids != null){
 							data.ids.forEach(function(id,i){
-								if (!document.getElementById(\'cmsg\'+id) && id != null && id != null || $sachat("#"+id).css(\'display\') == \'none\' && id != null) {
+								if (!document.getElementById(\'cmsg\'+id) && id != null && id != null || document.getElementById(id).style.display == \'none\' && id != null) {
 									chatTo(id);
 								}else {
-									if(document.getElementById(\'cmsg\'+id) && id != null && $sachat("#"+id).css(\'display\') != \'none\') {
+									if(document.getElementById(\'cmsg\'+id) && id != null && document.getElementById(id).style.display != \'none\') {
 										updatemsg(id);								
 									}
 								}
+								itemsfound += 1;
 							});
 						}
+						
+						heartbeattimeout();
 						dynamicUpdates();
 						
 					} else {
@@ -147,6 +210,26 @@ function initchat() {
 				};
 
 				request.send();
+			}
+			
+			function heartbeattimeout(){
+				HeartbeatCount++;
+
+				if (itemsfound > 0) {
+							
+					HeartbeatTime = minHeartbeat;
+					HeartbeatCount = 1;
+							
+				} else if (HeartbeatCount >= 10) {
+							
+					HeartbeatTime *= 2;
+					HeartbeatCount = 1;
+							
+					if (HeartbeatTime > maxHeartbeat) 
+					{
+						HeartbeatTime = maxHeartbeat;
+					}		
+				}
 			}
 			
 			function dynamicUpdates(){
@@ -167,11 +250,37 @@ function initchat() {
 					var div = document.getElementById("cfriends");
 					if(div){div.textContent = \'(\'+data.CONLINE+\')\';}
 				}
-				if ( data.ONLINE != null) {
+				if (data.ONLINE != null) {
 					var div = document.getElementById("friends");
 					if(div){div.innerHTML = data.ONLINE;}
 				}
+				if (data.userTypingSay != null) {
+					var div = document.getElementById("typeon"+data.userTyping);
+					if(div){div.innerHTML = data.userTypingSay;}
+				}
+				if (data != null && data.userTypingSay == null) {
+					var div = document.getElementById("typeon"+data.userTyping);
+					if(div){div.innerHTML = "";}
+				}
 			}
+			
+			function chatKeydown(typing) {
+				var gpa;
+				var gfa;
+				clearTimeout(gpa);
+				gpa = setTimeout(function () {
+					var request = setup_XMLHttpRequest(\'POST\',\''.$boardurl.'/sachat/index.php?action=typing&f\');
+					request.setRequestHeader(\'Content-Type\', \'application/x-www-form-urlencoded; charset=UTF-8\');
+					request.send("userid='.$member_id.'&typing=typing&untype=1");
+					gfa = -1
+				}, 5E3);
+				if (gfa != typing) {
+					var request = setup_XMLHttpRequest(\'POST\',\''.$boardurl.'/sachat/index.php?action=typing&t\');
+					request.setRequestHeader(\'Content-Type\', \'application/x-www-form-urlencoded; charset=UTF-8\');
+					request.send("userid='.$member_id.'&typing=typing");
+				}
+			}
+			
 			function chatTo(id) {
            
 				if (!$sachat(\'#\'+id).html()){ 
@@ -186,6 +295,8 @@ function initchat() {
 						$sachat(clone.show()).insertBefore(\'.chatBoxslider .chatbox:visible:first\');
 					}	
 				}
+
+				'.(!empty($modSettings['2sichat_live_type']) ? '$sachat(document).keydown(function () {return chatKeydown(id);});' : '').'
 				
 				var request = setup_XMLHttpRequest(\'GET\',\''.$boardurl.'/sachat/index.php?'.$thjs.'cid=\'+id);
 
@@ -198,11 +309,12 @@ function initchat() {
 							data = JSON.parse(resp);
 						}
 
-					    $sachat($sachat(\'#\'+id)).html(data.DATA);
+						document.getElementById(+id).innerHTML = data.DATA;
+						document.getElementById(+data.BID).style.bottom = \'27px\';
 						
-						$sachat("#"+data.BID).css(\'bottom\', \'27px\');
 						updateChatBoxPosition();
-						$sachat("#"+id+" .chatboxcontent").scrollTop($sachat("#"+id+" .chatboxcontent")[0].scrollHeight);
+						
+						document.getElementById(id).getElementsByClassName("chatboxcontent")[0].scrollTop = document.getElementById(id).getElementsByClassName("chatboxcontent")[0].scrollHeight;
 						
 						var myArray = [];
 						myArray[0] = \''.$modSettings['2sichat_cookie_name'].'\';
@@ -249,7 +361,7 @@ function initchat() {
 						newdiv.setAttribute(\'dir\',\'ltr\');
 						newdiv.innerHTML = data.DATA;
 						document.getElementById(\'cmsg\'+id).insertBefore(newdiv, document.getElementById(\'cmsg\'+id).lastChild);
-						$sachat("#"+id+" .chatboxcontent").scrollTop($sachat("#"+id+" .chatboxcontent")[0].scrollHeight);
+						document.getElementById(id).getElementsByClassName("chatboxcontent")[0].scrollTop = document.getElementById(id).getElementsByClassName("chatboxcontent")[0].scrollHeight;
 					}
 				}
 			}
@@ -272,47 +384,50 @@ function initchat() {
 						newdiv.setAttribute(\'dir\',\'ltr\');
 						newdiv.innerHTML = data.DATA;
 						document.getElementById(\'cmsg\'+id).insertBefore(newdiv, document.getElementById(\'cmsg\'+id).lastChild);
-						$sachat("#"+id+" .chatboxcontent").scrollTop($sachat("#"+id+" .chatboxcontent")[0].scrollHeight);
+						document.getElementById(id).getElementsByClassName("chatboxcontent")[0].scrollTop = document.getElementById(id).getElementsByClassName("chatboxcontent")[0].scrollHeight;
 					}
 				}
+				HeartbeatTime = minHeartbeat;
+				HeartbeatCount = 1;
 			}
 			
 			function updateChatBoxPosition(){
 				
 				var right=0;
 				var slideLeft = false;
-				var $chatboxes = $sachat(\'.chatBoxslider .chatbox:visible\');
-				
-				$chatboxes.each(function(){
-					$sachat(this).css({
-						\'right\':right
-					});
 
-					right += $sachat(this).width()+20;
+				elements = document.querySelectorAll(".chatBoxslider .chatbox");
+				
+                Array.prototype.forEach.call(elements, function(el, i){
+					
+					if(el.offsetWidth > 0 && el.offsetHeight > 0 || isVisible(el)){
 			
-					$sachat(\'.chatBoxslider\').css({
-						\'width\':right
-					});
-			
-					if ($sachat(this).offset().left- 20<0){
-						$sachat(this).addClass(\'chatoverFlow\');
-						slideLeft = true;
-					}
-					else{
-						$sachat(this).removeClass(\'chatoverFlow\');
+						el.style.right = right+"px";
+						
+						right += el.offsetWidth + 20;
+					
+						el.style.width = right;
+						
+						if (el.offsetLeft - 20 < 0){
+							el.classList.add(\'chatoverFlow\');
+							slideLeft = true;
+						}
+						else{
+							el.classList.remove(\'chatoverFlow\');
+						}
 					}
 				});
 				
 				if(slideLeft) {
-					$sachat(\'#slideLeft\').show();
+					document.getElementById("slideLeft").style.display = \'block\';  
 				}else{ 
-					$sachat(\'#slideLeft\').hide();
+					document.getElementById("slideLeft").style.display = \'none\';  
 				}
-		
+
 				if($sachat(\'.chatoverFlowHide\').html()) {
-					$sachat(\'#slideRight\').show();
+					document.getElementById("slideRight").style.display = \'block\';
 				}else{
-					$sachat(\'#slideRight\').hide();
+					document.getElementById("slideRight").style.display = \'none\';  
 				}
 			}
 		';
@@ -333,10 +448,10 @@ function initchat() {
 		}
 		function showhide(layer_ref) {
 			if(document.getElementById(layer_ref).style.display == \'none\'){
-                $sachat(document.getElementById(layer_ref)).fadeIn("fast");  
+                document.getElementById(layer_ref).style.display = \'block\';  
             }
             else{
-				$sachat(document.getElementById(layer_ref)).fadeOut("slow");	
+				document.getElementById(layer_ref).style.display = \'none\';
             }	
 		}
 	';
