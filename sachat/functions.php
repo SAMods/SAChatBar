@@ -3,6 +3,26 @@
  * @copyright Wayne Mankertz, 2013
  * I release this code as free software, under the MIT license.
 **/
+
+/*function charset_decode_utf_8 ($string) { 
+    
+	//slow convert 8bit chars
+	if (! ereg("[\200-\237]", $string) and ! ereg("[\241-\377]", $string)) 
+        return $string; 
+
+    // 3 byte unicode characters 
+    $string = preg_replace("/([\340-\357])([\200-\277])([\200-\277])/e",         
+    "'&#'.((ord('\\1')-224)*4096 + (ord('\\2')-128)*64 + (ord('\\3')-128)).';'",    
+    $string); 
+
+    // 2 byte unicode characters 
+    $string = preg_replace("/([\300-\337])([\200-\277])/e", 
+    "'&#'.((ord('\\1')-192)*64+(ord('\\2')-128)).';'", 
+    $string); 
+
+    return $string; 
+} */
+
 function doCharset($db_character_set) {
     global $smcFunc;
 
@@ -575,6 +595,8 @@ function is_banned_check($member) {
 	
 	$user_info = loadUserSettings($member,true);
 
+	$_SESSION['cban'] = array();
+	
 	// Only check the ban every so often. (to reduce load.)
 	if (isset($_SESSION['cban']) || empty($modSettings['banLastUpdated']) || ($_SESSION['cban']['last_checked'] < $modSettings['banLastUpdated']) || $_SESSION['cban']['id_member'] != $user_info['id_member'] || $_SESSION['cban']['ip'] != $user_info['member_ip'] || $_SESSION['cban']['ip2'] != $user_info['member_ip2'] || (isset($user_info['email_address'], $_SESSION['cban']['email']) && $_SESSION['cban']['email'] != $user_info['email_address']))
 	{
@@ -676,7 +698,7 @@ function phaseBBC($data) {
 
 function loadUserSettings($id, $check=false) {
 
-    global $smcFunc;
+    global $smcFunc, $modSettings;
 
     // Load $user_settings
     $results = $smcFunc['db_query']('', '
@@ -693,12 +715,16 @@ function loadUserSettings($id, $check=false) {
     $temp = $smcFunc['db_fetch_assoc']($results);
     $smcFunc['db_free_result']($results);
 
-    if($check)
-	{
-	    $temp['real_name'] = $temp['real_name'];
-	}
-	else{
-	    $temp['real_name'] = utf8_encode($temp['real_name']);
+    if($modSettings['global_character_set'] != 'UTF-8'){
+		if($check)
+		{
+			$temp['real_name'] = $temp['real_name'];
+		}
+		else{
+			$temp['real_name'] = utf8_encode($temp['real_name']);
+		}
+	}else{
+		$temp['real_name'] = $temp['real_name'];
 	}
 
     //Lets do some fusion, Fuussiioooon Ahhhhh!!!!!
