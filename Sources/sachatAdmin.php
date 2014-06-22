@@ -364,7 +364,7 @@ function twosichatLoad() {
 
     $disabled = false;
 
-    ob_start();
+   /* ob_start();
     passthru('typeperf -sc 1 "\processor(_total)\% processor time"', $statusa);
     $contenta = ob_get_contents();
     ob_end_clean();
@@ -373,7 +373,13 @@ function twosichatLoad() {
             $cpua = $loada[1];
         }
         $context['chat_settings_message'] = sprintf($txt['2sichat_loadavg_warning'], $cpua);
-    }
+    }*/
+	if(function_exists ("sys_getloadavg")){
+		$load = sys_getloadavg();
+		$context['chat_settings_message'] = sprintf($txt['2sichat_loadavg_warning'], $load[0]);
+	}else{
+		$context['chat_settings_message'] = '<div class="error">Load checking is not avalible on windows</div>';
+	}
 
     $context[$context['admin_menu_name']]['tab_data']['title'] = $txt['2sichatloadbal'];
     $context[$context['admin_menu_name']]['tab_data']['description'] = $context['chat_settings_message'];

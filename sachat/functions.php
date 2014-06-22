@@ -1017,7 +1017,7 @@ function doLoadCHK() {
 
     global $modSettings, $context;
 
-    ob_start();
+   /** ob_start();
     passthru('typeperf -sc 1 "\processor(_total)\% processor time"', $status);
     $content = ob_get_contents();
     ob_end_clean();
@@ -1025,20 +1025,23 @@ function doLoadCHK() {
         if (preg_match("/\,\"([0-9]+\.[0-9]+)\"/", $content, $load)) {
             $cpu[0] = $load[1];
         }
-    }
-
-    if ($cpu[0] && $cpu[0] > $modSettings['2sichat_max_load']) {
-        if ($modSettings['2sichat_load_dis_chat']) {
-            $context['JSON']['STATUS'] = 'AWAY';
-            doOutput();
-        }
-        if ($modSettings['2sichat_load_dis_bar']) {
-            $modSettings['2sichat_dis_bar'] = 1;
-        }
-        if ($modSettings['2sichat_load_dis_list']) {
-            $modSettings['2sichat_dis_list'] = 1;
-        }
-    }
+    }*/
+	if(function_exists ("sys_getloadavg")){
+		$load = sys_getloadavg();
+		
+		if ($load[0] && $load[0] > $modSettings['2sichat_max_load']) {
+			if ($modSettings['2sichat_load_dis_chat']) {
+				$context['JSON']['STATUS'] = 'AWAY';
+				doOutput();
+			}
+			if ($modSettings['2sichat_load_dis_bar']) {
+				$modSettings['2sichat_dis_bar'] = 1;
+			}
+			if ($modSettings['2sichat_load_dis_list']) {
+				$modSettings['2sichat_dis_list'] = 1;
+			}
+		}
+	}
 }
 
 function doJSON($data) {
