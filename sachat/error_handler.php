@@ -49,6 +49,9 @@ function shutdownHandler() { //will be called when php script ends.
     }
 }
 
+/**
+ * @param string $errortype
+ */
 function logError($errorfile, $errorline, $errormes, $errortype) {
     global $smcFunc, $modSettings, $last_error;
 
