@@ -6,6 +6,9 @@
 if (!defined('SMF'))
     die('Hacking attempt...');
 
+/**
+ * @param string $key
+ */
 function sachat_array_insert(&$input, $key, $insert, $where = 'before', $strict = false) {
     $position = array_search($key, array_keys($input), $strict);
 
@@ -51,6 +54,9 @@ function template_sachat_above() {
 
 function template_sachat_below() {}
 
+/**
+ * @param string $type
+ */
 function SAChat_showBar($type) {
     global $modSettings, $options, $settings, $boardurl, $context;
 

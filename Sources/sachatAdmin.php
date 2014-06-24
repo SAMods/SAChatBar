@@ -6,6 +6,9 @@
 if (!defined('SMF'))
     die('Hacking attempt...');
 
+/**
+ * @param string $chatvar
+ */
 function SAChat_InsertOptions($chatmem, $chatvar, $chatval) {
     global $settings, $smcFunc;
 
@@ -738,6 +741,9 @@ function chmodDirectory($path = '.', $level = 0) {
     closedir($dh);
 }
 
+/**
+ * @param string $dir
+ */
 function SAChat_deleteAll($dir) {
 
     if (!file_exists($dir))

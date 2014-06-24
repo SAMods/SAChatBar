@@ -638,6 +638,9 @@ function censorMSG($data) {
     return $data;
 }
 
+/**
+ * @return string
+ */
 function phaseMSG($data) {
     global $modSettings;
 
@@ -908,6 +911,9 @@ function loadDatabase() {
     }
 }
 
+/**
+ * @param string $key
+ */
 function cachegetData($key, $ttl = 120) {
     global $boardurl, $modSettings, $boarddir;
 
@@ -931,6 +937,9 @@ function cachegetData($key, $ttl = 120) {
         return @unserialize($value);
 }
 
+/**
+ * @param string $key
+ */
 function cacheputData($key, $value, $ttl = 120) {
     global $boardurl, $modSettings, $boarddir;
 
