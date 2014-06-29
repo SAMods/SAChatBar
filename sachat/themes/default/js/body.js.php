@@ -387,6 +387,7 @@ function initchat() {
                 myArray[0] = \''.$modSettings['2sichat_cookie_name'].'\';
 			    myArray[1] = \'msg_win\'+DId;
 		        myArray[2] = DId;
+				myArray[3] = \''.$member_id.'\'
 		        $sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'\'+DId, escape(myArray.join(\',\')));
 			}
 		}
@@ -626,9 +627,9 @@ function initchat() {
 			}
 					
 			if(cSession[0] == \''.$modSettings['2sichat_cookie_name'].'\'){
-			    chatTo(cSession[1].substr(7));
-				//document.getElementById(cSession[2]).style.left = cSession[3]+\'px\';
-				//document.getElementById(cSession[2]).style.top = cSession[4]+\'px\';
+			    if(cSession[3] == \''.$member_id.'\'){
+					chatTo(cSession[1].substr(7));
+				}
 			}
 		});
 	}
