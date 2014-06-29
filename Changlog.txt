@@ -6,6 +6,7 @@ added a wip default xml JSON theme
 
 older themes compatabilty removed
 fixed issues reported here http://www.simplemachines.org/community/index.php?topic=391961.msg3713651#msg3713651
+added permission for admin snoop
 
 
 
