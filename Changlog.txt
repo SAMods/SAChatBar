@@ -1,37 +1,70 @@
 =====SA Chat 0.1.3 Rev**=====
+
 fixed issue with themes reseting to default after hearbeat functions fires
+
 added a wip default xml JSON theme
+
 older themes compatabilty removed
+fixed issues reported here http://www.simplemachines.org/community/index.php?topic=391961.msg3713651#msg3713651
+
+
 
 =====SA Chat 0.1.2 Rev**=====
+
 chats are now displayed from bottom to top like facebook
+
 fixed issue with chat boxes not reapering
+
 fixed issue resetting members themes just didnt work
+
 fixed issue with new_msg() and updatemsg() miss fireing if chat was hidden or minimised
+
 fixed issue with php gadgets
 social text no longer shows if none enabled
+
 user is typing function now works a little better but this can still cause server load issues use at own risk
 
+
+
 =====SA Chat 0.1.1 Rev**=====
+
 fixed issue cycling thru chatboxes open chatboxes
+
 friends box now resizes with browser height
+
 buddy box now resizes with browser height
+
 fixed issue in safari (chat boxes wernt organsing properly)
+
 links posted in chat are now clickable
+
 minamised chatboxes are now fixed to bar like the chat windows(can be disabled in admin)
-fixed php5.5 deprectiated warning
+fixed php5.5 
+deprectiated warning
+
 added spanish_es-utf8 translation (thanks sunilimon)
 
+
+
 =====SA Chat 0.1 Rev**=====
+
 added auto back off polling policy(heart beat slows when chat activity is low)
 displays x says when window is not in focus
+
 displays Sent at after x minutes of inactivity from the last message
+
 added typing listener displayes x is typing in chat(not fully impleamented as of yet it is WIP)
+
 added new page in admin for chat settings
+
 removed hard coded txt strings
+
 show buddy online/offline in chat (updates automaticly never used to)
+
 added option to set max heart beat aswell as min heartbeat
+
 added option to set heatbeat timeout
+
 removed setInterval in favar of setTimeout (this fixes issue where the rather erratic behavior it presents when being forced to miss a beat or two)
 chat windows now take into accout brouser width and on resize  and stops anymore opening and shows left and right arrows to cycle thru chat boxes simular to facebook
 fixed issue with sound and firefox asking for a plugin now uses jquery play() function
@@ -43,7 +76,10 @@ redone the templates and css in new theme
 
 
 
+
+
 =====SA Chat RC6-3 Rev**=====
+
 
 added old theme to package
 
@@ -51,68 +87,132 @@ new theme js fixes
 
 
 
+
+
 =====SA Chat RC6-2 Rev**=====
 
+
 removed all jQuery.noConflict() calls now uses custom var
+
 finished admin snoop mode allowed admins to see all regardless of user settings, buddys and ignore list
+
 removed unused function from sachathook.php
+
 finished option to disable error logs 
+
 finished custom cookie name prefix this can help with conflicts with older versions were cookies was handeld different
+
 more improves to the chat box styling
+
 more imporves to minimised chats now only bleeps once when new messsage but show a new image all the time untill that message is read
-added draggable handle can only be dragged by this handel 
+a
+dded draggable handle can only be dragged by this handel 
 dragged windows now fade
 
+
+
 =====SA Chat RC6-1 Rev**=====
+
 now uses jquery-play-sound plugin
+
 removed more older/legacy code from theme js files
+
 chat windows are now a little bigger
+
 long messages now wrap instead of makeing long scroll
+
 fixed issue with chat messages not returned after so many messages
 
+
+
 =====SA Chat RC6 Rev**=====
+
 https://github.com/SAMods/SAChatBar/commits/master
+
 fixed cacheing issue when no gadgets or links added
+
 added redirect after deleting errors from logs
+
 fixed Undefined index: additional_groups
+
 fixed Undefined index: id_group
+
 fixed Undefined index: id_post_group
+
 fixed Undefined index: avatar
+
 banned members no longer see the bar
+
 fixed chrome bug Resource interpreted as Script but transferred with MIME type text/html:
+
 added caching to smilys
+
 majar update to cookies and the way they were handeled now uses jquery cookie plugin
+
 now uses jquery draggable plugin less code yay :P
+
 removed veiwport offset plugin not needed with draggable
 
+
+
 =====SA Chat RC3 Rev**=====
+
 used proper php opening tag
+
 show default themes but dont allow deletion
+
 added test cht file for testing chat and preveiwing themes [acessed via site.com/sachat/sachattest.php]
+
 fixed load checking issues
-removed old default theme from package
+re
+moved old default theme from package
+
 enabled update online by default
+
 admin ui changes
+
 added optopn to reset member themes
+
 copy js when copying theme
+
 added options to disable bar on certain themes
+
 improved genMemList() function
+
 improved genMemcount() now uses genMemList('count')
+
 fixed profile chat bar settings
+
 function initOptions() only gets whats needed
+
 fixed issue with utf8 special charactors
+
 improved page loading time
+
 moved $user_settings = loadUserSettings($member_id); from template buddy_list to genMemList()
+
 added way to refresh bar manualy
+
 removed init options functiionn no longer needed
+
 fixed incorrect avatars showing
 
+
+
 =====SA Chat RC2 Rev**=====
+
 minor code refactor in index.php
+
 some code cleanup
+
 moved functions to own file
+
 updated images for new theme
+
 new theme tweeks
+
 thems can now use there own js files
+
 added suport for word censoring
+
 possible issue on some servers fixed [maybe?]
