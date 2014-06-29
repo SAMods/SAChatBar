@@ -118,7 +118,7 @@ function initLang($lang) {
 }
 
 function initJs($jsType) {
-    global $boarddir, $themedir;
+    global $themedir;
 
     if (file_exists($themedir . '/js/' . $jsType . '.js.php')) {
         require_once($themedir . '/js/' . $jsType . '.js.php');
@@ -980,7 +980,7 @@ function cacheputData($key, $value, $ttl = 120) {
 
 function loadOpt() {
 
-    global $member_id, $DBcon_exp, $boarddir, $context;
+    global $member_id, $boarddir, $context;
 
     if (!file_exists($boarddir . '/sachat/cache')) {
         mkdir($boarddir . '/sachat/cache', 0755);
