@@ -95,6 +95,7 @@ $txt['permissionname_2sichat_bar'] = 'Disable bar';
 $txt['permissionname_2sichat_bar_close'] = 'Allowed to disable bar';
 $txt['permissionname_2sichat_bar_theme'] = 'Allowed to change themes';
 $txt['permissionname_2sichat_bar_buddys'] = 'Allowed to choose who to talk to';
+$txt['permissionname_2sichat_bar_adminmode'] = 'Allowed to use admin mode';
 $txt['2silempty'] = 'Left empty!';
 $txt['2silempty1'] = 'Must be numeric!';
 $txt['2sichat_mn_heart_timeout'] = 'Heartbeat timeout';

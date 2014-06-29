@@ -5,7 +5,7 @@
 **/
 function initchat() {
 
-	global $user_settings, $budCount, $member_id, $usershowBar,$buddy_settings, $boardurl, $options, $modSettings, $themeurl, $thjs, $context;
+	global $user_settings, $buddies, $budCount, $member_id, $usershowBar,$buddy_settings, $boardurl, $options, $modSettings, $themeurl, $thjs, $context;
 
 	if ($member_id && empty($modSettings['2sichat_dis_bar'])) {
 		$bar = addslashes(preg_replace("/\r?\n?\t/m", "", chat_bar_template()));

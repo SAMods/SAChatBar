@@ -247,7 +247,7 @@ function chat_extra_template() {
 
 function buddy_list_template() { //The buddy list.
 
-	global $context, $txt, $admin, $modSettings;
+	global $context, $txt, $admin, $permission, $modSettings;
 
 	$data = ' 
 	     <div class="buddyboxhead">
@@ -263,7 +263,7 @@ function buddy_list_template() { //The buddy list.
 	 $data .= '
 	     <div class="buddyboxcontent">';
 		     
-			 if(!empty($admin['is_admin'])){		    
+			 if(!empty($admin['is_admin']) || isset($permission['2sichat_bar_adminmode'])){		    
 				$data .='<input type="button" onclick="javascript:snooper(); return false;" value="'.$txt['bar_admin_snoop'].'" />'; 
 				
 				if(!empty($_COOKIE[$modSettings['2sichat_cookie_name']."_chatSnoop"])){

@@ -95,6 +95,7 @@ $txt['permissionname_2sichat_bar'] = 'Disabilita barra';
 $txt['permissionname_2sichat_bar_close'] = 'Autorizzato a disabilitare la barra';
 $txt['permissionname_2sichat_bar_theme'] = 'Autorizzato a cambiare i temi';
 $txt['permissionname_2sichat_bar_buddys'] = 'Autorizzato a scegliere con chi chattare';
+$txt['permissionname_2sichat_bar_adminmode'] = 'Allowed to use admin mode';
 $txt['2silempty'] = 'Lasciato vuoto!';
 $txt['2silempty1'] = 'Deve essere numerico!';
 $txt['2sichat_mn_heart_timeout'] = 'Timeout aggiornamento';
