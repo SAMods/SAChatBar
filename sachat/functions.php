@@ -4,25 +4,6 @@
  * I release this code as free software, under the MIT license.
 **/
 
-/*function charset_decode_utf_8 ($string) { 
-    
-	//slow convert 8bit chars
-	if (! ereg("[\200-\237]", $string) and ! ereg("[\241-\377]", $string)) 
-        return $string; 
-
-    // 3 byte unicode characters 
-    $string = preg_replace("/([\340-\357])([\200-\277])([\200-\277])/e",         
-    "'&#'.((ord('\\1')-224)*4096 + (ord('\\2')-128)*64 + (ord('\\3')-128)).';'",    
-    $string); 
-
-    // 2 byte unicode characters 
-    $string = preg_replace("/([\300-\337])([\200-\277])/e", 
-    "'&#'.((ord('\\1')-192)*64+(ord('\\2')-128)).';'", 
-    $string); 
-
-    return $string; 
-} */
-
 function doCharset($db_character_set) {
     global $smcFunc;
 
@@ -285,7 +266,6 @@ function retmsgs() {
         }
         $smcFunc['db_free_result']($results);
         $context['JSON']['DATA'] = chat_retmsg_template();
-        // Muahhahaha, now finally get rid of that stupid session junk. We got JSON.
         $context['JSON']['ID'] = $lastID;
     }
 }
@@ -718,7 +698,7 @@ function loadUserSettings($id, $check=false) {
     $temp = $smcFunc['db_fetch_assoc']($results);
     $smcFunc['db_free_result']($results);
 
-    if($modSettings['global_character_set'] != 'UTF-8'){
+    if(isset($modSettings['global_character_set']) && $modSettings['global_character_set'] != 'UTF-8'){
 		if($check)
 		{
 			$temp['real_name'] = $temp['real_name'];
