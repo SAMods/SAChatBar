@@ -81,6 +81,12 @@ function initTheme() {
         $load_btime = round(array_sum(explode(' ', microtime())) - array_sum(explode(' ', $time_bstart)), 3);
     }
 
+	if(file_exists($themedir . '/template.php')){
+		require_once($themedir . '/template.php');
+	}else{
+		require_once($boarddir . '/sachat/themes/master.template.php');
+	}
+	
     return array($themeurl, $themedir, $thjs, $load_btime);
 }
 

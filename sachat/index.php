@@ -37,7 +37,6 @@ if (@version_compare(PHP_VERSION, '5') == -1) {
 
 //Load our theme
 list ($themeurl, $themedir, $thjs, $load_btime) = initTheme();
-require_once($themedir . '/template.php');
 
 //Load our language strings
 $doLang = initLang($language);

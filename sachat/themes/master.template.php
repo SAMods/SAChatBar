@@ -4,10 +4,8 @@
  * I release this code as free software, under the MIT license.
 **/
 /*
-	Since it has been wanted here it is, the chat template.
-	Remember you can change the content of the divs but be aware
-	that changing or removing ids or class attributes can have negitive
-	effects on the chat.
+	Since it has been wanted here it is, the chat master template.
+	Please do not modify this instead create a template.php file and include it in your theme
 */
 function chat_window_template() { //Main chat window, not the bar, the window you chat to your friends with, duh :P
 
