@@ -252,19 +252,20 @@ function retmsgs() {
 	$results = $smcFunc['db_query']('', '
 		SELECT *
 		FROM {db_prefix}2sichat
-		WHERE ({db_prefix}2sichat.to = {int:member_id} AND {db_prefix}2sichat.from = {int:buddy_id} AND {db_prefix}2sichat.rd = 0)
+		WHERE ({db_prefix}2sichat.id = {int:m} AND {db_prefix}2sichat.to = {int:member_id} AND {db_prefix}2sichat.from = {int:buddy_id} AND {db_prefix}2sichat.rd = 0)
 		ORDER BY id ASC',
 		array(
 			'member_id' => $member_id,
 			'buddy_id' => $buddy_id,
 			'reqTime' => $reqTime,
+			'm' => $_REQUEST['msg'],
 		)
     );
 
     $lastID = 0;
 
     if ($results) {
-       mread(); // Mark messages read since we are displaying them.
+      // mread(); // Mark messages read since we are displaying them.
         while ($row = $smcFunc['db_fetch_assoc']($results)) {
             $row['msg'] = phaseMSG($row['msg']);
             $context['msgs'][] = $row;
@@ -539,9 +540,7 @@ function doheart() {
     if ($results && $smcFunc['db_num_rows']($results) != 0) {
         $context['JSON']['ids'] = array();
         while ($row = $smcFunc['db_fetch_assoc']($results)) {
-			if (!in_array($row['from'], $context['JSON']['ids'])) {
-				$context['JSON']['ids'][] = $row['from'];
-			}
+				$context['JSON']['ids'][$row['id']] = $row['from'];
 			
       }
       $smcFunc['db_free_result']($results);

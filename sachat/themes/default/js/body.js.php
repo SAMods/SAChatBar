@@ -117,16 +117,13 @@ function initchat() {
 				timeout: '.$modSettings['2sichat_mn_heart_timeout'].',
 				success: function(data){
 					if (data != null && data.ids != null){
-						jQuery.each(data.ids, function() {
-							
-						    $sachat("#typeon"+this).html(\' \');
-							
-						    if (!document.getElementById(\'cmsg\'+this) && this != null && this != null || $sachat("#"+this).css(\'display\') == \'none\' && this != null) {
+						$sachat.each(data.ids, function(id,u) {
+							if (!document.getElementById(\'cmsg\'+this) && this != null && this != null || $sachat("#"+this).css(\'display\') == \'none\' && this != null) {
 								chatTo(this);
 							    loadsnd(\'new_msg\');
-							}else {
+						    }else {
 								if(document.getElementById(\'cmsg\'+this) && this != null && $sachat("#"+this).css(\'display\') != \'none\') {
-									updatemsg(this);
+									updatemsg(u,id);
 									if($sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'_min\'+this)){
 										$sachat(\'#cmsg\'+this).show();
 										$sachat(\'#bddy\'+this).show();
@@ -134,7 +131,7 @@ function initchat() {
 																
 								}
 							}
-						    itemsfound += 1;
+							itemsfound += 1;
 						});
 					}
 
@@ -429,7 +426,7 @@ function initchat() {
 			$sachat.post("'.$boardurl.'/sachat/index.php?action=closechat",{},function(data){});	
 		}
 
-		function jsubmit(id){
+		var jsubmit = function(id){
 		   
 		    var textbox = \'msg\'+id;
 		    var msg = document.getElementById(textbox).value;
@@ -466,12 +463,12 @@ function initchat() {
 		    HeartbeatCount = 1;
 		}
 
-		function updatemsg(id){
+		var updatemsg = function(id,m){
 			if (document.getElementById(\'cmsg\'+id)) {
 		        
 				$sachat.ajax({
 					url: \''.$boardurl.'/sachat/index.php\',
-					data: \''.$thjs.'update=\'+id,
+					data: \''.$thjs.'update=\'+id+\'&msg=\'+m,
 					dataType: "json",
 					cache: false,
 					timeout: '.$modSettings['2sichat_mn_heart_timeout'].',
