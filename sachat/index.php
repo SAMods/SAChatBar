@@ -36,7 +36,7 @@ if (@version_compare(PHP_VERSION, '5') == -1) {
 }
 
 //Load our theme
-list ($themeurl, $themedir, $thjs, $load_btime) = initTheme();
+list ($themeurl, $themedir, $thjs, $load_btime, $soundurl) = initTheme();
 
 //Load our language strings
 $doLang = initLang($language);
@@ -97,23 +97,19 @@ if ($member_id != 0) {
     }
 	
     // Load $buddy_settigns if we are chatting.
-    if (isset($_REQUEST['cid']) || isset($_REQUEST['update'])) {
+    if (isset($_REQUEST['cid'])) {
         if (isset($_REQUEST['cid']) && is_numeric($_REQUEST['cid'])) {
             $buddy_id = $_REQUEST['cid'];
-        } else if (isset($_REQUEST['update']) && is_numeric($_REQUEST['update'])) {
-            $buddy_id = $_REQUEST['update'];
+			$_SESSION['buddy_id'] = $buddy_id;
         } else {
             die(); // Something fishy about a non numeric buddy id.
-        }
-        if ($buddy_id) {
-		    $_SESSION['buddy_id'] = $buddy_id;
-            $buddy_settings = loadUserSettings($buddy_id);
-			$context['JSON']['NAME'] = $buddy_settings['real_name'];	
         }
     }
 	
 	if(!empty($_SESSION['buddy_id'])){
 	    $context['JSON']['userTyping'] = $_SESSION['buddy_id'];
+		$buddy_settings = loadUserSettings($_SESSION['buddy_id']);
+		$context['JSON']['NAME'] = $buddy_settings['real_name'];	
 	}
 	
 } else if (!empty($modSettings['2sichat_permissions'])) {
@@ -173,8 +169,6 @@ if (isset($_REQUEST['action'])) {
         initChatSess();
     } else if (isset($_REQUEST['msg']) && isset($_REQUEST['cid']) && $member_id) {
         savemsg();
-    } else if (isset($_REQUEST['update']) && $member_id) {
-        retmsgs();
     } else if (isset($_REQUEST['gid'])) {
         gadget();
     }

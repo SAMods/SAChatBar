@@ -66,7 +66,7 @@ function chat_window_template() { //Main chat window, not the bar, the window yo
 	return $data;
 }
 
-function chat_retmsg_template() { //When you recieve a message
+/*function chat_retmsg_template() { //When you recieve a message
 
 	global $buddy_settings, $context;
 
@@ -87,7 +87,7 @@ function chat_retmsg_template() { //When you recieve a message
 	    }
 	    return $data;
 	}
-}
+}*/
 
 function chat_savemsg_template() { //When you send a message
 

@@ -1,3 +1,10 @@
+=====SA Chat 0.1.4 Rev**=====
+
+Simplefied themes a little more all you need is images and css and you have a basic theme other stuff like template, sounds and languages are optional
+fixed Fast chat glitch part 2
+removed all instances and calls to updatemsg
+removed seprate heart beat for each chat window this never realy worked too well and was broken even more after the last update
+
 =====SA Chat 0.1.3 Rev**=====
 
 fixed load checking issues no longer works on windows servers

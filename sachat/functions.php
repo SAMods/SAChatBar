@@ -69,7 +69,7 @@ function initCookies() {
 function initTheme() {
     global $boardurl, $time_bstart, $boarddir;
 
-    if (isset($_REQUEST['theme']) && !strstr('..', $_REQUEST['theme']) && is_file('./themes/' . $_REQUEST['theme'] . '/template.php') && is_file('./themes/' . $_REQUEST['theme'] . '/style.css')) {
+    if (isset($_REQUEST['theme']) && !strstr('..', $_REQUEST['theme']) && is_file('./themes/' . $_REQUEST['theme'] . '/style.css')) {
         $themeurl = $boardurl . '/sachat/themes/' . $_REQUEST['theme'];
         $themedir = $boarddir . '/sachat/themes/' . $_REQUEST['theme'];
         $thjs = 'theme=' . $_REQUEST['theme'] . '&';
@@ -81,13 +81,19 @@ function initTheme() {
         $load_btime = round(array_sum(explode(' ', microtime())) - array_sum(explode(' ', $time_bstart)), 3);
     }
 
+	if(is_file($themeurl.'/sounds')){
+		$soundurl = $themeurl.'/sounds';
+	}else{
+		$soundurl = $boardurl . '/sachat/themes/default/sounds';
+	}
+	
 	if(file_exists($themedir . '/template.php')){
 		require_once($themedir . '/template.php');
 	}else{
-		require_once($boarddir . '/sachat/themes/master.template.php');
+		require_once($boarddir . '/sachat/themes/default/template.php');
 	}
 	
-    return array($themeurl, $themedir, $thjs, $load_btime);
+    return array($themeurl, $themedir, $thjs, $load_btime, $soundurl);
 }
 
 function initLang($lang) {
@@ -105,7 +111,7 @@ function initLang($lang) {
 }
 
 function initJs($jsType) {
-    global $themedir;
+    global $boarddir, $themedir;
 
     if (file_exists($themedir . '/js/' . $jsType . '.js.php')) {
         require_once($themedir . '/js/' . $jsType . '.js.php');
@@ -229,52 +235,18 @@ function initChatSess() {
     $lastID = 0;
 
     if ($results) {
-        mread(); // Mark messages read since we are displaying them.
+        //mread(); // Mark messages read since we are displaying them.
         while ($row = $smcFunc['db_fetch_assoc']($results)) {
             $row['msg'] = htmlspecialchars_decode(phaseMSG($row['msg']));
             $context['msgs'][] = $row;
             $lastID = $row['id'];
+			mread($row['id']);
         }
         $smcFunc['db_free_result']($results);
     }
     $context['JSON']['DATA'] = chat_window_template();
     $context['JSON']['BID'] = $buddy_id;
     $context['JSON']['ID'] = $lastID;
-}
-
-function retmsgs() {
-
-    global $smcFunc, $member_id, $buddy_id, $context, $modSettings;
-
-    $reqTime = $_REQUEST['_'] - $modSettings['2sichat_cw_heart'];
-	getBuddySession();
-	CheckTyping();
-	$results = $smcFunc['db_query']('', '
-		SELECT *
-		FROM {db_prefix}2sichat
-		WHERE ({db_prefix}2sichat.id = {int:m} AND {db_prefix}2sichat.to = {int:member_id} AND {db_prefix}2sichat.from = {int:buddy_id} AND {db_prefix}2sichat.rd = 0)
-		ORDER BY id ASC',
-		array(
-			'member_id' => $member_id,
-			'buddy_id' => $buddy_id,
-			'reqTime' => $reqTime,
-			'm' => $_REQUEST['msg'],
-		)
-    );
-
-    $lastID = 0;
-
-    if ($results) {
-      // mread(); // Mark messages read since we are displaying them.
-        while ($row = $smcFunc['db_fetch_assoc']($results)) {
-            $row['msg'] = phaseMSG($row['msg']);
-            $context['msgs'][] = $row;
-            $lastID = $row['id'];
-        }
-        $smcFunc['db_free_result']($results);
-        $context['JSON']['DATA'] = chat_retmsg_template();
-        $context['JSON']['ID'] = $lastID;
-    }
 }
 
 function savemsg() {
@@ -329,7 +301,7 @@ function savemsg() {
     }
 }
 
-function mread() {
+function mread($id) {
 
     global $smcFunc, $member_id, $buddy_id;
 
@@ -341,11 +313,12 @@ function mread() {
     $smcFunc['db_query']('', '
 		UPDATE {db_prefix}2sichat
 		SET {db_prefix}2sichat.rd = {float:read}
-		WHERE {db_prefix}2sichat.to = {int:member_id} AND {db_prefix}2sichat.from = {int:buddy_id} AND {db_prefix}2sichat.rd = 0',
+		WHERE {db_prefix}2sichat.id = {int:ids} AND  {db_prefix}2sichat.to = {int:member_id} AND {db_prefix}2sichat.from = {int:buddy_id} AND {db_prefix}2sichat.rd = 0',
 		array(
 			'member_id' => $member_id,
 			'buddy_id' => $buddy_id,
 			'read' => $read,
+			'ids' => $id,
 		)
     );
     

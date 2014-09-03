@@ -5,7 +5,7 @@
 **/
 function initchat() {
 
-	global $user_settings, $buddies, $budCount, $member_id, $usershowBar,$buddy_settings, $boardurl, $options, $modSettings, $themeurl, $thjs, $context;
+	global $user_settings, $buddies, $budCount, $soundurl, $member_id, $usershowBar,$buddy_settings, $boardurl, $options, $modSettings, $themeurl, $thjs, $context;
 
 	if ($member_id && empty($modSettings['2sichat_dis_bar'])) {
 		$bar = addslashes(preg_replace("/\r?\n?\t/m", "", chat_bar_template()));
@@ -123,7 +123,10 @@ function initchat() {
 							    loadsnd(\'new_msg\');
 						    }else {
 								if(document.getElementById(\'cmsg\'+this) && this != null && $sachat("#"+this).css(\'display\') != \'none\') {
-									updatemsg(u,id);
+									chatTo(this);
+									loadsnd(\'rec_msg\');
+									newMessagesWin[data.NAME] = true;
+									newmsg_says();
 									if($sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'_min\'+this)){
 										$sachat(\'#cmsg\'+this).show();
 										$sachat(\'#bddy\'+this).show();
@@ -155,12 +158,6 @@ function initchat() {
 					}
 					if (data != null && data.ONLINE != null) {
 						$sachat("#friends").html(data.ONLINE);
-					}
-					if (data != null && data.ONLINER != null) {
-						$sachat(".chatroominvite").html(data.ONLINER);
-					}
-					if (data.ONLINER == null) {
-						$sachat(".chatroominvite").html(\'\');
 					}
 
 					if(manual == true){
@@ -253,7 +250,7 @@ function initchat() {
 		function loadsnd(snd){
 		    mute = $sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'_chatSnd\');
 		    if(!mute){
-				var sound = new Audio(\''.$themeurl.'/sounds/\'+snd+\'.mp3\');
+				var sound = new Audio(\''.$soundurl.'/\'+snd+\'.mp3\');
 				sound.play();
 			}
 		}
@@ -378,7 +375,6 @@ function initchat() {
 					}
 					}
 				});
-				'.(!empty($modSettings['2sichat_cw_h_enable']) ? 'heartbeat(id);':'').'
 			
 			    var myArray = [];
                 myArray[0] = \''.$modSettings['2sichat_cookie_name'].'\';
@@ -426,7 +422,7 @@ function initchat() {
 			$sachat.post("'.$boardurl.'/sachat/index.php?action=closechat",{},function(data){});	
 		}
 
-		var jsubmit = function(id){
+		function jsubmit(id){
 		   
 		    var textbox = \'msg\'+id;
 		    var msg = document.getElementById(textbox).value;
@@ -461,56 +457,6 @@ function initchat() {
 			
 			HeartbeatTime = minHeartbeat;
 		    HeartbeatCount = 1;
-		}
-
-		var updatemsg = function(id,m){
-			if (document.getElementById(\'cmsg\'+id)) {
-		        
-				$sachat.ajax({
-					url: \''.$boardurl.'/sachat/index.php\',
-					data: \''.$thjs.'update=\'+id+\'&msg=\'+m,
-					dataType: "json",
-					cache: false,
-					timeout: '.$modSettings['2sichat_mn_heart_timeout'].',
-					success: function(data){
-						if (data.DATA != null) {
-							if (msgArray[id] && msgArray[id] < data.ID && data.ID != null || msgArray[id] == undefined && data.ID != null) {
-								var newdiv = document.createElement(\'div\');
-								newdiv.setAttribute(\'dir\',\'ltr\');
-								newdiv.innerHTML = data.DATA;
-                                document.getElementById(\'cmsg\'+id).insertBefore(newdiv, document.getElementById(\'cmsg\'+id).lastChild);
-								loadsnd(\'rec_msg\');
-								msgArray[id] = data.ID;
-						        newMessagesWin[data.NAME] = true;
-								newmsg_says();
-								$sachat("#"+id+" .chatboxcontent").scrollTop($sachat("#"+id+" .chatboxcontent")[0].scrollHeight);
-							}
-						}
-						if (data != null && data.SENTMSGTIME != null) {
-							$sachat("#sent"+data.SENTMSGID).html(\'<br />\'+data.SENTMSGTIME+\'<br /><br />\');
-						}
-						if (data != null && data.buddySESSION != null) {
-							$sachat("#session"+data.userTyping).html(\'<span class="green">*&nbsp;</span>\');
-						}
-						if (data != null && data.buddySESSION == null) {
-							$sachat("#session"+data.userTyping).html(\'<span class="red">*&nbsp;</span>\');
-						}
-						if (data != null && data.CONLINE != null) {
-						    $sachat("#cfriends").text(\'(\'+data.CONLINE+\')\');
-						}
-						if (data != null && data.ONLINE != null) {
-							$sachat("#friends").html(data.ONLINE);
-						} 
-					}
-				});
-			}
-		}
-
-		function heartbeat(id){
-			if (window["re" + id]) {
-				clearInterval(window["re" + id]);
-			}
-			eval (\'window["re" + id] = setInterval("updatemsg(\'+id+\')",'.$modSettings['2sichat_cw_heart'].');\');
 		}';
 	 	}
 
