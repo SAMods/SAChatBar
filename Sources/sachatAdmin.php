@@ -321,6 +321,8 @@ function twosichatChat() {
 		array('text', '2sichat_mn_heartmin', 'size' => 10, 'subtext' => $txt['2sichat_mn_heart_submin']),
 		array('text', '2sichat_mn_heart_timeout', 'size' => 10, 'subtext' => $txt['2sichat_mn_heart_timeout_sub']),
         '',
+		array('check', '2sichat_groupeChat', 'subtext' => $txt['2sichat_groupeChat_sub']),
+        '',
         array('text', '2sichat_purge', 'size' => 10, 'subtext' => $txt['2sichat_purge_sub']),
         '',
 		array('check', '2sichat_dis_list', 'subtext' => $txt['2sichat_dis_l_sub']),

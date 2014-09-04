@@ -139,10 +139,10 @@ function initchat() {
 					}
 
 					if (data != null && data.buddySESSION != null) {
-						$sachat("#session"+data.userTyping).html(\'<span class="green">*&nbsp;</span>\');
+						$sachat("#session"+data.userTyping).html(\'<img id="extraimg" src="'.$themeurl.'/images/bullet_green.png" width="17" height="17" alt="" border="0">\');
 					}
 					if (data != null && data.buddySESSION == null) {
-						$sachat("#session"+data.userTyping).html(\'<span class="red">*&nbsp;</span>\');
+						$sachat("#session"+data.userTyping).html(\'<img id="extraimg" src="'.$themeurl.'/images/bullet_red.png" width="17" height="17" alt="" border="0">\');
 					}
 					if (data != null && data.buddySESSION!= null) {
 						$sachat("#sent"+data.SENTMSGID).html(\'<br />\'+data.SENTMSGTIME+\'<br /><br />\');
@@ -232,7 +232,14 @@ function initchat() {
 				++blinkOrder;
 			}
 		}
-
+		
+		function addTochat(id) {
+			var textbox = \'mserach\'+id;
+		    var msg = document.getElementById(textbox).value;
+		    document.getElementById(textbox).value = \'\';
+			alert("You has beer?");
+		}
+		
 		function chatSnd() {
 			
 		    mute = $sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'_chatSnd\');
@@ -345,6 +352,7 @@ function initchat() {
 							}
 							$sachat("#"+id+" .chatboxcontent").scrollTop($sachat("#"+id+" .chatboxcontent")[0].scrollHeight);
 							updateChatBoxPosition();
+							$sachat("#search"+id).attr("style","display: none")
 						} 
 						else {
 							xchat(DId);
@@ -359,10 +367,10 @@ function initchat() {
 							$sachat("#sent"+data.SENTMSGID).html(\'<br />\'+data.SENTMSGTIME+\'<br /><br />\');
 						}
 						if (data != null && data.buddySESSION != null) {
-							$sachat("#session"+data.userTyping).html(\'<span class="green">*&nbsp;</span>\');
+							$sachat("#session"+data.userTyping).html(\'<img id="extraimg" src="'.$themeurl.'/images/bullet_green.png" width="17" height="17" alt="" border="0">\');
 						}
 						if (data != null && data.buddySESSION == null) {
-							$sachat("#session"+data.userTyping).html(\'<span class="red">*&nbsp;</span>\');
+							$sachat("#session"+data.userTyping).html(\'<img id="extraimg" src="'.$themeurl.'/images/bullet_red.png" width="17" height="17" alt="" border="0">\');
 						}
 						if (data != null && data.CONLINE != null) {
 						    $sachat("#cfriends").text(\'(\'+data.CONLINE+\')\');
@@ -599,16 +607,10 @@ function initchat() {
 			    if(layer_ref == \'extra\'){
 					$sachat(\'#extraimg\').attr(\'src\',\''.$themeurl.'/images/control_eject_blue1.png\');
 				}
-				if(layer_ref == \'chatroomlobby\'){
-					 $sachat(document.getElementById(\'chatroomcreate\')).hide();
-				}
-				if(layer_ref == \'chatroomcreate\'){
-					 $sachat(document.getElementById(\'chatroomlobby\')).hide();
-				}
             }
             else
             {
-                $sachat(document.getElementById(layer_ref)).fadeOut("slow");
+                $sachat(document.getElementById(layer_ref)).fadeOut("fast");
 				if(layer_ref == \'extra\'){
 					 $sachat(\'#extraimg\').attr(\'src\',\''.$themeurl.'/images/control_eject_blue.png\');
 				}

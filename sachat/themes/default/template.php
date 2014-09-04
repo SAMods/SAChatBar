@@ -16,19 +16,29 @@ function chat_window_template() { //Main chat window, not the bar, the window yo
 	<div id="ch'.$buddy_settings['id_member'].'" class="chatboxhead">
 	    <div class="chatboxtitle"><span id="session'.$buddy_settings['id_member'].'"></span>&nbsp;'.$buddy_settings['real_name'].'<span id="typeon'.$buddy_settings['id_member'].'"></span></div>
 		    <div class="chatboxoptions">
+				'.(!empty($modSettings['2sichat_groupeChat']) ? '<a href="javascript:void(0)" onclick="javascript:showhide(\'search'.$buddy_settings['id_member'].'\')">Add Friends</a>':'').'
 			    <a href="javascript:void(0)" onclick="javascript:upDownchat(\''.$buddy_settings['id_member'].'\',\''.$buddy_settings['real_name'].'\')"><span id="slideup'.$buddy_settings['id_member'].'" class="slideup">&#x25B2;</span><span id="slidedown'.$buddy_settings['id_member'].'" class="slidedown">&#x25BC;</span></a> 
 			    <a href="javascript:void(0)" onclick="javascript:xchat(\''.$buddy_settings['id_member'].'\')">X</a>
 			</div>
 			<br clear="all"/>
-	</div>
-	<div class="chatboxcontent" id="cmsg'.$buddy_settings['id_member'].'">';
+	</div>';
+	if(!empty($modSettings['2sichat_groupeChat'])){
+		$data .='<div class="chatboxcontentsearch" id="search'.$buddy_settings['id_member'].'">
+			<form id="mid_cont_form" action="javascript:void(0)" onsubmit="javascript:addTochat(\''.$buddy_settings['id_member'].'\');" method="post">
+				<input type="text" name="mserach'.$buddy_settings['id_member'].'" id="mserach'.$buddy_settings['id_member'].'" style="width: 95%;" maxlength="255" />
+				
+			</form>
+		</div>';
+	}
+	
+	$data .='<div class="chatboxcontent" id="cmsg'.$buddy_settings['id_member'].'">';
 
 	// Messages from previous chat session that have not been deleted yet, lets show them. :D
 	if(!empty($context['msgs'])) {
 		foreach ($context['msgs'] as $message) {
 			if ($message['from'] == $user_settings['id_member']) { // Messages sent from me.	
 				$data .=' 
-				    <strong>'.$user_settings['real_name'].'</strong>
+				    <strong>You</strong>
 				    <div class="chatboxmsg_optionright">
 				       <img width="15px" height="15px" src="'.$user_settings['avatar'].'" />
 				    </div>
@@ -51,7 +61,7 @@ function chat_window_template() { //Main chat window, not the bar, the window yo
 					       '.$message['msg'].'
 					   </div></div>';	   
 			}
-			$data .='';
+			$data .='<br />';
 		 }	 
 	}
 	$data .='
@@ -65,29 +75,6 @@ function chat_window_template() { //Main chat window, not the bar, the window yo
 	
 	return $data;
 }
-
-/*function chat_retmsg_template() { //When you recieve a message
-
-	global $buddy_settings, $context;
-
-	// This is where someone sends you a message when your online.
-    if(!empty($context['msgs'])) {
-		foreach ($context['msgs'] as $message) {
-			$data =' <div class="chatboxtime" id="sent'.$message['id'].'"></div>
-			    <strong>'.$buddy_settings['real_name'].' </strong>
-			    <div class="chatboxmsg_optionright">
-				    <img width="15px" height="15px" src="'.$buddy_settings['avatar'].'" />
-				</div>
-				<br clear="all"/>
-			    <div class="chatboxmsg_container_rec">
-				    <div id="u'.$buddy_settings['id_member'].'i'.$message['id'].'">
-					    '.$message['msg'].'
-				    </div>
-			   </div>';
-	    }
-	    return $data;
-	}
-}*/
 
 function chat_savemsg_template() { //When you send a message
 
@@ -245,7 +232,7 @@ function chat_extra_template() {
 
 function buddy_list_template() { //The buddy list.
 
-	global $context, $txt, $admin, $permission, $modSettings;
+	global $context, $txt, $admin, $themeurl, $permission, $modSettings;
 
 	$data = ' 
 	     <div class="buddyboxhead">
@@ -276,7 +263,11 @@ function buddy_list_template() { //The buddy list.
 				foreach ($context['friends'] as $buddy) {
 			         $data.= '
 				         <a  href="javascript:void(0)" onclick="javascript:chatTo(\''.$buddy['id_member'].'\');showhide(\'friends\');return false;">
-				             <img width="20px" height="20px" src="'.$buddy['avatar'].'" />&nbsp;<strong>'.$buddy['real_name'].'</strong>&nbsp;<span class="'.($buddy['session']?'green':'red').'">*</span>
+				             <img width="20px" height="20px" src="'.$buddy['avatar'].'" />&nbsp;<strong>'.$buddy['real_name'].'</strong>
+							  <div class="chatboxmsg_optionright">
+							 &nbsp;'.($buddy['session']?'<img id="extraimg" src="'.$themeurl.'/images/bullet_green.png" width="17" height="17" alt="" border="0">':
+							 '<img id="extraimg" src="'.$themeurl.'/images/bullet_red.png" width="17" height="17" alt="" border="0">').'
+							 </div>
 				         </a><br />';
 				 }
 			}

@@ -4,6 +4,8 @@
  * I release this code as free software, under the MIT license.
  // Traduzione Italiana a cura di Flavio93Zena (ID: 394309) 05/06/2014
 **/
+$txt['2sichat_groupeChat_sub'] = '<div class="error">Not fully implemented No worky worky!!</div>';
+$txt['2sichat_groupeChat'] = 'Enable group chat';
 $txt['2sichat_live_notfy'] = 'Mostra messaggio di notifica nel titolo della pagina se non in primo piano';
 $txt['2sichat_live_type'] = 'Mostra quando un amico sta scrivendo in chat';
 $txt['2sichat_live_type_sub'] = '<div class="error">Potrebbe causare problemi di caricamento al server!!</div>';

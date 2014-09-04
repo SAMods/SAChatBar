@@ -158,7 +158,7 @@ start buddy box styles
 	font-family: arial,sans-serif;
 	font-size: 13px;
 	color: #333333;
-	height:600px;
+	height:400px;
 	width:214px;
 	overflow-y:auto;
 	overflow-x:auto;
@@ -328,6 +328,22 @@ Start chat box styles
 	font-size:x-small;
 }
 
+.chatboxcontentsearch {
+	font-family: arial,sans-serif;
+	font-size: 13px;
+	color: #333333;
+	height:100px;
+	width:259px;
+	overflow-y:auto;
+	overflow-x:auto;
+	padding:7px;
+	border-left:1px solid #cccccc;
+	border-right:1px solid #cccccc;
+	border-bottom:1px solid #cccccc;
+	background-color:#ffffff;
+	line-height: 1.3em;
+}
+
 .chatboxcontent {
 	font-family: arial,sans-serif;
 	font-size: 13px;
@@ -339,7 +355,7 @@ Start chat box styles
 	padding:7px;
 	border-left:1px solid #cccccc;
 	border-right:1px solid #cccccc;
-	border-bottom:1px solid #eeeeee;
+	border-bottom:1px solid #cccccc;
 	background-color:#ffffff;
 	line-height: 1.3em;
 }

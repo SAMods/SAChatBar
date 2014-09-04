@@ -4,6 +4,8 @@
  * I release this code as free software, under the MIT license.
  /Text reviewed by Flavio93Zena (ID 394309) 
 **/
+$txt['2sichat_groupeChat_sub'] = '<div class="error">Not fully implemented No worky worky!!</div>';
+$txt['2sichat_groupeChat'] = 'Enable group chat';
 $txt['2sichat_live_notfy'] = 'Show message notification on page title if not in focus';
 $txt['2sichat_live_type'] = 'Show when buddy is typing in chat';
 $txt['2sichat_live_type_sub'] = '<div class="error">May cause server load issues!!</div>';
