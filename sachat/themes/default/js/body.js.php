@@ -118,8 +118,11 @@ function initchat() {
 				success: function(data){
 					if (data != null && data.gids != null){
 						$sachat.each(data.gids, function(id,u) {
-							if(document.getElementById(\'cmsg\'+this) && this != null && $sachat("#"+this).css(\'display\') != \'none\') {
-								gchat(this);
+							if($sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'gchat_\'+this)){
+								if(document.getElementById(\'gcmsg\'+this) && this != null && $sachat("#g"+this).css(\'display\') != \'none\') {
+									gchat(this);
+									//loadsnd(\'new_msg\');
+								}
 							}
 							itemsfound += 1;
 						});
@@ -241,13 +244,6 @@ function initchat() {
 			}
 		}
 		
-		function addTochat(id) {
-			var textbox = \'mserach\'+id;
-		    var msg = document.getElementById(textbox).value;
-		    document.getElementById(textbox).value = \'\';
-			alert(msg+" has beer?");
-		}
-		
 		function chatSnd() {
 			
 		    mute = $sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'_chatSnd\');
@@ -320,15 +316,37 @@ function initchat() {
 			}
         }
 		
+		function addTochat(id) {
+			var textbox = \'mserach\'+id;
+		    var msg = document.getElementById(textbox).value;
+		    document.getElementById(textbox).value = \'\';
+			alert(msg+" has beer?");
+		}
+		
+		function invitGchat(id, join){
+
+		    var msg =\'Group chat invite. <br /> Click <a href="javascript:void(0)" onclick="javascript:gchat(\'+join+\');return false;">here</a> to join.\';
+		   
+			$sachat.ajax({
+				url: \''.$boardurl.'/sachat/index.php\',
+				data: \''.$thjs.'cid=\'+id+\'&msg=\'+encodeURIComponent(msg),
+				dataType: "json",
+				cache: false,
+				success: function(data){
+					chatTo(id);
+				}
+			});
+		}
+		
 		function gsubmit(id){
 		   
-		    var textbox = \'msg\'+id;
-		    var msg = document.getElementById(textbox).value;
+		    var textbox = \'gmsg\'+id;
+		    var gmsg = document.getElementById(textbox).value;
 		    document.getElementById(textbox).value = \'\';
 
 			$sachat.ajax({
 				url: \''.$boardurl.'/sachat/index.php\',
-				data: \''.$thjs.'gcid=\'+id+\'&msg=\'+encodeURIComponent(msg),
+				data: \''.$thjs.'gcid=\'+id+\'&gmsg=\'+encodeURIComponent(gmsg),
 				dataType: "json",
 				cache: false,
 				success: function(data){
@@ -336,10 +354,10 @@ function initchat() {
 						var newdiv = document.createElement(\'div\');
 						newdiv.setAttribute(\'dir\',\'ltr\');
 						newdiv.innerHTML = data.fDATA;
-						document.getElementById(\'cmsg\'+id).insertBefore(newdiv, document.getElementById(\'cmsg\'+id).lastChild);
+						document.getElementById(\'gcmsg\'+id).insertBefore(newdiv, document.getElementById(\'gcmsg\'+id).lastChild);
 					}
 			        
-					$sachat("#"+id+" .chatboxcontent").scrollTop($sachat("#"+id+" .chatboxcontent")[0].scrollHeight);
+					$sachat("#g"+id+" .chatboxcontent").scrollTop($sachat("#g"+id+" .chatboxcontent")[0].scrollHeight);
 				}
 			});
 			
@@ -353,12 +371,12 @@ function initchat() {
 			
 			if (DId != undefined) {
 				
-				if (!$sachat(\'#\'+id).html()){ 
-					$sachat(\'.chatBoxslider\').prepend($sachat(\'#ChatBoxtemplate .chatbox\').clone().attr(\'id\',id)); 
+				if (!$sachat(\'#g\'+id).html()){ 
+					$sachat(\'.chatBoxslider\').prepend($sachat(\'#ChatBoxtemplate .chatbox\').clone().attr(\'id\',\'g\'+id)); 
 				}
-				else if (!$sachat(\'#\'+id).is(\':visible\') ){
-					clone = $sachat(\'#\'+id).clone();
-					$sachat(\'#\'+id).remove();
+				else if (!$sachat(\'#g\'+id).is(\':visible\') ){
+					clone = $sachat(\'#g\'+id).clone();
+					$sachat(\'#g\'+id).remove();
 					if(!$sachat(\'.chatBoxslider .chatbox:visible:first\').html()){
 						$sachat(\'.chatBoxslider\').prepend(clone.show());
 					}else{
@@ -374,9 +392,9 @@ function initchat() {
 					success: function(data){
 						if (data.DATA != null) {
 							
-							$sachat($sachat(\'#\'+DId)).html(data.DATA);
+							$sachat($sachat(\'#g\'+DId)).html(data.DATA);
 							
-							$sachat("#"+DId).css(\'bottom\', \'27px\');
+							$sachat("#g"+DId).css(\'bottom\', \'27px\');
 							
 							$sachat(\'.slidedown\').show();
 							$sachat(\'.slideup\').hide();
@@ -384,7 +402,7 @@ function initchat() {
 							
 							
 							$sachat("#addf"+id).attr("style","display: none");
-							$sachat("#"+id+" .chatboxcontent").scrollTop($sachat("#"+id+" .chatboxcontent")[0].scrollHeight);
+							$sachat("#g"+id+" .chatboxcontent").scrollTop($sachat("#g"+id+" .chatboxcontent")[0].scrollHeight);
 							updateChatBoxPosition();
 						} 
 					}
@@ -395,11 +413,17 @@ function initchat() {
 			    myArray[1] = \'msg_win\'+DId;
 		        myArray[2] = DId;
 				myArray[3] = \''.$member_id.'\'
-		        $sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'\'+DId, escape(myArray.join(\',\')));
+		        $sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'gchat_\'+DId, escape(myArray.join(\',\')));
 			}
 			if($sachat(\'.chatBoxslider .chatbox:visible:first\').html()){
 				//alert("You already have a group chat session");
 			}
+		}
+		
+		function gxchat(id) {
+			$sachat(\'#g\'+id).hide();
+			updateChatBoxPosition();
+			$sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'gchat_\'+id, null);		
 		}
 		
 	    function chatTo(id, minimised) {

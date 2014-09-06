@@ -235,6 +235,7 @@ function initgChatSess() {
         while ($row = $smcFunc['db_fetch_assoc']($results)) {
 		    $row['msg'] = htmlspecialchars_decode(phaseMSG($row['msg']));
             $context['msgs'][] = $row;
+			//mgread($row['id']); Fix this!!!!!!!!!!!
 		}
     }
     $smcFunc['db_free_result']($results);
@@ -276,22 +277,23 @@ function savemsggc() {
         doOutput();
     }
 
-    if (str_replace(' ', '', $_REQUEST['msg']) != '') {
+    if (str_replace(' ', '', $_REQUEST['gmsg']) != '') {
 		
 		$smcFunc['db_insert']('', '{db_prefix}2sichat_gchat', 
 		    array(
 			    'from' => 'int',
 			    'msg' => 'string',
 				'room' => 'string',
+				'rd' => 'int',
 			), 
 			array(
-			$member_id, htmlspecialchars(stripslashes($_REQUEST['msg'])),$_REQUEST['gcid']
+			$member_id, htmlspecialchars(stripslashes($_REQUEST['gmsg'])),$_REQUEST['gcid'],0
 			), 
 			array()
 		);	
 		
 
-        $context['msgs'] = phaseMSG(htmlspecialchars(stripslashes($_REQUEST['msg']), ENT_QUOTES));
+        $context['msgs'] = phaseMSG(htmlspecialchars(stripslashes($_REQUEST['gmsg']), ENT_QUOTES));
 
         if (defined('loadOpt')) {
             doOptDBexp();
@@ -1055,7 +1057,7 @@ function loadOpt() {
     // If last connection to the DB is greater than the DB expire stamp die.
     // If no expire stamp die, usually means no messages availible anyways.
     if (isset($_SESSION['DBcon_stamp']) && isset($DBcon_exp) && $_SESSION['DBcon_stamp'] > $DBcon_exp || isset($_SESSION['DBcon_stamp']) && !isset($DBcon_exp)) {
-        if (!isset($_REQUEST['msg']) && !isset($_REQUEST['msg']) && !isset($_REQUEST['gid']) && !isset($_REQUEST['cid']) && !isset($_REQUEST['gcid']) && @$_REQUEST['action'] != 'closechat' && @$_REQUEST['action'] != 'typing' && @$_REQUEST['action'] != 'head' && @$_REQUEST['action'] != 'heart' && @$_REQUEST['action'] != 'body') {
+        if (!isset($_REQUEST['msg']) && !isset($_REQUEST['gmsg']) && !isset($_REQUEST['gid']) && !isset($_REQUEST['cid']) && !isset($_REQUEST['gcid']) && @$_REQUEST['action'] != 'closechat' && @$_REQUEST['action'] != 'typing' && @$_REQUEST['action'] != 'head' && @$_REQUEST['action'] != 'heart' && @$_REQUEST['action'] != 'body') {
             $context['JSON']['STATUS'] = 'IDLE';
             doOutput();
         }

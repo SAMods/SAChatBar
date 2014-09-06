@@ -24,7 +24,7 @@ function chat_window_template() { //Main chat window, not the bar, the window yo
 	</div>';
 	if(!empty($modSettings['2sichat_groupeChat'])){
 		$data .='<div class="chatboxcontentsearch" id="search'.$buddy_settings['id_member'].'">
-			<a href="javascript:void(0)" onclick="javascript:gchat(\''.$user_settings['id_member'].'\')">Start a group chat session</a>
+			<a href="javascript:void(0)" onclick="javascript:gchat(\''.$user_settings['id_member'].'\');showhide(\'search'.$buddy_settings['id_member'].'\');return false;">Start a group chat session</a>
 		</div>';
 	}
 	
@@ -85,10 +85,10 @@ function Gchat_window_template() {
 	// The main chat window
 	$data = '
 	<div class="chatboxhead">
-	    <div class="chatboxtitle">Group Chat '.$name.'</div>
+	    <div class="chatboxtitle">'.ucfirst($name).' Group Chat </div>
 		    <div class="chatboxoptions">
-				<a href="javascript:void(0)" onclick="javascript:showhide(\'addf'.$_REQUEST['gcid'].'\')">Invite friends</a>
-			    <a href="javascript:void(0)" onclick="javascript:xchat(\''.$_REQUEST['gcid'].'\')">X</a>
+				'.($_REQUEST['gcid'] != 'Global' ? '<a href="javascript:void(0)" onclick="javascript:showhide(\'addf'.$_REQUEST['gcid'].'\')">Invite friends</a>':'').'
+			    <a href="javascript:void(0)" onclick="javascript:gxchat(\''.$_REQUEST['gcid'].'\')">X</a>
 			</div>
 			<br clear="all"/>
 	</div>';
@@ -100,7 +100,7 @@ function Gchat_window_template() {
 		</form>
 		</div>';
 		
-	$data .='<div class="chatboxcontent" id="cmsg'.$_REQUEST['gcid'].'">';
+	$data .='<div class="chatboxcontent" id="gcmsg'.$_REQUEST['gcid'].'">';
 		if(!empty($context['msgs'])) {
 			foreach ($context['msgs'] as $message) {
 				if ($message['from'] == $user_settings['id_member']) { 
@@ -122,7 +122,7 @@ function Gchat_window_template() {
 	    </div>
 	    <div class="chatboxinput">
 	        <form id="mid_cont_form" action="javascript:void(0)" onsubmit="javascript:gsubmit(\''.$_REQUEST['gcid'].'\');" method="post">
-	           <input type="text"  name="msg'.$_REQUEST['gcid'].'" id="msg'.$_REQUEST['gcid'].'" style="width: 75%;" maxlength="255" />
+	           <input type="text"  name="gmsg'.$_REQUEST['gcid'].'" id="gmsg'.$_REQUEST['gcid'].'" style="width: 75%;" maxlength="255" />
 			    <input type="button" onclick="javascript:gsubmit(\''.$_REQUEST['gcid'].'\'); return false;" value="'.$txt['bar_submitt_form'].'" />
 		    </form>
 	   </div>';
@@ -300,7 +300,7 @@ function chat_extra_template() {
 
 function buddy_list_template() { //The buddy list.
 
-	global $context, $txt, $admin, $themeurl, $user_settings, $permission, $modSettings;
+	global $context, $txt, $admin, $themeurl, $user_settings, $member_id, $permission, $modSettings;
 
 	$data = ' 
 	     <div class="buddyboxhead">
@@ -320,26 +320,38 @@ function buddy_list_template() { //The buddy list.
 				$data .='<input type="button" onclick="javascript:snooper(); return false;" value="'.$txt['bar_admin_snoop'].'" />'; 
 				
 				if(!empty($_COOKIE[$modSettings['2sichat_cookie_name']."_chatSnoop"])){
-				    $data .= ''.$txt['bar_admin_snoop_on'].'<hr />';
+				    $data .= ' 
+					<div class="chatboxmsg_optionright">
+						<img id="extraimg" src="'.$themeurl.'/images/bullet_green.png" width="17" height="17" title="'.$txt['bar_admin_snoop_on'].'" alt="'.$txt['bar_admin_snoop_on'].'" border="0">
+					</div><hr />';
 				}
 				else{
-				    $data .= ''.$txt['bar_admin_snoop_off'].'<hr />';
+				    $data .= '
+						<div class="chatboxmsg_optionright">
+							<img id="extraimg" src="'.$themeurl.'/images/bullet_red.png" width="17" height="17" title="'.$txt['bar_admin_snoop_off'].'" alt="'.$txt['bar_admin_snoop_off'].'" border="0">
+						</div><hr />';
 				}
 			}
 			if(!empty($modSettings['2sichat_groupeChat'])){
 				$data .= '
-				 <a href="javascript:void(0)" onclick="javascript:gchat(\'Global\')">Global Chat</a><hr />';
+				 <a href="javascript:void(0)" onclick="javascript:gchat(\'Global\');showhide(\'friends\');return false;">Global Chat</a>
+				 <div class="chatboxmsg_optionright"><img id="extraimg" src="'.$themeurl.'/images/world.png" width="17" height="17" alt="" border="0"></div>
+				 <hr />';
 			 }
 			if(!empty($context['friends'])) {
 				foreach ($context['friends'] as $buddy) {
 			         $data.= '
-				         <a  href="javascript:void(0)" onclick="javascript:chatTo(\''.$buddy['id_member'].'\');showhide(\'friends\');return false;">
-				             <img width="20px" height="20px" src="'.$buddy['avatar'].'" />&nbsp;<strong>'.$buddy['real_name'].'</strong>
-							  <div class="chatboxmsg_optionright">
-							 &nbsp;'.($buddy['session']?'<img id="extraimg" src="'.$themeurl.'/images/bullet_green.png" width="17" height="17" alt="" border="0">':
-							 '<img id="extraimg" src="'.$themeurl.'/images/bullet_red.png" width="17" height="17" alt="" border="0">').'
-							 </div>
-				         </a><br />';
+				        <a  href="javascript:void(0)" onclick="javascript:chatTo(\''.$buddy['id_member'].'\');showhide(\'friends\');return false;">
+				            <img width="20px" height="20px" src="'.$buddy['avatar'].'" />&nbsp;<strong>'.$buddy['real_name'].'</strong>
+						</a>
+						<div class="chatboxmsg_optionright">
+							<a  href="javascript:void(0)" onclick="javascript:invitGchat(\''.$buddy['id_member'].'\',\''.$member_id.'\');showhide(\'friends\');return false;">
+								&nbsp;<img id="extraimg" src="'.$themeurl.'/images/user_add.png" width="17" height="17" title="Invite to group chat" alt="Invite to group chat" border="0">
+							</a>
+							    &nbsp;'.($buddy['session']?'<img id="extraimg" src="'.$themeurl.'/images/bullet_green.png" width="17" height="17" alt="" border="0">':
+							'<img id="extraimg" src="'.$themeurl.'/images/bullet_red.png" width="17" height="17" alt="" border="0">').'
+						</div>
+				       <br />';
 				 }
 			}
 			
