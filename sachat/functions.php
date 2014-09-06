@@ -214,6 +214,30 @@ function gadget() {
     }
 }
 
+function initgChatSess() {
+
+    global $smcFunc,$context;
+
+	$results = $smcFunc['db_query']('', '
+		SELECT *
+		FROM {db_prefix}2sichat_gchat
+		WHERE room = {string:room}
+		ORDER BY id ASC', 
+		array('room' => $_REQUEST['gcid'])
+    );
+
+    if ($results) {
+        while ($row = $smcFunc['db_fetch_assoc']($results)) {
+		    $row['msg'] = htmlspecialchars_decode(phaseMSG($row['msg']));
+            $context['msgs'][] = $row;
+		}
+    }
+    $smcFunc['db_free_result']($results);
+	
+    $context['JSON']['DATA'] = Gchat_window_template();
+
+}
+
 function initChatSess() {
 
     global $smcFunc, $member_id, $buddy_id, $context;
@@ -247,6 +271,41 @@ function initChatSess() {
     $context['JSON']['DATA'] = chat_window_template();
     $context['JSON']['BID'] = $buddy_id;
     $context['JSON']['ID'] = $lastID;
+}
+
+function savemsggc() {
+
+    global $smcFunc, $member_id, $user_settings, $context, $buddy_id, $buddy_settings, $modSettings;
+
+
+    // See if they have permission, maybe one day will have a message sent back.
+    if (!empty($modSettings['2sichat_dis_chat'])) {
+        $context['JSON']['STATUS'] = 'NO CHAT ACCESS';
+        doOutput();
+    }
+
+    if (str_replace(' ', '', $_REQUEST['msg']) != '') {
+		
+		$smcFunc['db_insert']('', '{db_prefix}2sichat_gchat', 
+		    array(
+			    'from' => 'int',
+			    'msg' => 'string',
+				'room' => 'string',
+			), 
+			array(
+			$member_id, htmlspecialchars(stripslashes($_REQUEST['msg'])),$_REQUEST['gcid']
+			), 
+			array()
+		);	
+		
+
+        $context['msgs'] = phaseMSG(htmlspecialchars(stripslashes($_REQUEST['msg']), ENT_QUOTES));
+
+        if (defined('loadOpt')) {
+            doOptDBexp();
+        }
+        $context['JSON']['fDATA'] = chat_savemsg_template();
+    }
 }
 
 function savemsg() {
@@ -950,7 +1009,7 @@ function loadOpt() {
     // If last connection to the DB is greater than the DB expire stamp die.
     // If no expire stamp die, usually means no messages availible anyways.
     if (isset($_SESSION['DBcon_stamp']) && isset($DBcon_exp) && $_SESSION['DBcon_stamp'] > $DBcon_exp || isset($_SESSION['DBcon_stamp']) && !isset($DBcon_exp)) {
-        if (!isset($_REQUEST['msg']) && !isset($_REQUEST['gid']) && !isset($_REQUEST['cid']) && @$_REQUEST['action'] != 'closechat' && @$_REQUEST['action'] != 'typing' && @$_REQUEST['action'] != 'head' && @$_REQUEST['action'] != 'heart' && @$_REQUEST['action'] != 'body') {
+        if (!isset($_REQUEST['msg']) && !isset($_REQUEST['msg']) && !isset($_REQUEST['gid']) && !isset($_REQUEST['cid']) && !isset($_REQUEST['gcid']) && @$_REQUEST['action'] != 'closechat' && @$_REQUEST['action'] != 'typing' && @$_REQUEST['action'] != 'head' && @$_REQUEST['action'] != 'heart' && @$_REQUEST['action'] != 'body') {
             $context['JSON']['STATUS'] = 'IDLE';
             doOutput();
         }

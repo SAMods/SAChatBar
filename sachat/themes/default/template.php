@@ -16,7 +16,7 @@ function chat_window_template() { //Main chat window, not the bar, the window yo
 	<div id="ch'.$buddy_settings['id_member'].'" class="chatboxhead">
 	    <div class="chatboxtitle"><span id="session'.$buddy_settings['id_member'].'"></span>&nbsp;'.$buddy_settings['real_name'].'<span id="typeon'.$buddy_settings['id_member'].'"></span></div>
 		    <div class="chatboxoptions">
-				'.(!empty($modSettings['2sichat_groupeChat']) ? '<a href="javascript:void(0)" onclick="javascript:showhide(\'search'.$buddy_settings['id_member'].'\')">Add Friends</a>':'').'
+				'.(!empty($modSettings['2sichat_groupeChat']) ? '<a href="javascript:void(0)" onclick="javascript:showhide(\'search'.$buddy_settings['id_member'].'\')">Group chat</a>':'').'
 			    <a href="javascript:void(0)" onclick="javascript:upDownchat(\''.$buddy_settings['id_member'].'\',\''.$buddy_settings['real_name'].'\')"><span id="slideup'.$buddy_settings['id_member'].'" class="slideup">&#x25B2;</span><span id="slidedown'.$buddy_settings['id_member'].'" class="slidedown">&#x25BC;</span></a> 
 			    <a href="javascript:void(0)" onclick="javascript:xchat(\''.$buddy_settings['id_member'].'\')">X</a>
 			</div>
@@ -24,10 +24,7 @@ function chat_window_template() { //Main chat window, not the bar, the window yo
 	</div>';
 	if(!empty($modSettings['2sichat_groupeChat'])){
 		$data .='<div class="chatboxcontentsearch" id="search'.$buddy_settings['id_member'].'">
-			<form id="mid_cont_form" action="javascript:void(0)" onsubmit="javascript:addTochat(\''.$buddy_settings['id_member'].'\');" method="post">
-				<input type="text" name="mserach'.$buddy_settings['id_member'].'" id="mserach'.$buddy_settings['id_member'].'" style="width: 95%;" maxlength="255" />
-				
-			</form>
+			<a href="javascript:void(0)" onclick="javascript:gchat(\''.$user_settings['id_member'].'\')">Start a group chat session</a>
 		</div>';
 	}
 	
@@ -76,13 +73,61 @@ function chat_window_template() { //Main chat window, not the bar, the window yo
 	return $data;
 }
 
+function Gchat_window_template() { 
+
+	global $user_settings, $modSettings, $txt, $context;
+
+	// The main chat window
+	$data = '
+	<div class="chatboxhead">
+	    <div class="chatboxtitle">Group Chat '.$_REQUEST['gcid'].'</div>
+		    <div class="chatboxoptions">
+				<a href="javascript:void(0)" onclick="javascript:showhide(\'addf'.$_REQUEST['gcid'].'\')">Invite friends</a>
+			    <a href="javascript:void(0)" onclick="javascript:xchat(\''.$_REQUEST['gcid'].'\')">X</a>
+			</div>
+			<br clear="all"/>
+	</div>';
+	
+	$data .='<div class="chatboxcontentsearch" id="addf'.$_REQUEST['gcid'].'">
+			placeholder
+		</div>';
+		
+	$data .='<div class="chatboxcontent">';
+		if(!empty($context['msgs'])) {
+			foreach ($context['msgs'] as $message) {
+				if ($message['from'] == $user_settings['id_member']) { 
+					$data .='<strong>You</strong>
+						<div class="chatboxmsg_container">	
+							'.$message['msg'].'
+						</div>';	
+				}else{
+					$data .='<strong>'.$message['from'].'</strong>
+						<div class="chatboxmsg_container">	
+							'.$message['msg'].'
+						</div>';	
+				}
+				
+			}
+		}
+	$data .='
+	    </div>
+	    <div class="chatboxinput">
+	        <form id="mid_cont_form" action="javascript:void(0)" onsubmit="javascript:gsubmit(\''.$_REQUEST['gcid'].'\');" method="post">
+	           <input type="text"  name="msg'.$_REQUEST['gcid'].'" id="msg'.$_REQUEST['gcid'].'" style="width: 75%;" maxlength="255" />
+			    <input type="button" onclick="javascript:gsubmit(\''.$_REQUEST['gcid'].'\'); return false;" value="'.$txt['bar_submitt_form'].'" />
+		    </form>
+	   </div>';
+	
+	return $data;
+}
+
 function chat_savemsg_template() { //When you send a message
 
 	global $user_settings, $context;
 
 	// This is the html response when you send a message.
 	$data ='
-	    <strong>'.$user_settings['real_name'].' </strong>
+	    <strong>You</strong>
 	    <div class="chatboxmsg_optionright">
 	        <img width="15px" height="15px" src="'.$user_settings['avatar'].'" />
 		</div>

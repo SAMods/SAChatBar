@@ -171,6 +171,10 @@ if (isset($_REQUEST['action'])) {
         savemsg();
     } else if (isset($_REQUEST['gid'])) {
         gadget();
+    }else if (!isset($_REQUEST['msg']) && isset($_REQUEST['gcid']) && $member_id) {
+       initgChatSess();
+    } else if (isset($_REQUEST['msg']) && isset($_REQUEST['gcid']) && $member_id) {
+        savemsggc();
     }
 }
 

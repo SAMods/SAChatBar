@@ -312,6 +312,58 @@ function initchat() {
 			}
         }
 		
+		function gchat(id) {
+            var DId = arguments[0];
+			
+			if (DId != undefined) {
+				
+				if (!$sachat(\'#\'+id).html()){ 
+					$sachat(\'.chatBoxslider\').prepend($sachat(\'#ChatBoxtemplate .chatbox\').clone().attr(\'id\',id)); 
+				}
+				else if (!$sachat(\'#\'+id).is(\':visible\') ){
+					clone = $sachat(\'#\'+id).clone();
+					$sachat(\'#\'+id).remove();
+					if(!$sachat(\'.chatBoxslider .chatbox:visible:first\').html()){
+						$sachat(\'.chatBoxslider\').prepend(clone.show());
+					}else{
+						$sachat(clone.show()).insertBefore(\'.chatBoxslider .chatbox:visible:first\');
+					}		
+				}
+				
+				$sachat.ajax({
+					url: \''.$boardurl.'/sachat/index.php\',
+					data: \''.$thjs.'gcid=\'+DId,
+					dataType: "json",
+					cache: false,
+					success: function(data){
+						if (data.DATA != null) {
+							
+							$sachat($sachat(\'#\'+DId)).html(data.DATA);
+							
+							$sachat("#"+DId).css(\'bottom\', \'27px\');
+							
+							$sachat(\'.slidedown\').show();
+							$sachat(\'.slideup\').hide();
+							
+							
+							updateChatBoxPosition();
+							$sachat("#addf"+id).attr("style","display: none");
+						} 
+					}
+				});
+			
+			    var myArray = [];
+                myArray[0] = \''.$modSettings['2sichat_cookie_name'].'_gchat\';
+			    myArray[1] = \'msg_win\'+DId;
+		        myArray[2] = DId;
+				myArray[3] = \''.$member_id.'\'
+		        $sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'\'+DId, escape(myArray.join(\',\')));
+			}
+			if($sachat(\'.chatBoxslider .chatbox:visible:first\').html()){
+				alert("You already have a group chat session");
+			}
+		}
+		
 	    function chatTo(id, minimised) {
             var DId = arguments[0];
 			
@@ -429,7 +481,34 @@ function initchat() {
 			$sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'\'+id, null);	
 			$sachat.post("'.$boardurl.'/sachat/index.php?action=closechat",{},function(data){});	
 		}
+		
+		function gsubmit(id){
+		   
+		    var textbox = \'msg\'+id;
+		    var msg = document.getElementById(textbox).value;
+		    document.getElementById(textbox).value = \'\';
 
+			$sachat.ajax({
+				url: \''.$boardurl.'/sachat/index.php\',
+				data: \''.$thjs.'gcid=\'+id+\'&msg=\'+encodeURIComponent(msg),
+				dataType: "json",
+				cache: false,
+				success: function(data){
+				    if (data.fDATA != null){
+						
+						alert(data.fDATA);
+		
+					}
+			        
+					$sachat("#"+id+" .chatboxcontent").scrollTop($sachat("#"+id+" .chatboxcontent")[0].scrollHeight);
+				}
+			});
+			
+			
+			HeartbeatTime = minHeartbeat;
+		    HeartbeatCount = 1;
+		}
+		
 		function jsubmit(id){
 		   
 		    var textbox = \'msg\'+id;
@@ -576,7 +655,11 @@ function initchat() {
 				document.getElementById(cSession[1]).style.left = cSession[3]+\'px\';
 				document.getElementById(cSession[1]).style.top = cSession[4]+\'px\';
 			}
-					
+			
+			if(cSession[0] == \''.$modSettings['2sichat_cookie_name'].'_gchat\'){
+		        gchat(cSession[1].substr(7));
+			}
+			
 			if(cSession[0] == \''.$modSettings['2sichat_cookie_name'].'\'){
 			    if(cSession[3] == \''.$member_id.'\'){
 					chatTo(cSession[1].substr(7));

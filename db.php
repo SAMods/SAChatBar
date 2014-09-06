@@ -69,7 +69,39 @@ $smcFunc['db_create_table']('{db_prefix}2sichat_typestaus', array(
 		),
 	),
 	array(), 'update');
-		
+$smcFunc['db_create_table']('{db_prefix}2sichat_gchat', array(
+    array(
+        'name' => 'id',
+        'type' => 'int',
+        'size' => 11,
+        'auto' => true,
+        'null' => false,
+    ),
+    array(
+        'name' => 'from',
+        'type' => 'int',
+        'size' => 11,
+        'null' => false,
+    ),
+	array(
+        'name' => 'msg',
+        'type' => 'text',
+        'null' => false,
+    ),
+	array(
+        'name' => 'room',
+        'type' => 'text',
+        'null' => false,
+    ),
+),  
+    array(
+        array(
+			'name' => 'id',
+			'type' => 'primary',
+			'columns' => array('id'),
+		),
+    ), 
+	array(), 'update');		
 $smcFunc['db_create_table']('{db_prefix}2sichat_error', array(
     array(
         'name' => 'id',
