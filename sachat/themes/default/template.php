@@ -89,10 +89,13 @@ function Gchat_window_template() {
 	</div>';
 	
 	$data .='<div class="chatboxcontentsearch" id="addf'.$_REQUEST['gcid'].'">
-			placeholder
+		<form id="mid_cont_form" action="javascript:void(0)" onsubmit="javascript:addTochat(\''.$_REQUEST['gcid'].'\');" method="post">
+		<input type="text" name="mserach'.$_REQUEST['gcid'].'" id="mserach'.$_REQUEST['gcid'].'" style="width: 95%;" maxlength="255" />
+						
+		</form>
 		</div>';
 		
-	$data .='<div class="chatboxcontent">';
+	$data .='<div class="chatboxcontent" id="cmsg'.$_REQUEST['gcid'].'">';
 		if(!empty($context['msgs'])) {
 			foreach ($context['msgs'] as $message) {
 				if ($message['from'] == $user_settings['id_member']) { 
@@ -120,7 +123,21 @@ function Gchat_window_template() {
 	
 	return $data;
 }
+function gchat_savemsg_template() { //When you send a message
 
+	global $user_settings, $context;
+
+	// This is the html response when you send a message.
+	$data ='
+	    <strong>You</strong>
+	    
+		<br clear="all"/>
+	    <div class="chatboxmsg_container">
+		    '.$context['msgs'].'
+		</div>';
+		
+	return $data;
+}
 function chat_savemsg_template() { //When you send a message
 
 	global $user_settings, $context;
@@ -277,7 +294,7 @@ function chat_extra_template() {
 
 function buddy_list_template() { //The buddy list.
 
-	global $context, $txt, $admin, $themeurl, $permission, $modSettings;
+	global $context, $txt, $admin, $themeurl, $user_settings, $permission, $modSettings;
 
 	$data = ' 
 	     <div class="buddyboxhead">
@@ -303,7 +320,7 @@ function buddy_list_template() { //The buddy list.
 				    $data .= ''.$txt['bar_admin_snoop_off'].'<hr />';
 				}
 			 }
-			  
+			  $data .= '<a href="javascript:void(0)" onclick="javascript:gchat(\''.$user_settings['id_member'].'\')">Start a group chat session</a><hr />';
 			 if(!empty($context['friends'])) {
 				foreach ($context['friends'] as $buddy) {
 			         $data.= '

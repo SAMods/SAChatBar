@@ -237,7 +237,7 @@ function initchat() {
 			var textbox = \'mserach\'+id;
 		    var msg = document.getElementById(textbox).value;
 		    document.getElementById(textbox).value = \'\';
-			alert("You has beer?");
+			alert(msg+" has beer?");
 		}
 		
 		function chatSnd() {
@@ -346,8 +346,10 @@ function initchat() {
 							$sachat(\'.slideup\').hide();
 							
 							
-							updateChatBoxPosition();
+							
 							$sachat("#addf"+id).attr("style","display: none");
+							$sachat("#"+id+" .chatboxcontent").scrollTop($sachat("#"+id+" .chatboxcontent")[0].scrollHeight);
+							updateChatBoxPosition();
 						} 
 					}
 				});
@@ -495,9 +497,10 @@ function initchat() {
 				cache: false,
 				success: function(data){
 				    if (data.fDATA != null){
-						
-						alert(data.fDATA);
-		
+						var newdiv = document.createElement(\'div\');
+						newdiv.setAttribute(\'dir\',\'ltr\');
+						newdiv.innerHTML = data.fDATA;
+						document.getElementById(\'cmsg\'+id).insertBefore(newdiv, document.getElementById(\'cmsg\'+id).lastChild);
 					}
 			        
 					$sachat("#"+id+" .chatboxcontent").scrollTop($sachat("#"+id+" .chatboxcontent")[0].scrollHeight);

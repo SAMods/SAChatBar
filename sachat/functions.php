@@ -304,7 +304,7 @@ function savemsggc() {
         if (defined('loadOpt')) {
             doOptDBexp();
         }
-        $context['JSON']['fDATA'] = chat_savemsg_template();
+        $context['JSON']['fDATA'] = gchat_savemsg_template();
     }
 }
 
