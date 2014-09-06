@@ -216,13 +216,18 @@ function gadget() {
 
 function initgChatSess() {
 
-    global $smcFunc,$context;
+    global $chatSet, $smcFunc,$context;
 
+	if($_REQUEST['gcid'] != 'Global'){
+		$chatSet = loadUserSettings($_REQUEST['gcid']);
+	}
+	
 	$results = $smcFunc['db_query']('', '
-		SELECT *
-		FROM {db_prefix}2sichat_gchat
-		WHERE room = {string:room}
-		ORDER BY id ASC', 
+		SELECT g.*, m.real_name
+		FROM {db_prefix}2sichat_gchat AS g
+		LEFT JOIN {db_prefix}members AS m ON m.id_member = g.from
+		WHERE g.room = {string:room}
+		ORDER BY g.id ASC', 
 		array('room' => $_REQUEST['gcid'])
     );
 
@@ -236,6 +241,63 @@ function initgChatSess() {
 	
     $context['JSON']['DATA'] = Gchat_window_template();
 
+}
+
+function mgread($id) {
+
+    global $smcFunc;
+    
+	if (isset($_REQUEST['_'])) {$read = $_REQUEST['_'];}
+    
+	if (!isset($read)) {$read = 1;}
+	
+    // Mark messages read.
+    $smcFunc['db_query']('', '
+		UPDATE {db_prefix}2sichat_gchat
+		SET {db_prefix}2sichat_gchat.rd = {float:read}
+		WHERE {db_prefix}2sichat_gchat.id = {int:ids} AND {db_prefix}2sichat_gchat.rd = 0',
+		array(
+			'ids' => $id,
+			'read' => $read,
+		)
+    );
+    
+	if (defined('loadOpt')) {doOptDBrec();}
+}
+
+function savemsggc() {
+
+    global $smcFunc, $member_id, $context, $modSettings;
+
+
+    // See if they have permission, maybe one day will have a message sent back.
+    if (!empty($modSettings['2sichat_dis_chat'])) {
+        $context['JSON']['STATUS'] = 'NO CHAT ACCESS';
+        doOutput();
+    }
+
+    if (str_replace(' ', '', $_REQUEST['msg']) != '') {
+		
+		$smcFunc['db_insert']('', '{db_prefix}2sichat_gchat', 
+		    array(
+			    'from' => 'int',
+			    'msg' => 'string',
+				'room' => 'string',
+			), 
+			array(
+			$member_id, htmlspecialchars(stripslashes($_REQUEST['msg'])),$_REQUEST['gcid']
+			), 
+			array()
+		);	
+		
+
+        $context['msgs'] = phaseMSG(htmlspecialchars(stripslashes($_REQUEST['msg']), ENT_QUOTES));
+
+        if (defined('loadOpt')) {
+            doOptDBexp();
+        }
+        $context['JSON']['fDATA'] = gchat_savemsg_template();
+    }
 }
 
 function initChatSess() {
@@ -273,40 +335,7 @@ function initChatSess() {
     $context['JSON']['ID'] = $lastID;
 }
 
-function savemsggc() {
 
-    global $smcFunc, $member_id, $user_settings, $context, $buddy_id, $buddy_settings, $modSettings;
-
-
-    // See if they have permission, maybe one day will have a message sent back.
-    if (!empty($modSettings['2sichat_dis_chat'])) {
-        $context['JSON']['STATUS'] = 'NO CHAT ACCESS';
-        doOutput();
-    }
-
-    if (str_replace(' ', '', $_REQUEST['msg']) != '') {
-		
-		$smcFunc['db_insert']('', '{db_prefix}2sichat_gchat', 
-		    array(
-			    'from' => 'int',
-			    'msg' => 'string',
-				'room' => 'string',
-			), 
-			array(
-			$member_id, htmlspecialchars(stripslashes($_REQUEST['msg'])),$_REQUEST['gcid']
-			), 
-			array()
-		);	
-		
-
-        $context['msgs'] = phaseMSG(htmlspecialchars(stripslashes($_REQUEST['msg']), ENT_QUOTES));
-
-        if (defined('loadOpt')) {
-            doOptDBexp();
-        }
-        $context['JSON']['fDATA'] = gchat_savemsg_template();
-    }
-}
 
 function savemsg() {
 
@@ -559,6 +588,23 @@ function doheart() {
     CheckActive();
 	CheckTyping();
 	getBuddySession();
+	
+	$results = $smcFunc['db_query']('', '
+		SELECT *
+		FROM {db_prefix}2sichat_gchat
+		WHERE {db_prefix}2sichat_gchat.rd = 0', 
+		array(
+        )
+    );
+	
+	if ($results && $smcFunc['db_num_rows']($results) != 0) {
+        $context['JSON']['gids'] = array();
+        while ($row = $smcFunc['db_fetch_assoc']($results)) {
+				$context['JSON']['gids'][$row['id']] = $row['room'];
+			
+      }
+      $smcFunc['db_free_result']($results);
+    } 
 	
     $results = $smcFunc['db_query']('', '
 		SELECT *

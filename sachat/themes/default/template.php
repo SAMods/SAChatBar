@@ -75,12 +75,17 @@ function chat_window_template() { //Main chat window, not the bar, the window yo
 
 function Gchat_window_template() { 
 
-	global $user_settings, $modSettings, $txt, $context;
-
+	global $user_settings, $chatSet, $modSettings, $txt, $context;
+	
+	if($_REQUEST['gcid'] == 'Global')
+		$name = 'Global';
+	else
+		$name = $chatSet['real_name'];
+		
 	// The main chat window
 	$data = '
 	<div class="chatboxhead">
-	    <div class="chatboxtitle">Group Chat '.$_REQUEST['gcid'].'</div>
+	    <div class="chatboxtitle">Group Chat '.$name.'</div>
 		    <div class="chatboxoptions">
 				<a href="javascript:void(0)" onclick="javascript:showhide(\'addf'.$_REQUEST['gcid'].'\')">Invite friends</a>
 			    <a href="javascript:void(0)" onclick="javascript:xchat(\''.$_REQUEST['gcid'].'\')">X</a>
@@ -104,11 +109,12 @@ function Gchat_window_template() {
 							'.$message['msg'].'
 						</div>';	
 				}else{
-					$data .='<strong>'.$message['from'].'</strong>
+					$data .='<strong>'.$message['real_name'].'</strong>
 						<div class="chatboxmsg_container">	
 							'.$message['msg'].'
 						</div>';	
 				}
+				$data .='<br />';
 				
 			}
 		}
@@ -310,7 +316,7 @@ function buddy_list_template() { //The buddy list.
 	 $data .= '
 	     <div class="buddyboxcontent">';
 		     
-			 if(!empty($admin['is_admin']) || isset($permission['2sichat_bar_adminmode'])){		    
+			if(!empty($admin['is_admin']) || isset($permission['2sichat_bar_adminmode'])){		    
 				$data .='<input type="button" onclick="javascript:snooper(); return false;" value="'.$txt['bar_admin_snoop'].'" />'; 
 				
 				if(!empty($_COOKIE[$modSettings['2sichat_cookie_name']."_chatSnoop"])){
@@ -319,9 +325,12 @@ function buddy_list_template() { //The buddy list.
 				else{
 				    $data .= ''.$txt['bar_admin_snoop_off'].'<hr />';
 				}
+			}
+			if(!empty($modSettings['2sichat_groupeChat'])){
+				$data .= '
+				 <a href="javascript:void(0)" onclick="javascript:gchat(\'Global\')">Global Chat</a><hr />';
 			 }
-			  $data .= '<a href="javascript:void(0)" onclick="javascript:gchat(\''.$user_settings['id_member'].'\')">Start a group chat session</a><hr />';
-			 if(!empty($context['friends'])) {
+			if(!empty($context['friends'])) {
 				foreach ($context['friends'] as $buddy) {
 			         $data.= '
 				         <a  href="javascript:void(0)" onclick="javascript:chatTo(\''.$buddy['id_member'].'\');showhide(\'friends\');return false;">

@@ -93,6 +93,13 @@ $smcFunc['db_create_table']('{db_prefix}2sichat_gchat', array(
         'type' => 'text',
         'null' => false,
     ),
+	 array(
+        'name' => 'rd',
+        'type' => 'bigint',
+        'size' => 20,
+        'default' => 0,
+        'null' => false,
+    ),
 ),  
     array(
         array(
@@ -101,8 +108,20 @@ $smcFunc['db_create_table']('{db_prefix}2sichat_gchat', array(
 			'columns' => array('id'),
 		),
     ), 
-	array(), 'update');		
-$smcFunc['db_create_table']('{db_prefix}2sichat_error', array(
+	array(), 'update');
+
+$smcFunc['db_add_column']('{db_prefix}2sichat_gchat',
+	array(
+         'name' => 'rd',
+        'type' => 'bigint',
+        'size' => 20,
+        'default' => 0,
+        'null' => false,
+    ),
+    array(),
+    'ignore',
+    'fatal'
+);$smcFunc['db_create_table']('{db_prefix}2sichat_error', array(
     array(
         'name' => 'id',
         'type' => 'int',
