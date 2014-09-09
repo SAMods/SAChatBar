@@ -1,3 +1,10 @@
+=====SA Chat 0.1.5 Rev**=====
+
+implemented group chat and global chat
+some css changes
+online offline now shows a red and green icon instead of a coloured *
+fixed issue with mod secrity and Fix bar option
+
 =====SA Chat 0.1.4 Rev**=====
 
 Simplefied themes a little more all you need is images and css and you have a basic theme other stuff like template, sounds and languages are optional

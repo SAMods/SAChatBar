@@ -31,7 +31,7 @@ function sachat_array_insert(&$input, $key, $insert, $where = 'before', $strict 
 }
 
 function SAChat_loadtheme() {
-    global $options, $modSettings, $user_info, $context;
+    global $context;
 
     loadLanguage('2sichat');
 
@@ -120,6 +120,8 @@ function SAChat_load_permissions(&$permissionGroups, &$permissionList, &$leftPer
         '2sichat_bar_buddys' => array(false, '2sichat', '2sichat'),
         '2sichat_bar_theme' => array(false, '2sichat', '2sichat'),
 		'2sichat_bar_adminmode' => array(false, '2sichat', '2sichat'),
+		'2sichat_group_chat_use' =>array(false, '2sichat', '2sichat'),
+		'2sichat_group_chat' =>array(false, '2sichat', '2sichat'),
     );
 
     $context['non_guest_permissions'] = array_merge(

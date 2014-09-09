@@ -5,7 +5,7 @@
 **/
 function initchat() {
 
-	global $user_settings, $buddies, $budCount, $soundurl, $member_id, $usershowBar,$buddy_settings, $boardurl, $options, $modSettings, $themeurl, $thjs, $context;
+	global $buddies, $soundurl, $member_id, $txt, $usershowBar, $boardurl, $modSettings, $themeurl, $thjs, $context;
 
 	if ($member_id && empty($modSettings['2sichat_dis_bar'])) {
 		$bar = addslashes(preg_replace("/\r?\n?\t/m", "", chat_bar_template()));
@@ -108,7 +108,7 @@ function initchat() {
 			}
 			
 			'.(!empty($modSettings['2sichat_live_notfy']) ? 'newmsg_says();' : '').'
-			
+
 			$sachat.ajax({
 				url: \''.$boardurl.'/sachat/index.php\',
 				data: \''.$thjs.'action=heart\',
@@ -120,8 +120,11 @@ function initchat() {
 						$sachat.each(data.gids, function(id,u) {
 							if($sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'gchat_\'+this)){
 								if(document.getElementById(\'gcmsg\'+this) && this != null && $sachat("#g"+this).css(\'display\') != \'none\') {
-									gchat(this);
-									//loadsnd(\'new_msg\');
+									if(msgArray[this] && msgArray[this] < data.LID && data.LID != null || msgArray[this] == undefined && data.LID != null){
+										gchat(this);
+										msgArray[this] = data.LID;
+										loadsnd(\'new_msg\');
+									}
 								}
 							}
 							itemsfound += 1;
@@ -325,17 +328,20 @@ function initchat() {
 		
 		function invitGchat(id, join){
 
-		    var msg =\'Group chat invite. <br /> Click <a href="javascript:void(0)" onclick="javascript:gchat(\'+join+\');return false;">here</a> to join.\';
-		   
-			$sachat.ajax({
-				url: \''.$boardurl.'/sachat/index.php\',
-				data: \''.$thjs.'cid=\'+id+\'&msg=\'+encodeURIComponent(msg),
-				dataType: "json",
-				cache: false,
-				success: function(data){
-					chatTo(id);
-				}
-			});
+		    var msg =\''.$txt['bar_group_chat_invite_to1'].' <br /> '.$txt['bar_group_chat_invite_to2'].' <a href="javascript:void(0)" onclick="javascript:gchat(\'+join+\');return false;">'.$txt['bar_group_chat_invite_to3'].'</a> '.$txt['bar_group_chat_invite_to4'].'.\';
+		    
+			//if(document.getElementById(\'gcmsg\'+join) && this != null && $sachat("#g"+join).css(\'display\') != \'none\') {
+				$sachat.ajax({
+					url: \''.$boardurl.'/sachat/index.php\',
+					data: \''.$thjs.'cid=\'+id+\'&msg=\'+encodeURIComponent(msg),
+					dataType: "json",
+					cache: false,
+					success: function(data){
+						chatTo(id);
+						gchat(join);
+					}
+				});
+			//}
 		}
 		
 		function gsubmit(id){
@@ -355,12 +361,12 @@ function initchat() {
 						newdiv.setAttribute(\'dir\',\'ltr\');
 						newdiv.innerHTML = data.fDATA;
 						document.getElementById(\'gcmsg\'+id).insertBefore(newdiv, document.getElementById(\'gcmsg\'+id).lastChild);
+						loadsnd(\'snd_msg\');
 					}
 			        
 					$sachat("#g"+id+" .chatboxcontent").scrollTop($sachat("#g"+id+" .chatboxcontent")[0].scrollHeight);
 				}
 			});
-			
 			
 			HeartbeatTime = minHeartbeat;
 		    HeartbeatCount = 1;
@@ -393,14 +399,11 @@ function initchat() {
 						if (data.DATA != null) {
 							
 							$sachat($sachat(\'#g\'+DId)).html(data.DATA);
-							
 							$sachat("#g"+DId).css(\'bottom\', \'27px\');
 							
 							$sachat(\'.slidedown\').show();
 							$sachat(\'.slideup\').hide();
-							
-							
-							
+
 							$sachat("#addf"+id).attr("style","display: none");
 							$sachat("#g"+id+" .chatboxcontent").scrollTop($sachat("#g"+id+" .chatboxcontent")[0].scrollHeight);
 							updateChatBoxPosition();
@@ -415,9 +418,6 @@ function initchat() {
 				myArray[3] = \''.$member_id.'\'
 		        $sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'gchat_\'+DId, escape(myArray.join(\',\')));
 			}
-			if($sachat(\'.chatBoxslider .chatbox:visible:first\').html()){
-				//alert("You already have a group chat session");
-			}
 		}
 		
 		function gxchat(id) {
@@ -426,7 +426,7 @@ function initchat() {
 			$sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'gchat_\'+id, null);		
 		}
 		
-	    function chatTo(id, minimised) {
+	    function chatTo(id) {
             var DId = arguments[0];
 			
 			if (DId != undefined) {

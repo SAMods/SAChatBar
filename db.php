@@ -69,59 +69,8 @@ $smcFunc['db_create_table']('{db_prefix}2sichat_typestaus', array(
 		),
 	),
 	array(), 'update');
-$smcFunc['db_create_table']('{db_prefix}2sichat_gchat', array(
-    array(
-        'name' => 'id',
-        'type' => 'int',
-        'size' => 11,
-        'auto' => true,
-        'null' => false,
-    ),
-    array(
-        'name' => 'from',
-        'type' => 'int',
-        'size' => 11,
-        'null' => false,
-    ),
-	array(
-        'name' => 'msg',
-        'type' => 'text',
-        'null' => false,
-    ),
-	array(
-        'name' => 'room',
-        'type' => 'text',
-        'null' => false,
-    ),
-	 array(
-        'name' => 'rd',
-        'type' => 'bigint',
-        'size' => 20,
-        'default' => 0,
-        'null' => false,
-    ),
-),  
-    array(
-        array(
-			'name' => 'id',
-			'type' => 'primary',
-			'columns' => array('id'),
-		),
-    ), 
-	array(), 'update');
-
-$smcFunc['db_add_column']('{db_prefix}2sichat_gchat',
-	array(
-         'name' => 'rd',
-        'type' => 'bigint',
-        'size' => 20,
-        'default' => 0,
-        'null' => false,
-    ),
-    array(),
-    'ignore',
-    'fatal'
-);$smcFunc['db_create_table']('{db_prefix}2sichat_error', array(
+		
+$smcFunc['db_create_table']('{db_prefix}2sichat_error', array(
     array(
         'name' => 'id',
         'type' => 'int',
@@ -163,6 +112,81 @@ $smcFunc['db_add_column']('{db_prefix}2sichat_gchat',
     ),
 	array(), 'update');
 
+$smcFunc['db_create_table']('{db_prefix}2sichat_gchat', array(
+    array(
+        'name' => 'id',
+        'type' => 'int',
+        'size' => 11,
+        'auto' => true,
+        'null' => false,
+    ),
+    array(
+        'name' => 'from',
+        'type' => 'int',
+        'size' => 11,
+        'null' => false,
+    ),
+	array(
+        'name' => 'msg',
+        'type' => 'text',
+        'null' => false,
+    ),
+	array(
+        'name' => 'room',
+        'type' => 'text',
+        'null' => false,
+    ),
+	array(
+        'name' => 'sent',
+        'type' => 'int',
+		'size' => 10,
+        'null' => false,
+    ),
+	 array(
+        'name' => 'rd',
+        'type' => 'bigint',
+        'size' => 20,
+        'default' => 0,
+        'null' => false,
+    ),
+),  
+    array(
+        array(
+			'name' => 'id',
+			'type' => 'primary',
+			'columns' => array('id'),
+		),
+    ), 
+	array(), 'update');
+$smcFunc['db_remove_column'](
+    '{db_prefix}2sichat_gchat',
+     'sent'
+);
+$smcFunc['db_add_column']('{db_prefix}2sichat_gchat',
+	array(
+        'name' => 'sent',
+        'type' => 'int',
+		'size' => 10,
+        'null' => false,
+    ),
+    array(),
+    'ignore',
+    'fatal'
+);
+
+$smcFunc['db_add_column']('{db_prefix}2sichat_gchat',
+	array(
+         'name' => 'rd',
+        'type' => 'bigint',
+        'size' => 20,
+        'default' => 0,
+        'null' => false,
+    ),
+    array(),
+    'ignore',
+    'fatal'
+);
+	
 $smcFunc['db_create_table']('{db_prefix}2sichat', array(
     array(
         'name' => 'id',

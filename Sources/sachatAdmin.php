@@ -211,7 +211,7 @@ function twosichatchmod() {
         db_extend();
         $real_prefix = preg_match('~^(`?)(.+?)\\1\\.(.*?)$~', $db_prefix, $match) === 1 ? $match[3] : $db_prefix;
         $temp_tables = $smcFunc['db_list_tables'](false, $real_prefix . '%');
-        $sichatTables = array($db_prefix . '2sichat', $db_prefix . '2sichat_gadgets', $db_prefix . '2sichat_barlinks');
+        $sichatTables = array($db_prefix . '2sichat', $db_prefix . '2sichat_gadgets', $db_prefix . '2sichat_barlinks', $db_prefix . '2sichat_gchat');
         $tables = array();
 
         foreach ($temp_tables as $table)
@@ -226,7 +226,7 @@ function twosichatchmod() {
         }
         redirectexit('action=admin;area=sachat;sa=maintain;done');
     }
-    if (isset($_GET['chmod'])) {
+    if (isset($_GET['fixbar'])) {
         chmodDirectory('sachat/', 0);
         redirectexit('action=admin;area=sachat;sa=maintain;done');
     }
@@ -237,6 +237,8 @@ function twosichatchmod() {
     if (isset($_GET['purge'])) {
         $smcFunc['db_query']('', 'DELETE FROM {db_prefix}2sichat', array());
         $smcFunc['db_query']('', 'ALTER TABLE {db_prefix}2sichat AUTO_INCREMENT = 0', array());
+		$smcFunc['db_query']('', 'DELETE FROM {db_prefix}2sichat_gchat', array());
+        $smcFunc['db_query']('', 'ALTER TABLE {db_prefix}2sichat_gchat AUTO_INCREMENT = 0', array());
         redirectexit('action=admin;area=sachat;sa=maintain;done');
     }
 }
@@ -322,6 +324,8 @@ function twosichatChat() {
 		array('text', '2sichat_mn_heart_timeout', 'size' => 10, 'subtext' => $txt['2sichat_mn_heart_timeout_sub']),
         '',
 		array('check', '2sichat_groupeChat', 'subtext' => $txt['2sichat_groupeChat_sub']),
+		array('check', '2sichat_groupeChatGlobal', 'subtext' => $txt['2sichat_groupeChat_sub']),
+		
         '',
         array('text', '2sichat_purge', 'size' => 10, 'subtext' => $txt['2sichat_purge_sub']),
         '',

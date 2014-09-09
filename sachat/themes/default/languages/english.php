@@ -6,6 +6,16 @@
 global $boardurl;
 
 $txt = array();
+$txt['bar_you'] = 'You';
+$txt['bar_group_chat'] = 'Group chat';
+$txt['bar_global_chat'] = 'Global chat';
+$txt['bar_group_chat_invite'] = 'Invite friends';
+$txt['bar_group_chat_invite_to'] = 'Invite to Group chat';
+$txt['bar_group_chat_invite_to1'] = 'Group chat invite.';
+$txt['bar_group_chat_invite_to2'] = 'click';
+$txt['bar_group_chat_invite_to3'] = 'here';
+$txt['bar_group_chat_invite_to4'] = 'to join';
+$txt['bar_group_session'] = 'Start a group chat session';
 $txt['bar_isTyping'] = 'Is typing...';
 $txt['bar_sent_at'] = 'Sent at';
 $txt['bar_submitt_form'] = 'Send';

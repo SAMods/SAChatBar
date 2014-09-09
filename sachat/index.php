@@ -46,36 +46,30 @@ require_once($doLang);
 list ($member_id, $password) = initCookies();
 
 //Load Optimizer if applicable
-if (defined('loadOpt')) {
+if (defined('loadOpt'))
     loadOpt();
-}
 
 // Connect to the database
 $smcFunc = array();
 loadDatabase();
 
 //Do charset if needed!
-if (!empty($db_character_set)) {
+if (!empty($db_character_set))
     doCharset($db_character_set);
-}
 
-if (!isset($_REQUEST['gid'])){
-    //cos we are genarating javascript with a php file we need to setup header
-    header('Content-Type: application/x-javascript; text/javascript');
-}
+if (!isset($_REQUEST['gid']))
+    header('Content-Type: application/x-javascript; text/javascript');//cos we are genarating javascript with a php file we need to setup header
 
 //Load modsettings array
 $modSettings = initModSettings();
 
 //Is this enabled?
-if (!empty($modSettings['2sichat_disable'])) {
+if (!empty($modSettings['2sichat_disable']))
     die();
-}
 
 //Do the load check if applicable
-if (!empty($modSettings['2sichat_load_chk'])) {
+if (!empty($modSettings['2sichat_load_chk']))
     doLoadCHK();
-}
 
 // If it is a member lets load some data.
 if ($member_id != 0) {
@@ -86,9 +80,8 @@ if ($member_id != 0) {
 	
 	$usershowBar = usershowBar($member_id);
 		
-    if (!empty($modSettings['2sichat_permissions'])) {
+    if (!empty($modSettings['2sichat_permissions']))
         $permission = loadPermissions($user_settings['groups']);
-    }
 	
 	//need admin/mod perms the above will not be avalible if permission are disabled
 	if (($admin = cachegetData('admin', 90)) == null) {
@@ -138,9 +131,11 @@ if (isset($user_settings) && strlen($password) != 40 || isset($user_settings) &&
     $context['JSON']['STATUS'] = 'ACTIVE';
 }
 
+$context['CountinglobalRoom']['Global'] = CheckActiveG('Global');
+
 // Check actions
 if (isset($_REQUEST['action'])) {
-
+	
     // If we are loading the main javascript lets get it ready based on the user
     if ($_REQUEST['action'] == 'body') {
         initJs('body');
@@ -165,7 +160,6 @@ if (isset($_REQUEST['action'])) {
 } else {
     //No action defined so lets assume they are using the chat.
     if (!isset($_REQUEST['msg']) && isset($_REQUEST['cid']) && $member_id) {
-        // Must be starting out.
         initChatSess();
     } else if (isset($_REQUEST['msg']) && isset($_REQUEST['cid']) && $member_id) {
         savemsg();

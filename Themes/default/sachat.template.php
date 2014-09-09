@@ -117,7 +117,7 @@ global $txt,$modSettings,$scripturl;
 		<span class="topslice"><span></span></span>
 	        <div class="content">
 			    '.$txt['2sichatmaintainfb1'].'<br /><br />
-				<button type="button" onclick="javascript:location.href = \''.$scripturl.'?action=admin;area=sachat;sa=maintain;chmod\';"> '.$txt['2sichatmaintainfb'].'</button>
+				<button type="button" onclick="javascript:location.href = \''.$scripturl.'?action=admin;area=sachat;sa=maintain;fixbar\';"> '.$txt['2sichatmaintainfb'].'</button>
 			</div>
 	    <span class="botslice"><span></span></span>
 	</div>';

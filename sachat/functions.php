@@ -7,10 +7,8 @@
 function doCharset($db_character_set) {
     global $smcFunc;
 
-    if (!empty($db_character_set)) {
-        $smcFunc['db_query']('set_character_set', 'SET NAMES ' . $db_character_set, array()
-        );
-    }
+    if (!empty($db_character_set))
+        $smcFunc['db_query']('set_character_set', 'SET NAMES ' . $db_character_set, array());
 }
 
 function initModSettings() {
@@ -190,7 +188,6 @@ function gadget() {
 
     //type = php
 	if ($context['gadget']['type'] == 0) {
-		
 		$context['gadget']['url'] = trim($context['gadget']['url']);
         $context['gadget']['url'] = trim($context['gadget']['url'], '<?php');
         $context['gadget']['url'] = trim($context['gadget']['url'], '?>');
@@ -200,11 +197,8 @@ function gadget() {
         ob_end_clean();
     }
     //type = html
-    if ($context['gadget']['type'] == 1) {
-        
+    if ($context['gadget']['type'] == 1)
 		$context['gadget']['url'] = $context['gadget']['url'];
-		
-    }
 
     if (isset($_REQUEST['src']) && $_REQUEST['src'] == 'true') {
         $context['HTML'] = gadgetObject_template();
@@ -216,11 +210,10 @@ function gadget() {
 
 function initgChatSess() {
 
-    global $chatSet, $smcFunc,$context;
+    global $chatSet, $smcFunc, $context;
 
-	if($_REQUEST['gcid'] != 'Global'){
+	if($_REQUEST['gcid'] != 'Global')
 		$chatSet = loadUserSettings($_REQUEST['gcid']);
-	}
 	
 	$results = $smcFunc['db_query']('', '
 		SELECT g.*, m.real_name
@@ -235,41 +228,17 @@ function initgChatSess() {
         while ($row = $smcFunc['db_fetch_assoc']($results)) {
 		    $row['msg'] = htmlspecialchars_decode(phaseMSG($row['msg']));
             $context['msgs'][] = $row;
-			//mgread($row['id']); Fix this!!!!!!!!!!!
+			//$context['onlineGroup'][$_REQUEST['gcid']] = CheckActiveG($_REQUEST['gcid']);
+			$GlastID = $row['id'];
 		}
     }
     $smcFunc['db_free_result']($results);
-	
     $context['JSON']['DATA'] = Gchat_window_template();
-
-}
-
-function mgread($id) {
-
-    global $smcFunc;
-    
-	if (isset($_REQUEST['_'])) {$read = $_REQUEST['_'];}
-    
-	if (!isset($read)) {$read = 1;}
-	
-    // Mark messages read.
-    $smcFunc['db_query']('', '
-		UPDATE {db_prefix}2sichat_gchat
-		SET {db_prefix}2sichat_gchat.rd = {float:read}
-		WHERE {db_prefix}2sichat_gchat.id = {int:ids} AND {db_prefix}2sichat_gchat.rd = 0',
-		array(
-			'ids' => $id,
-			'read' => $read,
-		)
-    );
-    
-	if (defined('loadOpt')) {doOptDBrec();}
 }
 
 function savemsggc() {
 
     global $smcFunc, $member_id, $context, $modSettings;
-
 
     // See if they have permission, maybe one day will have a message sent back.
     if (!empty($modSettings['2sichat_dis_chat'])) {
@@ -285,21 +254,49 @@ function savemsggc() {
 			    'msg' => 'string',
 				'room' => 'string',
 				'rd' => 'int',
+				'sent' => 'string',
 			), 
 			array(
-			$member_id, htmlspecialchars(stripslashes($_REQUEST['gmsg'])),$_REQUEST['gcid'],0
+				$member_id, htmlspecialchars(stripslashes($_REQUEST['gmsg'])),$_REQUEST['gcid'],0,time()
 			), 
 			array()
 		);	
 		
-
         $context['msgs'] = phaseMSG(htmlspecialchars(stripslashes($_REQUEST['gmsg']), ENT_QUOTES));
 
-        if (defined('loadOpt')) {
+        if (defined('loadOpt'))
             doOptDBexp();
-        }
-        $context['JSON']['fDATA'] = gchat_savemsg_template();
+        
+		$context['JSON']['fDATA'] = gchat_savemsg_template();
     }
+}
+
+function CheckActiveG($room){
+    
+	global $smcFunc, $context;
+	
+	$time = time();
+	$time_check = $time-180; //SET TIME 3 Minute	
+	
+	$results = $smcFunc['db_query']('', '
+		SELECT g.id, g.sent, g.from, g.room
+		FROM {db_prefix}2sichat_gchat AS g
+		WHERE g.room = {string:room} AND g.sent > {int:tc}
+		GROUP BY g.from', 
+		array(
+			'room' => $room,
+			'tc' => $time_check,
+		)
+	);
+
+	if ($results && $smcFunc['db_num_rows']($results) != 0) {
+		while ($row = $smcFunc['db_fetch_assoc']($results)) {
+		    $context['online_room'][$row['id']] = $row;
+		} 
+		$smcFunc['db_free_result']($results);
+	}
+	
+	return count(isset($context['online_room']) ? $context['online_room'] : null);
 }
 
 function initChatSess() {
@@ -308,6 +305,7 @@ function initChatSess() {
 	
 	getBuddySession();
 	CheckTyping();
+	
     // Now on to the messages
     $results = $smcFunc['db_query']('', '
 		SELECT *
@@ -323,7 +321,6 @@ function initChatSess() {
     $lastID = 0;
 
     if ($results) {
-        //mread(); // Mark messages read since we are displaying them.
         while ($row = $smcFunc['db_fetch_assoc']($results)) {
             $row['msg'] = htmlspecialchars_decode(phaseMSG($row['msg']));
             $context['msgs'][] = $row;
@@ -373,20 +370,19 @@ function savemsg() {
 			array()
 		);	
 		
-			$smcFunc['db_query']('', '
-				DELETE FROM {db_prefix}2sichat_typestaus
-				WHERE member_id = {int:member_id}', 
-				array(
-					'member_id' => $member_id,
-				)
-			);
+		$smcFunc['db_query']('', '
+			DELETE FROM {db_prefix}2sichat_typestaus
+			WHERE member_id = {int:member_id}', 
+			array(
+				'member_id' => $member_id,
+			)
+		);
 		
-
         $context['msgs'] = phaseMSG(htmlspecialchars(stripslashes($_REQUEST['msg']), ENT_QUOTES));
 
-        if (defined('loadOpt')) {
+        if (defined('loadOpt'))
             doOptDBexp();
-        }
+			
         $context['JSON']['DATA'] = chat_savemsg_template();
     }
 }
@@ -422,6 +418,13 @@ function initCleanup() {
     $smcFunc['db_query']('', '
 		DELETE FROM {db_prefix}2sichat
 		WHERE {db_prefix}2sichat.rd != 0 AND {db_prefix}2sichat.sent < {int:purge}', 
+		array(
+			'purge' => date("Ymd", strtotime('-' . $modSettings['2sichat_purge'] . ' days', strtotime(date("Ymd")))),
+		)
+    );
+	$smcFunc['db_query']('', '
+		DELETE FROM {db_prefix}2sichat_gchat
+		WHERE {db_prefix}2sichat_gchat.rd != 0 AND {db_prefix}2sichat_gchat.sent < {int:purge}', 
 		array(
 			'purge' => date("Ymd", strtotime('-' . $modSettings['2sichat_purge'] . ' days', strtotime(date("Ymd")))),
 		)
@@ -530,7 +533,6 @@ function typestatus() {
 						'one' => $typing_insert,
 					)
 				);
-			
 			}
 		}
 	}
@@ -582,33 +584,11 @@ function getBuddySession(){
 	}
 }
 
-
-function doheart() {
-
-    global $smcFunc, $member_id, $context;
-
-    CheckActive();
-	CheckTyping();
-	getBuddySession();
+function newMsgPrivate() {
 	
+	global $smcFunc, $member_id, $context;
+	 
 	$results = $smcFunc['db_query']('', '
-		SELECT *
-		FROM {db_prefix}2sichat_gchat
-		WHERE {db_prefix}2sichat_gchat.rd = 0', 
-		array(
-        )
-    );
-	
-	if ($results && $smcFunc['db_num_rows']($results) != 0) {
-        $context['JSON']['gids'] = array();
-        while ($row = $smcFunc['db_fetch_assoc']($results)) {
-				$context['JSON']['gids'][$row['id']] = $row['room'];
-			
-      }
-      $smcFunc['db_free_result']($results);
-    } 
-	
-    $results = $smcFunc['db_query']('', '
 		SELECT *
 		FROM {db_prefix}2sichat
 		WHERE {db_prefix}2sichat.to = {int:member_id} AND {db_prefix}2sichat.rd = 0', 
@@ -622,14 +602,56 @@ function doheart() {
         while ($row = $smcFunc['db_fetch_assoc']($results)) {
 				$context['JSON']['ids'][$row['id']] = $row['from'];
 			
-      }
-      $smcFunc['db_free_result']($results);
-    } else {
+        }
+        $smcFunc['db_free_result']($results);
+    }   
+	else {
         if (defined('loadOpt')) {
             doOptDBrec();
         }
         $context['JSON']['STATUS'] = 'NO RESULTS';
     }
+}
+
+function newMsgGroup() {
+	
+	global $smcFunc, $modSettings, $member_id, $context;
+	 
+	if(!empty($modSettings['2sichat_groupeChatGlobal']) || !empty($modSettings['2sichat_groupeChat'])){
+		$results = $smcFunc['db_query']('', '
+			SELECT *
+			FROM {db_prefix}2sichat_gchat
+			WHERE {db_prefix}2sichat_gchat.rd = 0 AND {db_prefix}2sichat_gchat.from != {int:member_id}', 
+			array(
+				'member_id' => $member_id,
+			)
+		);
+		
+		if ($results && $smcFunc['db_num_rows']($results) != 0) {
+			$context['JSON']['gids'] = array();
+			while ($row = $smcFunc['db_fetch_assoc']($results)) {
+				$context['JSON']['gids'][$row['id']] = $row['room'];
+				$GlastID = $row['id'];
+			}
+			$context['JSON']['LID'] = $GlastID;
+			$smcFunc['db_free_result']($results);
+		} 
+		else {
+			if (defined('loadOpt')) {
+				doOptDBrec();
+			}
+			$context['JSON']['STATUS'] = 'NO RESULTS';
+		}
+	}
+}
+
+function doheart() {
+
+    CheckActive();
+	CheckTyping();
+	getBuddySession();
+	newMsgGroup();
+	newMsgPrivate();
 }
 
 function load_smiles() {
