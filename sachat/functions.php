@@ -207,6 +207,41 @@ function gadget() {
         $context['JSON']['GID'] = $context['gadget']['id'];
     }
 }
+/*if ($time > strtotime('-2 minutes'))
+{
+    return 'Just now';
+}
+elseif ($time > strtotime('-15 minutes'))
+{
+    return '' . floor((strtotime('now') - $time)/60) . 'minutes ago';
+}
+else*/
+function formatDateAgo($value){
+	global $txt;
+	
+    $time = $value;
+    $d = new \DateTime('@'.$value.'');
+
+    $weekDays = $txt['bar_weekdays'];
+    $months = $txt['bar_months'];
+
+	if ($time > strtotime('today'))
+    {
+        return $txt['bar_display_today'].', ' . $d->format('G:i:a');
+    }
+    elseif ($time > strtotime('yesterday'))
+    {
+        return $txt['bar_display_yesterday'].', ' . $d->format('G:i:a');
+    }
+    elseif ($time > strtotime('this week'))
+    {
+        return $weekDays[$d->format('N') - 1] . ', ' . $d->format('G:i:a');
+    }
+    else
+    {
+        return $d->format('j') . ' ' . $months[$d->format('n') - 1] . ', ' . $d->format('G:i:a');
+    }
+}
 
 function initgChatSess() {
 
@@ -215,6 +250,8 @@ function initgChatSess() {
 	if($_REQUEST['gcid'] != 'Global')
 		$chatSet = loadUserSettings($_REQUEST['gcid']);
 	
+	$context['onlineGroup'] = GetOnlineG($_REQUEST['gcid']);
+
 	$results = $smcFunc['db_query']('', '
 		SELECT g.*, m.real_name
 		FROM {db_prefix}2sichat_gchat AS g
@@ -227,12 +264,14 @@ function initgChatSess() {
     if ($results) {
         while ($row = $smcFunc['db_fetch_assoc']($results)) {
 		    $row['msg'] = htmlspecialchars_decode(phaseMSG($row['msg']));
+			$row['avatar'] = loadUserSettings($row['from'],false);
+			$row['sent'] =  formatDateAgo($row['sent']);
             $context['msgs'][] = $row;
-			//$context['onlineGroup'][$_REQUEST['gcid']] = CheckActiveG($_REQUEST['gcid']);
 			$GlastID = $row['id'];
 		}
     }
     $smcFunc['db_free_result']($results);
+    $context['JSON']['LID'] = $lastID;
     $context['JSON']['DATA'] = Gchat_window_template();
 }
 
@@ -266,12 +305,11 @@ function savemsggc() {
 
         if (defined('loadOpt'))
             doOptDBexp();
-        
-		$context['JSON']['fDATA'] = gchat_savemsg_template();
+        $context['JSON']['fDATA'] = gchat_savemsg_template();
     }
 }
 
-function CheckActiveG($room){
+function GetOnlineG($room){
     
 	global $smcFunc, $context;
 	
@@ -287,16 +325,11 @@ function CheckActiveG($room){
 			'room' => $room,
 			'tc' => $time_check,
 		)
-	);
-
-	if ($results && $smcFunc['db_num_rows']($results) != 0) {
-		while ($row = $smcFunc['db_fetch_assoc']($results)) {
-		    $context['online_room'][$row['id']] = $row;
-		} 
-		$smcFunc['db_free_result']($results);
-	}
+    );
+    $context['online_room'] = $smcFunc['db_num_rows']($results);
+    $smcFunc['db_free_result']($results);
 	
-	return count(isset($context['online_room']) ? $context['online_room'] : null);
+	return $context['online_room'];
 }
 
 function initChatSess() {
@@ -333,8 +366,6 @@ function initChatSess() {
     $context['JSON']['BID'] = $buddy_id;
     $context['JSON']['ID'] = $lastID;
 }
-
-
 
 function savemsg() {
 

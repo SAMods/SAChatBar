@@ -19,7 +19,7 @@ function chat_window_template() { //Main chat window, not the bar, the window yo
 				if(!empty($modSettings['2sichat_groupeChat']) && !empty($modSettings['2sichat_permissions']) && isset($permission['2sichat_group_chat'])
 				|| !empty($modSettings['2sichat_groupeChat']) && !empty($modSettings['2sichat_permissions']) && isset($permission['is_admin'])
 				|| !empty($modSettings['2sichat_groupeChat']) && !empty($modSettings['2sichat_permissions']) && isset($permission['is_mod'])
-				|| !empty($modSettings['2sichat_groupeChat']) && empty($modSettings['2sichat_permissions'])) {						
+				|| !empty($modSettings['2sichat_groupeChat']) && empty($modSettings['2sichat_permissions'])) {				
 					$data.= '
 				       <a href="javascript:void(0)" onclick="javascript:showhide(\'search'.$buddy_settings['id_member'].'\')">'.$txt['bar_group_chat'].'</a>';
 				}
@@ -95,48 +95,38 @@ function Gchat_window_template() {
 		$name = 'Global';
 	else
 		$name = $chatSet['real_name'];
-	//'.$context['onlineGroup'][$_REQUEST['gcid']].'	
+	
 	// The main chat window
 	$data = '
-	<div class="chatboxhead">
-	    <div class="chatboxtitle">'.ucfirst($name).' '.$txt['bar_group_chat'].' </div>
-		    <div class="chatboxoptions">
+	<div class="group_chatboxhead">
+	    <div class="group_chatboxtitle">'.ucfirst($name).' '.$txt['bar_group_chat'].' ('.$context['onlineGroup'].')</div> 
+		    <div class="group_chatboxoptions">
+				<a href="javascript:void(0)" onclick="javascript:upDowngroupchat(\''.$_REQUEST['gcid'].'\')"><span id="slideupg'.$_REQUEST['gcid'].'" class="slideup">&#x25B2;</span><span id="slidedowng'.$_REQUEST['gcid'].'" class="slidedown">&#x25BC;</span></a> 
 			    <a href="javascript:void(0)" onclick="javascript:gxchat(\''.$_REQUEST['gcid'].'\')">X</a>
 			</div>
 			<br clear="all"/>
 	</div>';
-	
-	/*$data .='
-	'.($_REQUEST['gcid'] != 'Global' ? '<a href="javascript:void(0)" onclick="javascript:showhide(\'addf'.$_REQUEST['gcid'].'\')">'.$txt['bar_group_chat_invite'].'</a>':'').'
-	    <div class="chatboxcontentsearch" id="addf'.$_REQUEST['gcid'].'">
-			<form id="mid_cont_form" action="javascript:void(0)" onsubmit="javascript:addTochat(\''.$_REQUEST['gcid'].'\');" method="post">
-				<input type="text" name="mserach'.$_REQUEST['gcid'].'" id="mserach'.$_REQUEST['gcid'].'" style="width: 95%;" maxlength="255" />			
-			</form>
-		</div>';*/
 		
-	$data .='<div class="chatboxcontent" id="gcmsg'.$_REQUEST['gcid'].'">';
+	$data .='<div class="group_chatboxcontent" id="gcmsg'.$_REQUEST['gcid'].'">';
 		if(!empty($context['msgs'])) {
+			$c = true; 
 			foreach ($context['msgs'] as $message) {
-				if ($message['from'] == $user_settings['id_member']) { 
-					$data .='<strong>'.$txt['bar_you'].'</strong>
-						<div class="chatboxmsg_container">	
-							'.$message['msg'].'
-						</div>';	
-				}else{
-					$data .='<strong>'.$message['real_name'].'</strong>
-						<div class="chatboxmsg_container_rec">	
-							'.$message['msg'].'
-						</div>';	
-				}
-				$data .='<br />';
-				
+				$data .='<strong>'.($message['from'] == $user_settings['id_member'] ? $txt['bar_you'] : $message['real_name']).'</strong>
+					<span class="group_chatboxtime">'.$message['sent'].'</span>
+					<div class="group_chatboxmsg_optionright">
+						<img width="15px" height="15px" src="'.$message['avatar']['avatar'].'" />
+					</div>
+					<div '.(($c = !$c)?' class="group_chatboxmsg_container_rec"':'class="group_chatboxmsg_container"').'>	
+						'.$message['msg'].'
+					</div><br />';	
 			}
+			$data .='<br />';	
 		}
 	$data .='
 	    </div>
-	    <div class="chatboxinput">
+	    <div class="group_chatboxinput" id="ggroup'.$_REQUEST['gcid'].'">
 	        <form id="mid_cont_form" action="javascript:void(0)" onsubmit="javascript:gsubmit(\''.$_REQUEST['gcid'].'\');" method="post">
-	           <input type="text"  name="gmsg'.$_REQUEST['gcid'].'" id="gmsg'.$_REQUEST['gcid'].'" style="width: 75%;" maxlength="255" />
+	           <input type="text"  name="gmsg'.$_REQUEST['gcid'].'" id="gmsg'.$_REQUEST['gcid'].'" style="width: 85%;" maxlength="255" />
 			    <input type="button" onclick="javascript:gsubmit(\''.$_REQUEST['gcid'].'\'); return false;" value="'.$txt['bar_submitt_form'].'" />
 		    </form>
 	   </div>';
@@ -145,16 +135,18 @@ function Gchat_window_template() {
 }
 function gchat_savemsg_template() { //When you send a message
 
-	global $txt, $context;
+	global $txt, $context, $user_settings;
 
 	// This is the html response when you send a message.
 	$data ='
-	    <strong>'.$txt['bar_you'].'</strong>
-	    
+	    <strong>'.$txt['bar_you'].'</strong> <span class="group_chatboxtime">'.formatDateAgo(time()).'</span>
+	    <div class="chatboxmsg_optionright">
+	        <img width="15px" height="15px" src="'.$user_settings['avatar'].'" />
+		</div>
 		<br clear="all"/>
 	    <div class="chatboxmsg_container">
 		    '.$context['msgs'].'
-		</div>';
+		</div><br />';
 		
 	return $data;
 }
@@ -171,7 +163,7 @@ function chat_savemsg_template() { //When you send a message
 		<br clear="all"/>
 	    <div class="chatboxmsg_container">
 		    '.$context['msgs'].'
-		</div>';
+		</div><br />';
 		
 	return $data;
 }
@@ -318,7 +310,7 @@ function buddy_list_template() { //The buddy list.
 
 	$data = ' 
 	     <div class="buddyboxhead">
-	         <div class="buddyboxtitle"></div>
+	         <div class="buddyboxtitle">'.$txt['whos_on'].'</div>
 		         <div class="buddyboxoptions">
 			         <a href="javascript:void(0)" onclick="javascript:showhide(\'friends\')">
 					     X
@@ -351,7 +343,7 @@ function buddy_list_template() { //The buddy list.
 			|| !empty($modSettings['2sichat_groupeChatGlobal']) && !empty($modSettings['2sichat_permissions']) && isset($permission['is_mod'])
 			|| !empty($modSettings['2sichat_groupeChatGlobal']) && empty($modSettings['2sichat_permissions'])){
 				$data .= '
-				 <a href="javascript:void(0)" onclick="javascript:gchat(\'Global\');showhide(\'friends\');return false;">'.$txt['bar_global_chat'].'</a> ('.$context['CountinglobalRoom']['Global'].')
+				 <a href="javascript:void(0)" onclick="javascript:gchat(\'Global\');showhide(\'friends\');return false;">'.$txt['bar_global_chat'].'</a> ('.$context['CountinglobalRoom'].')
 				 <div class="chatboxmsg_optionright"><img id="extraimg" src="'.$themeurl.'/images/world.png" width="17" height="17" alt="" border="0"></div>
 				 <hr />';
 			 }

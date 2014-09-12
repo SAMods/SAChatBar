@@ -131,7 +131,7 @@ if (isset($user_settings) && strlen($password) != 40 || isset($user_settings) &&
     $context['JSON']['STATUS'] = 'ACTIVE';
 }
 
-$context['CountinglobalRoom']['Global'] = CheckActiveG('Global');
+$context['CountinglobalRoom'] = GetOnlineG('Global');
 
 // Check actions
 if (isset($_REQUEST['action'])) {

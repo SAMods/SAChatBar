@@ -6,6 +6,11 @@
 global $boardurl;
 
 $txt = array();
+$txt['bar_weekdays'] = array('Monday', 'Tuesday', 'Wednesday', 'Thursday',  'Friday', 'Saturday', 'Sunday');
+$txt['bar_months'] = array('January', 'Febuary', 'March', 'April',' May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+$txt['bar_display_today'] = '<strong>Today</strong> at';
+$txt['bar_display_yesterday'] = '<strong>yesterday</strong> at';
+
 $txt['bar_you'] = 'You';
 $txt['bar_group_chat'] = 'Group chat';
 $txt['bar_global_chat'] = 'Global chat';
