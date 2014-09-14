@@ -4,6 +4,56 @@
  * I release this code as free software, under the MIT license.
 **/
 
+//TODO new permissions system
+/*function allowedTodo($permission){
+	global $modSettings, $user_settings;
+	
+	if (empty($permission))
+		return true;
+
+	if (empty($user_settings))
+		return false;
+
+	if (!empty($user_settings['is_admin']))
+		return true;
+		
+	if(empty($modSettings['2sichat_permissions']) && $permission != '2sichat_bar_adminmode')
+		return true;
+		
+    if (!is_array($permission) && in_array($permission, $user_settings['permissions']))
+	    return true;
+	// Search for any of a list of permissions.
+	elseif (is_array($permission) && count(array_intersect($permission, $user_settings['permissions'])) != 0)
+		return true;
+	// You aren't allowed, by default.
+	else
+		return false;
+
+}
+function loadPermissionsData(){
+	global $smcFunc, $user_settings;
+	
+	if (empty($user_settings['permissions']))
+	{	
+		if(empty($user_settings['groups']))
+			$user_settings['groups'] = array(-1);
+			
+		// Get the general permissions.
+		$request = $smcFunc['db_query']('', '
+			SELECT permission, add_deny
+			FROM {db_prefix}permissions
+			WHERE id_group IN ({array_int:member_groups})',
+			array(
+				'member_groups' => $user_settings['groups'],
+			)
+		);
+		while ($row = $smcFunc['db_fetch_assoc']($request))
+		{
+			$user_settings['permissions'][] = $row['permission'];
+		}
+		$smcFunc['db_free_result']($request);
+	}
+}*/
 function doCharset($db_character_set) {
     global $smcFunc;
 
@@ -249,8 +299,6 @@ function initgChatSess() {
 
 	if($_REQUEST['gcid'] != 'Global')
 		$chatSet = loadUserSettings($_REQUEST['gcid']);
-	
-	$context['onlineGroup'] = GetOnlineG($_REQUEST['gcid']);
 
 	$results = $smcFunc['db_query']('', '
 		SELECT g.*, m.real_name
@@ -260,76 +308,178 @@ function initgChatSess() {
 		ORDER BY g.id ASC', 
 		array('room' => $_REQUEST['gcid'])
     );
-
+    
+	$GlastID = 0;
     if ($results) {
         while ($row = $smcFunc['db_fetch_assoc']($results)) {
 		    $row['msg'] = htmlspecialchars_decode(phaseMSG($row['msg']));
+			if(!empty($row['from'])){
 			$row['avatar'] = loadUserSettings($row['from'],false);
+			}
 			$row['sent'] =  formatDateAgo($row['sent']);
             $context['msgs'][] = $row;
 			$GlastID = $row['id'];
 		}
     }
     $smcFunc['db_free_result']($results);
-    $context['JSON']['LID'] = $lastID;
+    $context['JSON']['LID'] = $GlastID;
+		
     $context['JSON']['DATA'] = Gchat_window_template();
 }
 
 function savemsggc() {
 
-    global $smcFunc, $member_id, $context, $modSettings;
+    global $smcFunc, $member_id, $permission, $user_settings, $txt, $context, $modSettings;
 
     // See if they have permission, maybe one day will have a message sent back.
     if (!empty($modSettings['2sichat_dis_chat'])) {
         $context['JSON']['STATUS'] = 'NO CHAT ACCESS';
         doOutput();
     }
+	
+	if ($_REQUEST['gmsg']==='/who') {
+		$context['onlineGroupList'] = GetOnlineListG($_REQUEST['gcid']);
+		$context['onlineGroupListCount'] = GetOnlineListG($_REQUEST['gcid'],true);
+		$context['msgs'] = $context['onlineGroupListCount'].' '.$txt['bar_display_online'].'<br />';
+		if($context['onlineGroupList']){
+			foreach($context['onlineGroupList'] as $online){
+				$context['msgs'] .= $online['real_name'].'<br />';
+			}
+		}
+		$context['JSON']['fDATA'] = gchat_info_template();
+	}
+	elseif ($_REQUEST['gmsg']==='/clear') {
+		if($_REQUEST['gcid'] == $member_id || $user_settings['is_admin']  || isset($permission['2sichat_bar_adminmode'])){
+			$smcFunc['db_query']('', '
+				DELETE FROM {db_prefix}2sichat_gchat
+				WHERE room = {string:room}', 
+				array(
+					'room' => $_REQUEST['gcid'],
+				)
+			);
+			$context['msgs'] = $txt['bar_remove_note'];
+			$context['JSON']['fDATA'] = gchat_info_template();
+		}else{
+			$smcFunc['db_insert']('', '{db_prefix}2sichat_gchat', 
+				array(
+					'from' => 'int',
+					'msg' => 'string',
+					'room' => 'string',
+					'rd' => 'int',
+					'sent' => 'string',
+				), 
+				array(
+					$member_id, htmlspecialchars(stripslashes(strip_tags($_REQUEST['gmsg'],'<a>'))),$_REQUEST['gcid'],0,time()
+				), 
+				array()
+			);	
+			$context['msgs'] = phaseMSG(htmlspecialchars(stripslashes(strip_tags($_REQUEST['gmsg'],'<a>')), ENT_QUOTES));
+			$context['JSON']['fDATA'] = gchat_savemsg_template();
+		}
+	}
+	elseif ($_REQUEST['gmsg']==='/invite') {
+		$context['msgs'] = 'Usage /invite [user]';//fix
+		$context['JSON']['fDATA'] = gchat_info_template();
+	}
+	elseif (strpos($_REQUEST['gmsg'],'/invite') !== false) {
+		if (preg_match_all('@^(?:/invite)?([^/]+)@i', $_REQUEST['gmsg'], $matches) && $_REQUEST['gcid'] == $member_id 
+			|| preg_match_all('@^(?:/invite)?([^/]+)@i', $_REQUEST['gmsg'], $matches) && $user_settings['is_admin'] 
+			|| preg_match_all('@^(?:/invite)?([^/]+)@i', $_REQUEST['gmsg'], $matches) && isset($permission['2sichat_bar_adminmode'])){
+			foreach ($matches as $val) {
+				
+				$results = $smcFunc['db_query']('', '
+					SELECT id_member, real_name
+					FROM {db_prefix}members
+					WHERE real_name = {string:namereal}
+					', 
+					array(
+						'namereal' =>  preg_replace('/\s+/', '', $val[0]),
+					)
+				);
 
-    if (str_replace(' ', '', $_REQUEST['gmsg']) != '') {
-		
-		$smcFunc['db_insert']('', '{db_prefix}2sichat_gchat', 
-		    array(
-			    'from' => 'int',
-			    'msg' => 'string',
-				'room' => 'string',
-				'rd' => 'int',
-				'sent' => 'string',
-			), 
-			array(
-				$member_id, htmlspecialchars(stripslashes($_REQUEST['gmsg'])),$_REQUEST['gcid'],0,time()
-			), 
-			array()
-		);	
-		
-        $context['msgs'] = phaseMSG(htmlspecialchars(stripslashes($_REQUEST['gmsg']), ENT_QUOTES));
-
-        if (defined('loadOpt'))
-            doOptDBexp();
-        $context['JSON']['fDATA'] = gchat_savemsg_template();
-    }
+				$context['member_data'] = $smcFunc['db_fetch_assoc']($results);
+				$smcFunc['db_free_result']($results);
+				
+				if($context['member_data']['real_name']){
+					
+					$context['invite_msg'] = $txt['bar_group_chat_invite_to1'] . $txt['bar_group_chat_invite_to2'].' <a href="javascript:void(0)" onclick="javascript:gchat(\''.$_REQUEST['gcid'].'\');return false;">'.$txt['bar_group_chat_invite_to3'].'</a> '.$txt['bar_group_chat_invite_to4'];
+					
+					$smcFunc['db_insert']('', '{db_prefix}2sichat', 
+						array(
+							'to' => 'int',
+							'from' => 'int',
+							'msg' => 'string',
+							'sent' => 'string',
+							'isrd' => 'int'
+						), 
+						array(
+							$context['member_data']['id_member'], $member_id, stripslashes(strip_tags($context['invite_msg'],'<a>')), date("Y-m-d H:i:s"),0
+						), 
+						array()
+					);	
+					$context['msgs'] = 'Invite sent to '.preg_replace('/\s+/', '', $val[0]);//fix
+					$context['JSON']['fDATA'] = gchat_info_template();
+				}else{
+					$context['msgs'] = 'Member ['.preg_replace('/\s+/', '', $val[0]).'] was not found';//fix
+					$context['JSON']['fDATA'] = gchat_info_template();
+				}
+			}
+		}else{
+			$context['msgs'] = 'Not your chat session';//fix
+			$context['JSON']['fDATA'] = gchat_info_template();
+		}
+	}
+	else{
+		if (str_replace(' ', '', $_REQUEST['gmsg']) != '') {
+			
+			$smcFunc['db_insert']('', '{db_prefix}2sichat_gchat', 
+				array(
+					'from' => 'int',
+					'msg' => 'string',
+					'room' => 'string',
+					'rd' => 'int',
+					'sent' => 'string',
+				), 
+				array(
+					$member_id, htmlspecialchars(stripslashes(strip_tags($_REQUEST['gmsg'],'<a>'))),$_REQUEST['gcid'],0,time()
+				), 
+				array()
+			);	
+			
+			$context['msgs'] = phaseMSG(htmlspecialchars(stripslashes(strip_tags($_REQUEST['gmsg'],'<a>')), ENT_QUOTES));
+			$context['JSON']['fDATA'] = gchat_savemsg_template();
+		}
+	}
 }
 
-function GetOnlineG($room){
+function GetOnlineListG($room,$count=false){
     
 	global $smcFunc, $context;
 	
 	$time = time();
 	$time_check = $time-180; //SET TIME 3 Minute	
+	$context['online_room_list'] = array();
 	
 	$results = $smcFunc['db_query']('', '
-		SELECT g.id, g.sent, g.from, g.room
+		SELECT g.id, g.sent, g.from, g.room, m.real_name
 		FROM {db_prefix}2sichat_gchat AS g
-		WHERE g.room = {string:room} AND g.sent > {int:tc}
+		LEFT JOIN {db_prefix}members AS m ON m.id_member = g.from
+		WHERE g.room = {string:room} AND g.sent > {int:tc} AND g.from != 0
 		GROUP BY g.from', 
 		array(
 			'room' => $room,
 			'tc' => $time_check,
 		)
     );
-    $context['online_room'] = $smcFunc['db_num_rows']($results);
+    while ($row = $smcFunc['db_fetch_assoc']($results)) {
+        $context['online_room_list'][] = $row;
+    }
     $smcFunc['db_free_result']($results);
 	
-	return $context['online_room'];
+	if($count)
+	   return count(isset($context['online_room_list']) ? $context['online_room_list'] : null);
+	else
+	    return $context['online_room_list'];
 }
 
 function initChatSess() {
@@ -396,7 +546,7 @@ function savemsg() {
 				'isrd' => 'int'
 			), 
 			array(
-				$buddy_id, $member_id, htmlspecialchars(stripslashes($_REQUEST['msg']), ENT_QUOTES),date("Y-m-d H:i:s"),0
+				$buddy_id, $member_id, htmlspecialchars(stripslashes(strip_tags($_REQUEST['msg'],'<a>')), ENT_QUOTES),date("Y-m-d H:i:s"),0
 			), 
 			array()
 		);	
@@ -409,7 +559,7 @@ function savemsg() {
 			)
 		);
 		
-        $context['msgs'] = phaseMSG(htmlspecialchars(stripslashes($_REQUEST['msg']), ENT_QUOTES));
+        $context['msgs'] = phaseMSG(htmlspecialchars(stripslashes(strip_tags($_REQUEST['msg'],'<a>')), ENT_QUOTES));
 
         if (defined('loadOpt'))
             doOptDBexp();

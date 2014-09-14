@@ -75,19 +75,14 @@ if (!empty($modSettings['2sichat_load_chk']))
 if ($member_id != 0) {
 
     $user_settings = loadUserSettings($member_id);
-	
+	$user_settings['is_admin'] = in_array(1, $user_settings['groups']);
+	$user_settings['is_mod'] = in_array(2, $user_settings['groups']);
     is_banned_check($member_id);
 	
 	$usershowBar = usershowBar($member_id);
 		
     if (!empty($modSettings['2sichat_permissions']))
         $permission = loadPermissions($user_settings['groups']);
-	
-	//need admin/mod perms the above will not be avalible if permission are disabled
-	if (($admin = cachegetData('admin', 90)) == null) {
-	    $admin = loadPermissions($user_settings['groups']);
-	    cacheputData('admin', $admin, 90);
-    }
 	
     // Load $buddy_settigns if we are chatting.
     if (isset($_REQUEST['cid'])) {
@@ -131,7 +126,7 @@ if (isset($user_settings) && strlen($password) != 40 || isset($user_settings) &&
     $context['JSON']['STATUS'] = 'ACTIVE';
 }
 
-$context['CountinglobalRoom'] = GetOnlineG('Global');
+$context['CountinglobalRoom'] = GetOnlineListG('Global',true);
 
 // Check actions
 if (isset($_REQUEST['action'])) {

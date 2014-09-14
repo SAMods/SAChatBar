@@ -19,6 +19,7 @@ function initchat() {
 
 	$context['HTML'] = '
 		var msgArray = new Array();
+		var msgclear = new Array();
 		var ie=document.all;
 		var isIE = /*@cc_on!@*/false;
 		var cSession;
@@ -156,7 +157,6 @@ function initchat() {
 							itemsfound += 1;
 						});
 					}
-
 					if (data != null && data.buddySESSION != null) {
 						$sachat("#session"+data.userTyping).html(\'<img id="extraimg" src="'.$themeurl.'/images/bullet_green.png" width="17" height="17" alt="" border="0">\');
 					}
@@ -329,7 +329,7 @@ function initchat() {
 		
 		function invitGchat(id, join){
 
-		    var msg =\''.$txt['bar_group_chat_invite_to1'].' <br /> '.$txt['bar_group_chat_invite_to2'].' <a href="javascript:void(0)" onclick="javascript:gchat(\'+join+\');return false;">'.$txt['bar_group_chat_invite_to3'].'</a> '.$txt['bar_group_chat_invite_to4'].'.\';
+		    var msg =\''.$txt['bar_group_chat_invite_to1'].' '.$txt['bar_group_chat_invite_to2'].' <a href="javascript:void(0)" onclick="javascript:gchat(\'+join+\');return false;">'.$txt['bar_group_chat_invite_to3'].'</a> '.$txt['bar_group_chat_invite_to4'].'.\';
 		    
 			$sachat.ajax({
 				url: \''.$boardurl.'/sachat/index.php\',
@@ -342,6 +342,7 @@ function initchat() {
 				}
 			});
 		}
+		
 		function gsubmit(id){
 		   
 		    var textbox = \'gmsg\'+id;
@@ -365,7 +366,9 @@ function initchat() {
 					$sachat("#g"+id+" .group_chatboxcontent").scrollTop($sachat("#g"+id+" .group_chatboxcontent")[0].scrollHeight);
 				}
 			});
-			
+			if(gmsg===\'/clear\'){
+				gchat(id);
+			}
 			HeartbeatTime = minHeartbeat;
 		    HeartbeatCount = 1;
 		}
@@ -405,7 +408,6 @@ function initchat() {
 							$sachat("#addf"+id).attr("style","display: none");
 							$sachat("#g"+id+" .group_chatboxcontent").scrollTop($sachat("#g"+id+" .group_chatboxcontent")[0].scrollHeight);
 							updateChatBoxPosition();
-							
 							if($sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'gchat_min\'+id)){
 								upDowngroupchat(id);
 							}

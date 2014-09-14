@@ -9,7 +9,7 @@
 */
 function chat_window_template() { //Main chat window, not the bar, the window you chat to your friends with, duh :P
 
-	global $user_settings, $buddy_settings, $modSettings, $permission, $txt, $context;
+	global $user_settings, $buddy_settings, $modSettings, $txt, $permission, $context;
 
 	// The main chat window
 	$data = '
@@ -47,6 +47,12 @@ function chat_window_template() { //Main chat window, not the bar, the window yo
 	// Messages from previous chat session that have not been deleted yet, lets show them. :D
 	if(!empty($context['msgs'])) {
 		foreach ($context['msgs'] as $message) {
+			if (strpos($message['msg'],$txt['bar_group_chat_invite_to1']) !== false){//invites
+				$data .='<strong>'.($message['from'] == $user_settings['id_member'] ? $txt['bar_you'] : $buddy_settings['real_name']).'</strong>
+				<div class="chatboxmsg_optionright">'.($message['from'] == $user_settings['id_member'] ? '<img width="15px" height="15px" src="'.$user_settings['avatar'].'" />' : '<img width="15px" height="15px" src="'.$buddy_settings['avatar'].'" />').'</div>
+				<div class="group_chatboxmsg_container_online">'.$message['msg'].'</div><br />';
+			}
+			else{
 			if ($message['from'] == $user_settings['id_member']) { // Messages sent from me.	
 				$data .=' 
 				    <strong>'.$txt['bar_you'].'</strong>
@@ -72,6 +78,7 @@ function chat_window_template() { //Main chat window, not the bar, the window yo
 					       '.$message['msg'].'
 					   </div></div>';	   
 			}
+			}
 			$data .='<br />';
 		 }	 
 	}
@@ -92,14 +99,14 @@ function Gchat_window_template() {
 	global $user_settings, $chatSet, $txt, $context;
 	
 	if($_REQUEST['gcid'] == 'Global')
-		$name = 'Global';
+		$name = $txt['bar_global'];
 	else
 		$name = $chatSet['real_name'];
 	
 	// The main chat window
 	$data = '
 	<div class="group_chatboxhead">
-	    <div class="group_chatboxtitle">'.ucfirst($name).' '.$txt['bar_group_chat'].' ('.$context['onlineGroup'].')</div> 
+	    <div class="group_chatboxtitle">'.ucfirst($name).' '.$txt['bar_group_chat'].' </div> 
 		    <div class="group_chatboxoptions">
 				<a href="javascript:void(0)" onclick="javascript:upDowngroupchat(\''.$_REQUEST['gcid'].'\')"><span id="slideupg'.$_REQUEST['gcid'].'" class="slideup">&#x25B2;</span><span id="slidedowng'.$_REQUEST['gcid'].'" class="slidedown">&#x25BC;</span></a> 
 			    <a href="javascript:void(0)" onclick="javascript:gxchat(\''.$_REQUEST['gcid'].'\')">X</a>
@@ -131,6 +138,15 @@ function Gchat_window_template() {
 		    </form>
 	   </div>';
 	
+	return $data;
+}
+function gchat_info_template() { //When you send a message
+
+	global $txt, $context, $user_settings;
+
+	$data = '
+		<div class="group_chatboxmsg_container_online">'.$context['msgs'].'</div><br />';
+		
 	return $data;
 }
 function gchat_savemsg_template() { //When you send a message
@@ -306,7 +322,7 @@ function chat_extra_template() {
 
 function buddy_list_template() { //The buddy list.
 
-	global $context, $txt, $admin, $themeurl, $member_id, $permission, $modSettings;
+	global $context, $txt, $themeurl, $member_id, $permission, $user_settings, $modSettings;
 
 	$data = ' 
 	     <div class="buddyboxhead">
@@ -322,7 +338,7 @@ function buddy_list_template() { //The buddy list.
 	 $data .= '
 	     <div class="buddyboxcontent">';
 		     
-			if(!empty($admin['is_admin']) || isset($permission['2sichat_bar_adminmode'])){		    
+			if($user_settings['is_admin'] || isset($permission['2sichat_bar_adminmode'])){			    
 				$data .='<input type="button" onclick="javascript:snooper(); return false;" value="'.$txt['bar_admin_snoop'].'" />'; 
 				
 				if(!empty($_COOKIE[$modSettings['2sichat_cookie_name']."_chatSnoop"])){

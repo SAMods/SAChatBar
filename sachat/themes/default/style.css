@@ -188,7 +188,15 @@ start group chat box styles
 	border-radius: 36px 12px;
 	word-wrap: break-word;
 }
-
+.group_chatboxmsg_container_online{
+    padding: 10px;
+	background-color:#f0f6f0;
+	border-left:1px solid #cccccc;
+	border-right:1px solid #cccccc;
+	border-bottom:1px solid #cccccc;
+	border-top:1px solid #cccccc;
+	word-wrap: break-word;
+}
 /*
 End group chat box styles
 */
