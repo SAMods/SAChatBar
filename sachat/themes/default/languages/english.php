@@ -13,6 +13,11 @@ $txt['bar_display_yesterday'] = '<strong>yesterday</strong> at';
 $txt['bar_display_online'] = 'User\'s Chatting';
 $txt['bar_global'] = 'Global';
 $txt['bar_remove_note'] = 'Removing messages';
+$txt['bar_invite_note1'] = 'Usage /invite [user]';
+$txt['bar_invite_note2'] = 'Invite sent to';
+$txt['bar_invite_note3'] = 'Was not found';
+$txt['bar_invite_note4'] = 'Member';
+$txt['bar_invite_note5'] = 'Not your chat session';
 
 $txt['bar_you'] = 'You';
 $txt['bar_group_chat'] = 'Group chat';

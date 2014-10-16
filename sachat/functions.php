@@ -323,8 +323,12 @@ function initgChatSess() {
     }
     $smcFunc['db_free_result']($results);
     $context['JSON']['LID'] = $GlastID;
-		
-    $context['JSON']['DATA'] = Gchat_window_template();
+	
+	if($_REQUEST['gupdate'] == 'true'){
+		$context['JSON']['DATA'] = Gchat_update_template();
+	}else{
+		$context['JSON']['DATA'] = Gchat_window_template();
+	}	
 }
 
 function savemsggc() {
@@ -378,7 +382,7 @@ function savemsggc() {
 		}
 	}
 	elseif ($_REQUEST['gmsg']==='/invite') {
-		$context['msgs'] = 'Usage /invite [user]';//fix
+		$context['msgs'] = $txt['bar_invite_note1'];
 		$context['JSON']['fDATA'] = gchat_info_template();
 	}
 	elseif (strpos($_REQUEST['gmsg'],'/invite') !== false) {
@@ -417,15 +421,15 @@ function savemsggc() {
 						), 
 						array()
 					);	
-					$context['msgs'] = 'Invite sent to '.preg_replace('/\s+/', '', $val[0]);//fix
+					$context['msgs'] = ''.$txt['bar_invite_note2'].' '.preg_replace('/\s+/', '', $val[0]);//fix
 					$context['JSON']['fDATA'] = gchat_info_template();
 				}else{
-					$context['msgs'] = 'Member ['.preg_replace('/\s+/', '', $val[0]).'] was not found';//fix
+					$context['msgs'] = ''.$txt['bar_invite_note4'] .' ['.preg_replace('/\s+/', '', $val[0]).'] '.$txt['bar_invite_note3'].'';
 					$context['JSON']['fDATA'] = gchat_info_template();
 				}
 			}
 		}else{
-			$context['msgs'] = 'Not your chat session';//fix
+			$context['msgs'] = $txt['bar_invite_note5'];
 			$context['JSON']['fDATA'] = gchat_info_template();
 		}
 	}
@@ -512,7 +516,12 @@ function initChatSess() {
         }
         $smcFunc['db_free_result']($results);
     }
-    $context['JSON']['DATA'] = chat_window_template();
+	if($_REQUEST['update'] == 'true'){
+		$context['JSON']['DATA'] = chat_update_template();
+	}else{
+		$context['JSON']['DATA'] = chat_window_template();
+	}
+   // $context['JSON']['DATA'] = chat_window_template();
     $context['JSON']['BID'] = $buddy_id;
     $context['JSON']['ID'] = $lastID;
 }
@@ -1260,7 +1269,7 @@ function loadOpt() {
     // If last connection to the DB is greater than the DB expire stamp die.
     // If no expire stamp die, usually means no messages availible anyways.
     if (isset($_SESSION['DBcon_stamp']) && isset($DBcon_exp) && $_SESSION['DBcon_stamp'] > $DBcon_exp || isset($_SESSION['DBcon_stamp']) && !isset($DBcon_exp)) {
-        if (!isset($_REQUEST['msg']) && !isset($_REQUEST['gmsg']) && !isset($_REQUEST['gid']) && !isset($_REQUEST['cid']) && !isset($_REQUEST['gcid']) && @$_REQUEST['action'] != 'closechat' && @$_REQUEST['action'] != 'typing' && @$_REQUEST['action'] != 'head' && @$_REQUEST['action'] != 'heart' && @$_REQUEST['action'] != 'body') {
+        if (!isset($_REQUEST['msg']) && !isset($_REQUEST['update']) && !isset($_REQUEST['gupdate']) && !isset($_REQUEST['gmsg']) && !isset($_REQUEST['gid']) && !isset($_REQUEST['cid']) && !isset($_REQUEST['gcid']) && @$_REQUEST['action'] != 'closechat' && @$_REQUEST['action'] != 'typing' && @$_REQUEST['action'] != 'head' && @$_REQUEST['action'] != 'heart' && @$_REQUEST['action'] != 'body') {
             $context['JSON']['STATUS'] = 'IDLE';
             doOutput();
         }

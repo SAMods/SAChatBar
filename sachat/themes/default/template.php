@@ -94,6 +94,72 @@ function chat_window_template() { //Main chat window, not the bar, the window yo
 	return $data;
 }
 
+function chat_update_template() { //Main chat window, not the bar, the window you chat to your friends with, duh :P
+
+	global $user_settings, $data, $buddy_settings, $modSettings, $txt, $permission, $context;
+
+	// Messages from previous chat session that have not been deleted yet, lets show them. :D
+	if(!empty($context['msgs'])) {
+		foreach ($context['msgs'] as $message) {
+			if (strpos($message['msg'],$txt['bar_group_chat_invite_to1']) !== false){//invites
+				$data .='<strong>'.($message['from'] == $user_settings['id_member'] ? $txt['bar_you'] : $buddy_settings['real_name']).'</strong>
+				<div class="chatboxmsg_optionright">'.($message['from'] == $user_settings['id_member'] ? '<img width="15px" height="15px" src="'.$user_settings['avatar'].'" />' : '<img width="15px" height="15px" src="'.$buddy_settings['avatar'].'" />').'</div>
+				<div class="group_chatboxmsg_container_online">'.$message['msg'].'</div><br />';
+			}
+			else{
+				if ($message['from'] == $user_settings['id_member']) { // Messages sent from me.	
+					$data .=' 
+						<strong>'.$txt['bar_you'].'</strong>
+						<div class="chatboxmsg_optionright">
+						   <img width="15px" height="15px" src="'.$user_settings['avatar'].'" />
+						</div>
+						<br clear="all"/>	
+						<div class="chatboxmsg_container">	
+							'.$message['msg'].'
+						</div>';	
+				} 
+				else 
+				{ // Messages sent by my buddy
+					$data .='
+					'.(!empty($modSettings['2sichat_e_last3min']) ? ''.(!empty($message['inactive']) ? '<div class="chatboxtime"><br />'.$txt['bar_sent_at'].' '.date('g:iA M dS', strtotime($message['sent'])).'</div><br />':'').'' : '').'
+						<strong>'.$buddy_settings['real_name'].' </strong>
+						<div class="chatboxmsg_optionright">
+							<img width="15px" height="15px" src="'.$buddy_settings['avatar'].'" />
+						</div>
+						<br clear="all"/>
+					   <div class="chatboxmsg_container_rec">
+						   <div id="u'.$buddy_settings['id_member'].'i'.$message['id'].'">
+							   '.$message['msg'].'
+						   </div></div>';	   
+				}
+			}
+			$data .='<br />';
+		 }	 
+	}
+	
+	return $data;
+}
+
+function Gchat_update_template(){
+    global $user_settings, $data, $chatSet, $txt, $context;
+	
+	if(!empty($context['msgs'])) {
+		$c = true; 
+		foreach ($context['msgs'] as $message) {
+			$data .='<strong>'.($message['from'] == $user_settings['id_member'] ? $txt['bar_you'] : $message['real_name']).'</strong>
+				<span class="group_chatboxtime">'.$message['sent'].'</span>
+				<div class="group_chatboxmsg_optionright">
+					<img width="15px" height="15px" src="'.$message['avatar']['avatar'].'" />
+				</div>
+				<div '.(($c = !$c)?' class="group_chatboxmsg_container_rec"':'class="group_chatboxmsg_container"').'>	
+					'.$message['msg'].'
+				</div><br />';	
+		}
+		$data .='<br />';	
+	}
+	return $data;
+}
+
 function Gchat_window_template() { 
 
 	global $user_settings, $chatSet, $txt, $context;
