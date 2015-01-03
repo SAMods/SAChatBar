@@ -54,4 +54,13 @@ $txt['addthis'] = 'Add This';
 $txt['whos_on'] = 'Who&#39;s Online';
 $txt['guest_msg'] = 'Welcome, Guest. Please <a class="white" href="'.$boardurl.'/index.php?action=login">login</a> or <a class="white" href="'.$boardurl.'/index.php?action=register">register.</a>';
 $txt['load_warning'] = 'The chat is not availible due to high server load.';
+
+$txt['2sichat_testpage'] = 'SA Chat Test Page';
+$txt['2sichat_testpage1'] = 'This is here to preview themes in SA Chat and show it is working';
+$txt['2sichat_testpage2'] = '<strong>Chances are if it works here then it\'s conflicting with another smf mod</strong>';
+$txt['2sichat_testpage3'] = 'Test Theme';
+$txt['2sichat_testpage4'] = 'You can use these codes to show the SA Chat outside of SMF';
+$txt['2sichat_testpage5'] = 'Head code';
+$txt['2sichat_testpage6'] = 'Body code';
+$txt['2sichat_testpage7'] = 'Select theme';
 ?>

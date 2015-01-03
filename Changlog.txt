@@ -1,9 +1,13 @@
 =====SA Chat 0.1.5 Rev**=====
 
-implemented group chat and global chat
-some css changes
+implemented group chat and global chat this is Beta it needs more testing
 online offline now shows a red and green icon instead of a coloured *
 fixed issue with mod secrity and Fix bar option
+side bars now only use the minium height needed
+removed google translate
+fixed issue with new message notifaction in page title
+changed the backend permissions functions
+sachat test page is now availible thru site.com/sachat/index.php
 
 =====SA Chat 0.1.4 Rev**=====
 
