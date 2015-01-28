@@ -2,7 +2,7 @@
 <!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
 <modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
 	<id>wdm2005:2sichat</id>
-	<version>0.1.5 Rev110</version>
+	<version>0.1.6 Rev112</version>
 
 	
 	<file name="$themedir/Profile.template.php">
@@ -37,20 +37,6 @@
                                     }
 								echo'</select>';
 								}
-							if(allowedTo('2sichat_bar_close')){
-                            echo'
-							<li>
-								<input type="hidden" name="default_options[show_cbar]" value="0" />
-								<label for="show_cbar"><input type="checkbox" name="default_options[show_cbar]" id="show_cbar" value="1"', !empty($context['member']['options']['show_cbar']) ? ' checked="checked"' : '', ' class="input_check" /> Hide chat bar?</label>
-							</li>';
-							
-                             }
-							 if(allowedTo('2sichat_bar_buddys')){
-							echo'<li>
-								<input type="hidden" name="default_options[show_cbar_buddys]" value="0" />
-								<label for="show_cbar_buddys"><input type="checkbox" name="default_options[show_cbar_buddys]" id="show_cbar_buddys" value="1"', !empty($context['member']['options']['show_cbar_buddys']) ? ' checked="checked"' : '', ' class="input_check" /> Show Only Buddies in chat bar?</label>
-							</li>';
-							}
 							}
 						echo'
 ]]></add>

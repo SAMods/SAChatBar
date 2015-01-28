@@ -10,7 +10,7 @@ $txt['bar_weekdays'] = array('Monday', 'Tuesday', 'Wednesday', 'Thursday',  'Fri
 $txt['bar_months'] = array('January', 'Febuary', 'March', 'April',' May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
 $txt['bar_display_today'] = '<strong>Today</strong> at';
 $txt['bar_display_yesterday'] = '<strong>yesterday</strong> at';
-$txt['bar_display_online'] = 'User\'s Chatting';
+$txt['bar_display_online'] = 'User\'s Chatting In the past 3 Minuits';
 $txt['bar_global'] = 'Global';
 $txt['bar_remove_note'] = 'Removing messages';
 $txt['bar_invite_note1'] = 'Usage /invite [user]';
@@ -19,7 +19,21 @@ $txt['bar_invite_note3'] = 'Was not found';
 $txt['bar_invite_note4'] = 'Member';
 $txt['bar_invite_note5'] = 'Not your chat session';
 
+$txt['bar_tools1'] = 'Tools';
+$txt['bar_tools2'] = 'Settings:';
+$txt['bar_tools3'] = 'Show buddys only';
+$txt['bar_tools4'] = 'Mute chat sounds';
+$txt['bar_tools5'] = 'Keep chat list open';
+$txt['bar_tools6'] = 'Theme:';
+$txt['bar_buddys_none'] = 'No users online at the moment.<br />Please try again later.';
+$txt['bar_buddys_search'] = 'Search';
+$txt['bar_hideChat'] = 'Hide Chat';
+$txt['bar_showChat'] = 'Show Chat';
+$txt['bar_newmsg_says'] = 'Says...';
+$txt['bar_msg_link'] = '[link]';
+$txt['bar_msg_quote'] = 'Quote';
 $txt['bar_you'] = 'You';
+$txt['bar_group_chat1'] = 'Chat Room';
 $txt['bar_group_chat'] = 'Group chat';
 $txt['bar_global_chat'] = 'Global chat';
 $txt['bar_group_chat_invite'] = 'Invite friends';
@@ -51,8 +65,8 @@ $txt['gplus'] = 'Google+';
 $txt['gplus1'] = 'Share on Google+';
 $txt['bil'] = 'Buddies/Ignore List';
 $txt['addthis'] = 'Add This';
-$txt['whos_on'] = 'Who&#39;s Online';
-$txt['guest_msg'] = 'Welcome, Guest. Please <a class="white" href="'.$boardurl.'/index.php?action=login">login</a> or <a class="white" href="'.$boardurl.'/index.php?action=register">register.</a>';
+$txt['whos_on'] = 'Chat';
+$txt['guest_msg'] = '<a class="white" href="'.$boardurl.'/index.php?action=login">Login to chat</a>';
 $txt['load_warning'] = 'The chat is not availible due to high server load.';
 
 $txt['2sichat_testpage'] = 'SA Chat Test Page';
@@ -63,4 +77,8 @@ $txt['2sichat_testpage4'] = 'You can use these codes to show the SA Chat outside
 $txt['2sichat_testpage5'] = 'Head code';
 $txt['2sichat_testpage6'] = 'Body code';
 $txt['2sichat_testpage7'] = 'Select theme';
+$txt['2sichat_testpage8'] = 'Bug Tracker';
+$txt['2sichat_testpage9'] = 'Wiki';
+$txt['2sichat_testpage10'] = 'Support';
+$txt['2sichat_testpage11'] = 'Official SMF Download';
 ?>

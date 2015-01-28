@@ -7,7 +7,8 @@
 	
 	//Define SMF
 	define('SMF', 1);
-	define('SAChat', 1);
+	
+	error_reporting(E_ALL | E_STRICT);
 	
 	//set the micro start time
 	$time_bstart = microtime();
@@ -17,58 +18,48 @@
 
 	//Experimental Optimizer
 	define('loadOpt', 1);
-
-	session_start();
-	session_cache_limiter('nocache'); //Shouldent this be before session_start() http://php.net/manual/en/function.session-cache-limiter.php
-	//Lets go head and load the settings here.
-	require_once(str_replace('//', '/', dirname(__FILE__) . '/') . '../Settings.php');
-
-	//Lets go head and load the functions here.
-	require_once(dirname(__FILE__) . '/functions.php');
 	
-	//If no actions are defined do the chat test page 
-	if (!isset($_REQUEST['gid']) && !isset($_REQUEST['gcid']) && !isset($_REQUEST['gmsg']) && !isset($_REQUEST['cid']) && !isset($_REQUEST['msg']) &&!isset($_REQUEST['action'])) {
-		chatTest();
-	}
+	session_cache_limiter('nocache'); 
+	session_start();
+
+	//Lets go head and load our files here.
+	require_once(str_replace('//', '/', dirname(__FILE__) . '/') . '../Settings.php');
+	require_once(dirname(__FILE__) . '/Sources/Main.php');
+	require_once(dirname(__FILE__) . '/Sources/Subs.php');
+	require_once(dirname(__FILE__) . '/Sources/Chat.php');
+	require_once(dirname(__FILE__) . '/Sources/Chat-Subs.php');
+	require_once(dirname(__FILE__) . '/Sources/Users.php');
+	require_once(dirname(__FILE__) . '/Sources/Errors.php');
+	
+	// Connect to the database
+	$smcFunc = array();
+	loadDatabase();
+	
+	//Load modsettings array
+	$modSettings = initModSettings();
+	
+	//SMF Cookie autentication!!!
+	list ($member_id, $password) = initCookies();
 	
 	// Register a error handler
-	require_once(dirname(__FILE__) . '/error_handler.php');
 	set_error_handler('errorHandler');
 	register_shutdown_function('shutdownHandler');
 
 	//Load SMF's compatibility file for unsupported functions.
-	if (@version_compare(PHP_VERSION, '5') == -1) {
+	if (@version_compare(PHP_VERSION, '5') == -1)
 		require_once($sourcedir . '/Subs-Compat.php');
-	}
-
+	
 	//Load our theme
-	list ($themeurl, $themedir, $thjs, $load_btime, $soundurl) = initTheme();
-
-	//Load our language strings
-	$doLang = initLang($language);
-	require_once($doLang);
-
-	//SMF Cookie autentication!!!
-	list ($member_id, $password) = initCookies();
-
+	list ($themeurl, $themedir, $thjs, $load_btime, $soundurl, $styles, $curtheme, $txt) = initTheme();
+	
 	//Load Optimizer if applicable
 	if (defined('loadOpt'))
 		loadOpt();
 
-	// Connect to the database
-	$smcFunc = array();
-	loadDatabase();
-
 	//Do charset if needed!
 	if (!empty($db_character_set))
 		doCharset($db_character_set);
-
-	if (!isset($_REQUEST['gid']))
-		header('Content-Type: application/x-javascript; text/javascript');//cos we are genarating javascript with a php file we need to setup header
-
-	//Load modsettings array
-	$modSettings = initModSettings();
-
+		
 	//Is this enabled?
 	if (!empty($modSettings['2sichat_disable']))
 		die();
@@ -76,103 +67,45 @@
 	//Do the load check if applicable
 	if (!empty($modSettings['2sichat_load_chk']))
 		doLoadCHK();
-
-	// If it is a member lets load some data.
-	if ($member_id != 0) {
-
-		$user_settings = loadUserSettings($member_id);
-		$user_settings['is_admin'] = in_array(1, $user_settings['groups']);
-		$user_settings['is_mod'] = in_array(2, $user_settings['groups']);
-		is_banned_check($member_id);
 		
-		$usershowBar = usershowBar($member_id);
-			
-		if (!empty($modSettings['2sichat_permissions']))
-			loadPermissionsData($user_settings['groups']);
-		
-		// Load $buddy_settigns if we are chatting.
-		if (isset($_REQUEST['cid'])) {
-			if (isset($_REQUEST['cid']) && is_numeric($_REQUEST['cid'])) {
-				$buddy_id = $_REQUEST['cid'];
-				$_SESSION['buddy_id'] = $buddy_id;
-			} else {
-				die(); // Something fishy about a non numeric buddy id.
-			}
-		}
-		
-		if(!empty($_SESSION['buddy_id'])){
-			$context['JSON']['userTyping'] = $_SESSION['buddy_id'];
-			$buddy_settings = loadUserSettings($_SESSION['buddy_id']);
-			$context['JSON']['NAME'] = $buddy_settings['real_name'];	
-		}
-		
-	} else if (!empty($modSettings['2sichat_permissions'])) {
-		loadPermissionsData(array(-1));
-	}
-
-	//Lets see if 2-SI Chat is enabled for this group.
-	if (!empty($modSettings['2sichat_permissions']) && !allowedTodo('2sichat_access')) {
-		$context['JSON']['STATUS'] = 'NO ACCESS'; // Sorry but you don't have access
-		doOutput();
-	} else if (!empty($modSettings['2sichat_permissions']) && empty($user_settings['is_admin']) && empty($user_settings['is_mod'])) {
-		// Lets just hook into the modSettings
-		if (!allowedTodo('2sichat_chat')) {
-			$modSettings['2sichat_dis_list'] = 1;
-			$modSettings['2sichat_dis_chat'] = 1;
-		}
-		if (allowedTodo('2sichat_bar')) {
-			$modSettings['2sichat_dis_bar'] = 1;
-		}
-	}
-	// Lets validate the password, anyone can put a number in a cookie, lets see if the password checks out.
-	if (isset($user_settings['passwd']) && strlen($password) != 40 || isset($user_settings['passwd']) && sha1($user_settings['passwd'] . $user_settings['password_salt']) != $password) {
-		$context['JSON']['STATUS'] = 'AUTH FAILED';
-		doOutput();
-	} else {
-		$context['JSON']['STATUS'] = 'ACTIVE';
-	}
-
+	$context['sa_utf8'] = (empty($modSettings['global_character_set']) ? 'ISO-8859-1' : $modSettings['global_character_set']) === 'UTF-8';
+	
+	//member data.
+	loadUserData();
+	
 	$context['CountinglobalRoom'] = GetOnlineListG('Global',true);
-
-	// Check actions
-	if (isset($_REQUEST['action'])) {
-		
-		// If we are loading the main javascript lets get it ready based on the user
-		if ($_REQUEST['action'] == 'body') {
-			initJs('body');
-			initLink();
-			initGadgets();
-			initchat();
-			initCleanup();
-		} 
-		if ($_REQUEST['action'] == 'heart' && $member_id) {
-			doheart();
-		}
-		if ($_REQUEST['action'] == 'typing' && $member_id) {
-			typestatus();
-		}
-		if ($_REQUEST['action'] == 'closechat') {
-			closechat();	
-		}
-		if ($_REQUEST['action'] == 'head') {
-			initJs('head');
-			$context['HTML'] = ' ';
-		}
-	} else {
-		//No action defined so lets assume they are using the chat.
-		if (!isset($_REQUEST['msg']) && isset($_REQUEST['cid']) && $member_id) {
+	
+	getThemes();
+	
+	$ChatActionArray = array(
+		'body' => array('initchat','args' =>  array('body')),
+		'head' => array('initchat','args' =>  array('head')),
+		'heart' => array('doheart'),
+		'typing' => array('typestatus'),
+		'closechat' => array('closechat'),
+	);
+	if (isset($_REQUEST['action'])){
+		if(!empty($ChatActionArray[$_REQUEST['action']]['args']))
+			$ChatActionArray[$_REQUEST['action']][0]($ChatActionArray[$_REQUEST['action']]['args'][0]);
+		else
+			$ChatActionArray[$_REQUEST['action']][0]();
+	}else{ 
+		if (!isset($_REQUEST['msg']) && isset($_REQUEST['cid']) && $member_id)
 			initChatSess();
-		} else if (isset($_REQUEST['msg']) && isset($_REQUEST['cid']) && $member_id) {
+		else if (isset($_REQUEST['msg']) && isset($_REQUEST['cid']) && $member_id)
 			savemsg();
-		} else if (isset($_REQUEST['gid'])) {
+		else if (isset($_REQUEST['gid']))
 			gadget();
-		}else if (!isset($_REQUEST['gmsg']) && isset($_REQUEST['gcid']) && $member_id) {
-		   initgChatSess();
-		} else if (isset($_REQUEST['gmsg']) && isset($_REQUEST['gcid']) && $member_id) {
+		else if (!isset($_REQUEST['gmsg']) && isset($_REQUEST['gcid']) && $member_id)
+			initgChatSess();
+		else if (isset($_REQUEST['gmsg']) && isset($_REQUEST['gcid']) && $member_id)
 			savemsggc();
-		}
+		else if (isset($_REQUEST['chat_user_search']) && $member_id)
+			chatSearch();
+		else if (isset($_REQUEST['home']))
+			chatHome();
 	}
-
+		
 	if ($member_id && isset($_REQUEST['action']) && $_REQUEST['action'] == 'heart' && !empty($modSettings['2sichat_live_online']) || $member_id && !isset($_REQUEST['action']) && !empty($modSettings['2sichat_live_online'])) {
 		liveOnline();
 	}

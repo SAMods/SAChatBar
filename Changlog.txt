@@ -1,3 +1,18 @@
+=====SA Chat 1.0a Rev**=====
+
+Fixed typo in hook function name
+user setting are now in the atual chat bar instead of profile
+added compat for smf 2.1
+implemented function for calling images checks custom themes first if not there fallback to the default ones
+split functions.php into spereate files
+many inline styles are now in css file
+adding chat to pages out side smf no longer reqires &amp;theme=themename in the url this can be used to force same theme for everyone instead
+fixed scrolling issues
+bbc parser now works a lot better images and youtube videos are also now supported using the img and video tags
+updated theme also includes a fb style theme :P just by modding the css you can still have a full bar version this was not possible before
+the mod now makes no edits to smf files
+
+
 =====SA Chat 0.1.5 Rev**=====
 
 implemented group chat and global chat this is Beta it needs more testing

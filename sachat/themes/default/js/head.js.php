@@ -28,7 +28,9 @@ jQuery.cookie = function (key, value, options) {
             var days = options.expires, t = options.expires = new Date();
             t.setDate(t.getDate() + days);
         }
-
+		
+		options.path = '/';
+		
         return (document.cookie = [
             encodeURIComponent(key), '=',
             options.raw ? String(value) : encodeURIComponent(String(value)),

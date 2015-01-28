@@ -334,45 +334,9 @@ function template_twosichatThemes(){
       </div>';
 	  }
 
-	  echo'<form action="', $scripturl, '?action=admin;area=sachat;sa=theme;save" method="post">';
-	  
-	  echo'
-	  <div class="cat_bar">
-		<h3 class="catbg">
-			<strong>'.$txt['2sichat_theme15'].'</strong>
-		</h3>
-	</div>
-	  <div class="windowbg2">
-		<span class="topslice"><span></span></span>
-	        <div class="content">
-			  <div class="smalltext">'.$txt['2sichat_theme7'].'</div><br />
-			  '.$txt['2sichat_theme8'].' <select name="sachatTheme">';
-           // loop through the array of files and echo all
-          for($index=0; $index < $indexCount; $index++) {
-                  if (substr($dirArray[$index], 0, 1) != '.' && $dirArray[$index] != "index.php"){ // don't list hidden files
-				     echo'  <option value="'.$dirArray[$index].'"', $modSettings['2sichat_theme'] == $dirArray[$index] ? 'selected="selected"' : '', '>'.$dirArray[$index].'</option>';
-	              }
-          }
-	  echo'</select><br /><br />
-			  Reset everyone to: <select name="sachatThemer"><option value="0">No Change</option>';
-           // loop through the array of files and echo all
-          for($index=0; $index < $indexCount; $index++) {
-                  if (substr($dirArray[$index], 0, 1) != '.' && $dirArray[$index] != "index.php"){ // don't list hidden files
-				     echo'  <option value="'.$dirArray[$index].'">'.$dirArray[$index].'</option>';
-	              }
-          }
-	  echo'</select>
-	  <br /><div class="righttext">
-						<input type="submit" value="'.$txt['save'].'" />
-					</div>
-		
-	        <input type="hidden" name="sc" value="'.$context['session_id'].'" /><br /><br />
-			</div>
-	    <span class="botslice"><span></span></span>
-	</div></form>';
-	  
+	 
 	  echo'<form action="', $scripturl, '?action=admin;area=sachat;sa=theme;upload" method="post" accept-charset="', $context['character_set'], '" enctype="multipart/form-data" onsubmit="return confirm(\'', $txt['theme_install_new_confirm'], '\');">';
-	  echo'<br />
+	  echo'
 	  <div class="cat_bar">
 		<h3 class="catbg">
 			<strong> <strong>'.$txt['2sichat_theme9'].'</strong></strong>

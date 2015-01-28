@@ -30,7 +30,7 @@
 			);
 	}
 
-	function SAChat_loadtheme() {
+	function SAChat_loadTheme() {
 		global $context;
 
 		loadLanguage('2sichat');
@@ -86,9 +86,9 @@
 
 		//work out where the bar should be shown
 		if (in_array($context['current_action'], $actions) && !empty($modSettings['2sichat_board_index']))//certain actions
-			$bar = '<script type="text/javascript" src="' . $boardurl . '/sachat/index.php?action=' . $type . '&amp;theme=' . $sachatTheme . '"></script>';
+			$bar = '<script type="text/javascript" src="' . $boardurl . '/sachat/index.php?action=' . $type . '"></script>';
 		elseif (in_array('everywhere', $actions) && !empty($modSettings['2sichat_board_index']))//show everywhere
-			$bar = '<script type="text/javascript" src="' . $boardurl . '/sachat/index.php?action=' . $type . '&amp;theme=' . $sachatTheme . '"></script>';
+			$bar = '<script type="text/javascript" src="' . $boardurl . '/sachat/index.php?action=' . $type . '"></script>';
 		else//nothing defined
 			$bar = '';
 
@@ -116,22 +116,23 @@
 			'2sichat_access' => array(false, '2sichat', '2sichat'),
 			'2sichat_chat' => array(false, '2sichat', '2sichat'),
 			'2sichat_bar' => array(false, '2sichat', '2sichat'),
-			'2sichat_bar_close' => array(false, '2sichat', '2sichat'),
-			'2sichat_bar_buddys' => array(false, '2sichat', '2sichat'),
-			'2sichat_bar_theme' => array(false, '2sichat', '2sichat'),
 			'2sichat_bar_adminmode' => array(false, '2sichat', '2sichat'),
 			'2sichat_group_chat_use' =>array(false, '2sichat', '2sichat'),
 			'2sichat_group_chat' =>array(false, '2sichat', '2sichat'),
 		);
 
 		$context['non_guest_permissions'] = array_merge(
-				$context['non_guest_permissions'], array(
-			//'2sichat_access',
-			'2sichat_chat',
-			'2sichat_bar_theme',
-			'2sichat_bar_buddys',
-			'2sichat_bar_close',
-				)
+			$context['non_guest_permissions'], array(
+				//'2sichat_access',
+				'2sichat_chat',
+				'2sichat_bar_theme',
+				'2sichat_bar_buddys',
+				'2sichat_bar_close',
+				'2sichat_group_chat_use',
+				'2sichat_group_chat_use',
+				'2sichat_bar_adminmode',
+				'2sichat_group_chat',
+			)
 		);
 	}
 

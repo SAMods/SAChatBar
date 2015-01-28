@@ -3,19 +3,17 @@
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
 	<id>wdm2005:2sichat</id>
 	<name>SA Chat</name>
-	<version>0.1.5 Rev110</version>
+	<version>1.0a Rev120</version>
 	<type>modification</type>
 	
 <install>
 	<readme parsebbc="true">readme.txt</readme>
 	<code>db.php</code>
-	<modification format="xml" type="file">install.xml</modification>
      <require-dir name="sachat" destination="$boarddir" />
 	<require-dir name="Sources" destination="$boarddir" />
 	<require-dir name="Themes" destination="$boarddir" />
 </install>
 <uninstall>
-	<modification reverse="true">install.xml</modification>
 	<code>remove_hooks.php</code>
 	<remove-dir name="$boarddir/sachat" />
 	<remove-file name="$sourcedir/sachatAdmin.php" />
