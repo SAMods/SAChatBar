@@ -50,7 +50,7 @@
 		require_once($sourcedir . '/Subs-Compat.php');
 	
 	//Load our theme
-	list ($themeurl, $themedir, $thjs, $load_btime, $soundurl, $styles, $curtheme, $txt) = initTheme();
+	list ($themeurl, $themedir, $thjs, $load_btime, $soundurl, $curtheme, $txt) = initTheme();
 	
 	//Load Optimizer if applicable
 	if (defined('loadOpt'))
@@ -73,8 +73,6 @@
 	//member data.
 	loadUserData();
 	
-	$context['CountinglobalRoom'] = GetOnlineListG('Global',true);
-	
 	getThemes();
 	
 	$ChatActionArray = array(
@@ -96,10 +94,6 @@
 			savemsg();
 		else if (isset($_REQUEST['gid']))
 			gadget();
-		else if (!isset($_REQUEST['gmsg']) && isset($_REQUEST['gcid']) && $member_id)
-			initgChatSess();
-		else if (isset($_REQUEST['gmsg']) && isset($_REQUEST['gcid']) && $member_id)
-			savemsggc();
 		else if (isset($_REQUEST['chat_user_search']) && $member_id)
 			chatSearch();
 		else if (isset($_REQUEST['home']))

@@ -33,7 +33,6 @@
 		CheckActive();
 		CheckTyping();
 		getBuddySession();
-		newMsgGroup();
 		newMsgPrivate();
 	}
 	

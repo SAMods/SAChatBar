@@ -211,7 +211,7 @@
 			db_extend();
 			$real_prefix = preg_match('~^(`?)(.+?)\\1\\.(.*?)$~', $db_prefix, $match) === 1 ? $match[3] : $db_prefix;
 			$temp_tables = $smcFunc['db_list_tables'](false, $real_prefix . '%');
-			$sichatTables = array($db_prefix . '2sichat', $db_prefix . '2sichat_gadgets', $db_prefix . '2sichat_barlinks', $db_prefix . '2sichat_gchat');
+			$sichatTables = array($db_prefix . '2sichat', $db_prefix . '2sichat_gadgets', $db_prefix . '2sichat_barlinks');
 			$tables = array();
 
 			foreach ($temp_tables as $table)
@@ -237,8 +237,6 @@
 		if (isset($_GET['purge'])) {
 			$smcFunc['db_query']('', 'DELETE FROM {db_prefix}2sichat', array());
 			$smcFunc['db_query']('', 'ALTER TABLE {db_prefix}2sichat AUTO_INCREMENT = 0', array());
-			$smcFunc['db_query']('', 'DELETE FROM {db_prefix}2sichat_gchat', array());
-			$smcFunc['db_query']('', 'ALTER TABLE {db_prefix}2sichat_gchat AUTO_INCREMENT = 0', array());
 			redirectexit('action=admin;area=sachat;sa=maintain;done');
 		}
 	}
@@ -319,10 +317,6 @@
 			array('text', '2sichat_mn_heart', 'size' => 10, 'subtext' => $txt['2sichat_mn_heart_sub']),
 			array('text', '2sichat_mn_heartmin', 'size' => 10, 'subtext' => $txt['2sichat_mn_heart_submin']),
 			array('text', '2sichat_mn_heart_timeout', 'size' => 10, 'subtext' => $txt['2sichat_mn_heart_timeout_sub']),
-			'',
-			array('check', '2sichat_groupeChat', 'subtext' => $txt['2sichat_groupeChat_sub']),
-			array('check', '2sichat_groupeChatGlobal', 'subtext' => $txt['2sichat_groupeChat_sub']),
-			
 			'',
 			array('text', '2sichat_purge', 'size' => 10, 'subtext' => $txt['2sichat_purge_sub']),
 			'',
@@ -433,7 +427,7 @@
 		SAChat_LoadTemes();
 
 		//save theme
-		if (isset($_GET['save'])) {
+		/*if (isset($_GET['save'])) {
 			checkSession();
 			updateSettings(array('2sichat_theme' => $_POST['sachatTheme']));
 
@@ -451,7 +445,7 @@
 			}
 
 			redirectexit('action=admin;area=sachat;sa=theme;done');
-		}
+		}*/
 
 		//upload theme
 		if (isset($_GET['upload'])) {
@@ -504,7 +498,7 @@
 				@apache_reset_timeout();
 
 			// Copy over the default non-theme files.
-			$to_copy = array('/head.js.php', '/body.js.php', '/index.php', '/template.php', '/style.css');
+			$to_copy = array('js/head.js.php', 'js/body.js.php', '/index.php', '/template.php', 'css/style.css');
 			foreach ($to_copy as $file) {
 				if (file_exists($boarddir . '/sachat/themes/default' . $file)) {
 					copy($boarddir . '/sachat/themes/default' . $file, $theme_dir . $file);

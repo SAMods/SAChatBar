@@ -141,12 +141,12 @@
 	function initTheme() {
 		global $boardurl, $modSettings, $time_bstart, $boarddir;
 		
-		$styles = array();
-		
 		if(isset($_REQUEST['theme']))
 			$curtheme = $_REQUEST['theme'];
+		elseif (!isset($_REQUEST['theme']) && isset($_COOKIE[$modSettings['2sichat_cookie_name'].'_Theme']))
+			$curtheme = $_COOKIE[$modSettings['2sichat_cookie_name'].'_Theme'];
 		else
-			$curtheme = isset($_COOKIE[$modSettings['2sichat_cookie_name'].'_Theme']) ? $_COOKIE[$modSettings['2sichat_cookie_name'].'_Theme'] : '';
+			$curtheme = 'default';
 			
 		if ($curtheme && is_file('./themes/' . $curtheme . '/css/style.css')){
 			$themeurl = $boardurl . '/sachat/themes/' . $curtheme;
@@ -180,7 +180,7 @@
 		else
 			require_once($boarddir . '/sachat/themes/default/template.php');
 		
-		return array($themeurl, $themedir, $thjs, $load_btime, $soundurl, $styles, $curtheme, $txt);
+		return array($themeurl, $themedir, $thjs, $load_btime, $soundurl, $curtheme, $txt);
 	}
 	
 	function LoadImage($icon){
@@ -227,13 +227,6 @@
 				'purge' => date("Ymd", strtotime('-' . $modSettings['2sichat_purge'] . ' days', strtotime(date("Ymd")))),
 			)
 		);
-		$smcFunc['db_query']('', '
-			DELETE FROM {db_prefix}2sichat_gchat
-			WHERE {db_prefix}2sichat_gchat.rd != 0 AND {db_prefix}2sichat_gchat.sent < {int:purge}', 
-			array(
-				'purge' => date("Ymd", strtotime('-' . $modSettings['2sichat_purge'] . ' days', strtotime(date("Ymd")))),
-			)
-		);
 	}
 	
 	function getBuddySession(){
@@ -276,7 +269,7 @@
 		if (empty($modSettings['2sichat_cache']))
 			return;
 
-		$key = md5($boardurl . filemtime($boarddir . '/sachat/functions.php')) . '-SACHAT-' . str_replace(':', '_', $key);
+		$key = md5($boardurl . filemtime($boarddir . '/sachat/Sources/Subs.php')) . '-SACHAT-' . str_replace(':', '_', $key);
 		$cachedir = $boarddir . '/sachat/cache';
 
 		if (file_exists($cachedir . '/data_' . $key . '.php') && filesize($cachedir . '/data_' . $key . '.php') > 10) {
@@ -416,36 +409,6 @@
 				}
 			}
 		}
-	}
-
-	function GetOnlineListG($room,$count=false){
-		
-		global $smcFunc, $context;
-		
-		$time = time();
-		$time_check = $time-180; //SET TIME 3 Minute	
-		$context['online_room_list'] = array();
-		
-		$results = $smcFunc['db_query']('', '
-			SELECT g.id, g.sent, g.from, g.room, m.real_name
-			FROM {db_prefix}2sichat_gchat AS g
-			LEFT JOIN {db_prefix}members AS m ON m.id_member = g.from
-			WHERE g.room = {string:room} AND g.sent > {int:tc} AND g.from != 0
-			GROUP BY g.from', 
-			array(
-				'room' => $room,
-				'tc' => $time_check,
-			)
-		);
-		while ($row = $smcFunc['db_fetch_assoc']($results)) {
-			$context['online_room_list'][] = $row;
-		}
-		$smcFunc['db_free_result']($results);
-		
-		if($count)
-		   return count(isset($context['online_room_list']) ? $context['online_room_list'] : null);
-		else
-			return $context['online_room_list'];
 	}
 	
 	function typestatus() {
