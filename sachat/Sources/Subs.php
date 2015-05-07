@@ -786,7 +786,7 @@
 
 		if(function_exists ("sys_getloadavg")){
 			$load = sys_getloadavg();
-			if(!empty($modSettings['2sichat_max_load']){
+			if(!empty($modSettings['2sichat_max_load'])){
 				if ($load[0] && $load[0] > $modSettings['2sichat_max_load']) {
 					if (!empty($modSettings['2sichat_load_dis_chat'])) {
 						$context['JSON']['STATUS'] = 'AWAY';
