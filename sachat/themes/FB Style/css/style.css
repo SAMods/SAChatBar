@@ -365,7 +365,9 @@ start buddy box styles
 	z-index: 1;
 	left: 31px;
 	top: 8px;
-}.buddyboxuavatar {
+	width: 80%;
+}
+.buddyboxuavatar {
 	position: absolute;
 	display: block;
 	width: 0;
