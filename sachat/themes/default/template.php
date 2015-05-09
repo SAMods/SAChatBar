@@ -366,7 +366,7 @@
 				$data .= '
 					<div class="buddyboxuname">	
 						<div class="buddyboxuavatar">
-							<a  href="javascript:void(0)" onclick="javascript:chatTo(\''.$buddy['id_member'].'\');'.(!empty($_COOKIE[$modSettings['2sichat_cookie_name'].'_list_keep']) ? '' :'showhide(\'friends\');').'return false;">
+							<a  href="javascript:void(0)" onclick="javascript:chatTo(\''.$buddy['id_member'].'\');'.(!empty($_COOKIE[$modSettings['2sichat_cookie_name'].'_list_keep']) ? '' :'showhide(\'sa_friends\');').'return false;">
 								<img width="25px" height="25px" alt="'.$buddy['real_name'].'" title="'.$buddy['real_name'].'" src="'.$buddy['avatar'].'" />
 							</a>
 						</div>
@@ -376,7 +376,7 @@
 						</div>';
 							
 						$data .='
-							<a  href="javascript:void(0)" onclick="javascript:chatTo(\''.$buddy['id_member'].'\');'.(!empty($_COOKIE[$modSettings['2sichat_cookie_name'].'_list_keep']) ? '' :'showhide(\'friends\');').'return false;">
+							<a  href="javascript:void(0)" onclick="javascript:chatTo(\''.$buddy['id_member'].'\');'.(!empty($_COOKIE[$modSettings['2sichat_cookie_name'].'_list_keep']) ? '' :'showhide(\'sa_friends\');').'return false;">
 								'.$buddy['real_name'].'
 							</a>
 					</div><br clear="all"/>';			
@@ -409,7 +409,7 @@
 						$data.= '
 						<div class="buddyboxuname">	
 							<div class="buddyboxuavatar">
-								<a  href="javascript:void(0)" onclick="javascript:chatTo(\''.$buddy['id_member'].'\');'.(!empty($_COOKIE[$modSettings['2sichat_cookie_name'].'_list_keep']) ? '' :'showhide(\'friends\');').'return false;">
+								<a  href="javascript:void(0)" onclick="javascript:chatTo(\''.$buddy['id_member'].'\');'.(!empty($_COOKIE[$modSettings['2sichat_cookie_name'].'_list_keep']) ? '' :'showhide(\'sa_friends\');').'return false;">
 									<img width="25px" height="25px" alt="'.$buddy['real_name'].'" title="'.$buddy['real_name'].'" src="'.$buddy['avatar'].'" />
 								</a>
 							</div>
@@ -418,7 +418,7 @@
 								'<img id="extraimg" src="'.LoadImage('bullet_red.png').'" width="17" height="17" alt="" border="0">').'
 							</div>';
 							$data .='
-								<a  href="javascript:void(0)" onclick="javascript:chatTo(\''.$buddy['id_member'].'\');'.(!empty($_COOKIE[$modSettings['2sichat_cookie_name'].'_list_keep']) ? '' :'showhide(\'friends\');').'return false;">
+								<a  href="javascript:void(0)" onclick="javascript:chatTo(\''.$buddy['id_member'].'\');'.(!empty($_COOKIE[$modSettings['2sichat_cookie_name'].'_list_keep']) ? '' :'showhide(\'sa_friends\');').'return false;">
 									'.$buddy['real_name'].'
 								</a>
 						</div><br clear="all"/>';

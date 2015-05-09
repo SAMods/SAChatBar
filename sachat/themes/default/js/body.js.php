@@ -55,7 +55,7 @@
 					if(saChatShow == 1){
 						$sachat(\'#chat_containter\').removeClass(\'chatBar_containter\');
 						$sachat(\'#chatonhover\').hide();
-						$sachat(\'#friends\').hide();
+						$sachat(\'#sa_friends\').hide();
 						$sachat(\'#chattools_containter\').hide();
 						$sachat(\'#hideimg\').attr(\'src\',\''.LoadImage('world_off.png').'\');
 						$sachat(\'#hideimg\').attr(\'title\',\''.$txt['bar_showChat'].'\');
@@ -70,7 +70,7 @@
 			// Members only JavaScript
 			if ($member_id) {
 				$context['HTML'].= '
-			$sachat("<div />" ).attr("id","friends").attr("class","buddybox").attr("dir","ltr").html(\''.$buddies.'\').appendTo($sachat("body"));
+			$sachat("<div />" ).attr("id","sa_friends").attr("class","buddybox").attr("dir","ltr").html(\''.$buddies.'\').appendTo($sachat("body"));
 			//setup the basic html template structer for the chat boxes
 			$sachat("<div />").attr("id","ChatBoxtemplate").attr("dir","ltr").appendTo($sachat("body"));
 			$sachat("<div />").attr("dir","ltr").attr("class","chatbox").appendTo($sachat("#ChatBoxtemplate"));
@@ -80,9 +80,9 @@
 			$sachat("<div />" ).attr("id","slideRight").html(\'<img src="'.LoadImage('arrow_left.png').'" />\').appendTo($sachat("body"));
 			
 			if($sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'_list_keep\') == 1 && saChatShow != 1){
-				$sachat(\'#friends\').show();
+				$sachat(\'#sa_friends\').show();
 			}else{
-				$sachat(\'#friends\').hide();
+				$sachat(\'#sa_friends\').hide();
 			}
 			
 			$sachat(\'.show_buddys\').change(function(){
@@ -104,13 +104,13 @@
 				
 				if(checkit == true){
 					checked = 1;
-					if (!$sachat(\'#friends\').is(\':visible\') && !$sachat(\'#extra\').is(\':visible\')){
-						showhide(\'friends\');
+					if (!$sachat(\'#sa_friends\').is(\':visible\') && !$sachat(\'#extra\').is(\':visible\')){
+						showhide(\'sa_friends\');
 					}
 				}else{
 					checked = 0;
-					if ($sachat(\'#friends\').is(\':visible\')){
-						showhide(\'friends\');
+					if ($sachat(\'#sa_friends\').is(\':visible\')){
+						showhide(\'sa_friends\');
 					}
 				}
 				$sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'_list_keep\',checked ,{ expires: 10000});
@@ -128,12 +128,12 @@
 			
 			var isSearching = false;
 			
-			$sachat("#friends").on(\'blur\', \'#sasearch\', function () {
+			$sachat("#sa_friends").on(\'blur\', \'#sasearch\', function () {
 				$sachat(this).val(\'\');
 				isSearching = false;
 			});
 			
-			$sachat("#friends").on(\'input\', \'#sasearch\', function () {
+			$sachat("#sa_friends").on(\'input\', \'#sasearch\', function () {
 			
 				var searchKeyword = $sachat(this).val();
 				
@@ -152,11 +152,11 @@
 			});
 			
 			$sachat("#chatonhover").on(\'click\',function() {
-					showhide(\'friends\');
+					showhide(\'sa_friends\');
 			});
 			
-			$sachat("#friends").on(\'click\', \'#chead\', function () {
-				showhide(\'friends\');
+			$sachat("#sa_friends").on(\'click\', \'#chead\', function () {
+				showhide(\'sa_friends\');
 			});
 ;
 			$sachat(\'#slideLeft\').on(\'click\',function(){
@@ -255,7 +255,7 @@
 							$sachat("#cfriends").text(\'(\'+data.CONLINE+\')\');
 						}
 						if (data != null && data.ONLINE != null && isSearching == false) {
-							$sachat("#friends").html(data.ONLINE);
+							$sachat("#sa_friends").html(data.ONLINE);
 						}
 						
 						heartbeattimeout();	
@@ -518,7 +518,7 @@
 								$sachat("#cfriends").text(\'(\'+data.CONLINE+\')\');
 							}
 							if (data != null && data.ONLINE != null) {
-								$sachat("#friends").html(data.ONLINE);
+								$sachat("#sa_friends").html(data.ONLINE);
 							} 
 							if (data != null && data.SENTMSGTIME != null) {
 								$sachat("#sent"+data.SENTMSGID).html(\'<br />\'+data.SENTMSGTIME+\'<br /><br />\');
@@ -620,7 +620,7 @@
 							$sachat("#cfriends").text(\'(\'+data.CONLINE+\')\');
 						}
 						if (data != null && data.ONLINE != null) {
-							$sachat("#friends").html(data.ONLINE);
+							$sachat("#sa_friends").html(data.ONLINE);
 						} 
 					}
 				});
@@ -693,7 +693,7 @@
 								  $sachat("#cfriends").text(\'(\'+data.CONLINE+\')\');
 							  }
 							  if (data != null && data.ONLINE != null) {
-								  $sachat("#friends").html(data.ONLINE);
+								  $sachat("#sa_friends").html(data.ONLINE);
 							  } 
 						 }
 					});
@@ -760,7 +760,7 @@
 					$sachat(\'#chatonhover\').hide();
 					$sachat(\'#chat_containter\').removeClass(\'chatBar_containter\');
 					$sachat(\'#extra\').hide();
-					$sachat(\'#friends\').hide();
+					$sachat(\'#sa_friends\').hide();
 					$sachat(\'.chatbox\').hide();
 					$sachat(\'#hideimg\').attr(\'src\',\''.LoadImage('world_off.png').'\');
 					$sachat(\'#hideimg\').attr(\'title\',\''.$txt['bar_showChat'].'\');
@@ -789,7 +789,7 @@
 				hide_showChat();
 			});
 			
-			$sachat("#friends").on(\'click\', \'#chattools_containter\', function () {
+			$sachat("#sa_friends").on(\'click\', \'#chattools_containter\', function () {
 				showhide(\'extra\');
 			});
 			$sachat("#chattools_containter").on(\'click\',function() {
@@ -804,7 +804,7 @@
 				{
 					$sachat(document.getElementById(layer_ref)).fadeIn("fast");
 					
-					if(layer_ref == \'friends\'){
+					if(layer_ref == \'sa_friends\'){
 						$sachat(\'#extra\').hide();
 					
 						$sachat(\'#chattools_containter\').removeClass(\'chat_tools_open\');
@@ -813,7 +813,7 @@
 					}
 					if(layer_ref == \'extra\'){
 						$sachat(\'#chat_containter\').show();
-						$sachat(\'#friends\').hide();
+						$sachat(\'#sa_friends\').hide();
 						$sachat(\'#chattools_containter\').removeClass(\'chat_tools_containter_hover\');
 						$sachat(\'#chattools_containter\').removeClass(\'chat_tools_containter\');
 						$sachat(\'#chattools_containter\').addClass(\'chat_tools_open\');
@@ -825,13 +825,13 @@
 				{
 					$sachat(document.getElementById(layer_ref)).fadeOut("fast");
 					
-					if(layer_ref == \'friends\'){
+					if(layer_ref == \'sa_friends\'){
 						$sachat(\'#chat_containter\').show();
 					}
 					if(layer_ref == \'extra\'){
 						if($sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'_list_keep\') == 1 && memberID){
 							//$sachat(\'#chat_containter\').hide();
-							$sachat(\'#friends\').show();
+							$sachat(\'#sa_friends\').show();
 						}
 						$sachat(\'#chattools_containter\').removeClass(\'chat_tools_open\');
 						$sachat(\'#chattools_containter\').addClass(\'chat_tools_containter\');

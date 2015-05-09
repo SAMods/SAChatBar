@@ -22,6 +22,11 @@
 	session_cache_limiter('nocache'); 
 	session_start();
 
+	if(!ini_get('date.timezone'))
+	{
+		date_default_timezone_set('GMT');
+	}
+	
 	//Lets go head and load our files here.
 	require_once(str_replace('//', '/', dirname(__FILE__) . '/') . '../Settings.php');
 	require_once(dirname(__FILE__) . '/Sources/Main.php');
