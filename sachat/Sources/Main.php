@@ -29,7 +29,7 @@
 	}
 	
 	function doheart() {
-		global $member_id
+		global $member_id;
 		if(!empty($member_id) && is_int($member_id)){
 			CheckActive();
 			CheckTyping();
