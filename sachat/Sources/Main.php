@@ -29,11 +29,14 @@
 	}
 	
 	function doheart() {
-
-		CheckActive();
-		CheckTyping();
-		getBuddySession();
-		newMsgPrivate();
+		global $member_id
+		if(!empty($member_id) && is_int($member_id)){
+			CheckActive();
+			CheckTyping();
+			getBuddySession();
+			newMsgPrivate();
+		
+		}
 	}
 	
 	function initLink() {
