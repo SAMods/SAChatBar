@@ -7,11 +7,14 @@
 		die('No direct access...');
 	
 	function phaseBBC($string) {
-		global $txt;
+		global $listeners, $txt;
 		
 		if ((strpos($string, "[") === false || strpos($string, "]") === false))
 			return $string;
 		
+		if(isset($listeners['phaseBBC']))
+			$string = hook('phaseBBC', $string);
+			
 		//'`\[('.$tags.')=?(.*?)\](.+?)\[/\1\]`'
 		$tags = 'b|i|size|color|quote|url|img|glow|video'; 
 		$pattern = '/\[('.$tags.')\=?([^]]+)?\](?:([^]]*)\[\/\1\])/';
@@ -20,7 +23,7 @@
             list($tag, $param, $innertext) = array($matches[1][$key], $matches[2][$key], $matches[3][$key]); 
 			
             switch ($tag) { 
-                case 'b': 
+				case 'b': 
 					$replacement = '<strong>'.$innertext.'</strong>'; 
 				break; 
                 case 'i': 
@@ -53,12 +56,17 @@
             } 
             $string = str_replace($match, $replacement, $string); 
         } 
+			
         return $string;
 	}
 	
 	function phaseMSG($data) {
-		global $context, $txt, $modSettings;
-
+		global $context, $txt, $listeners, $modSettings;
+		
+		
+		if(isset($listeners['phaseMsg']))
+			$data = hook('phaseMsg', $data);
+		
 		if ((strpos($data, '://') !== false || strpos($data, 'www.') !== false) && strpos($data, '[url') === false)
 		{
 			$data = strtr($data, array('&#039;' => '\'', '&nbsp;' => $context['sa_utf8'] ? "\xC2\xA0" : "\xA0", '&quot;' => '>">', '"' => '<"<', '&lt;' => '<lt<'));
@@ -89,7 +97,7 @@
 				$data = str_replace($badwords[$i], censorMSG($badwords[$i]), $data);
 			}
 		}
-
+		
 		return $data;
 	}
 	
@@ -108,11 +116,15 @@
 	
 	function load_smiles() {
 
-		global $smcFunc, $modSettings;
+		global $smcFunc, $listeners, $modSettings;
 
 		$smiles = array();
+			
 		if (($smiles = cachegetData('smiless', 90)) == null) {
-		   
+			
+			if(isset($listeners['load_smiles']))
+				$smiles =  hook('load_smiles', $smiles);
+				
 			$results = $smcFunc['db_query']('', '
 				SELECT code, filename
 				FROM {db_prefix}smileys', array()
@@ -123,6 +135,7 @@
 				$smiles['file'][] = '<img src="' . $modSettings['smileys_url'] . '/' . $modSettings['smiley_sets_default'] . '/' . $row['filename'] . '">';
 			}
 			$smcFunc['db_free_result']($results);
+				
 			cacheputData('smiless', $smiles, 90);
 		}
 

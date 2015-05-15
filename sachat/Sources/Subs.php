@@ -5,7 +5,57 @@
 	**/
 	if (!defined('SMF'))
 		die('No direct access...');
+	
+	function loadPlugins(){
+		global $boarddir, $plugArray, $plugindexCount;
+		
+		$myDirectory = opendir($boarddir . '/sachat/Plugins/');
+		
+		while ($entryName = readdir($myDirectory)) {
+			$plugArray[] = $entryName;
+		}
+		
+		closedir($myDirectory);
+		$plugindexCount = count($plugArray);
+		sort($plugArray);
+		
+		for ($index = 0; $index < $plugindexCount; $index++) {					
+			if (substr($plugArray[$index], 0, 1) != '.' && $plugArray[$index] != "index.php" && strpos($plugArray[$index], 'Plugin.') !== false){ // don't list hidden files
+				require_once($boarddir . '/sachat/Plugins/'.$plugArray[$index].'');
+			}
+		}
+	}
+	
+	//create an entry point for plugins
+	function hook(){
+		global $listeners;
 
+		$num_args = func_num_args();
+		$args = func_get_args();
+
+		if($num_args < 2)
+			trigger_error("Insufficient arguments", E_USER_ERROR);
+
+		// Hook name should always be first argument
+		$hook_name = array_shift($args);
+
+		if(!isset($listeners[$hook_name]))
+			return; // No plugins have registered this hook
+
+		foreach($listeners[$hook_name] as $func){
+			$args = $func($args); 
+		}
+
+		return $args;
+	}
+
+	//Attach a function to a hook
+	function add_listener($hook, $function_name){
+		global $listeners;
+
+		$listeners[$hook][] = $function_name;
+	}
+	
 	function allowedTodo($permission){
 		global $modSettings, $user_settings;
 		

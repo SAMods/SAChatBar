@@ -27,6 +27,9 @@
 		date_default_timezone_set('GMT');
 	}
 	
+	//create an empty plugin array
+	$listeners = array();
+	
 	//Lets go head and load our files here.
 	require_once(str_replace('//', '/', dirname(__FILE__) . '/') . '../Settings.php');
 	require_once(dirname(__FILE__) . '/Sources/Main.php');
@@ -39,6 +42,9 @@
 	// Connect to the database
 	$smcFunc = array();
 	loadDatabase();
+	
+	//load any plugins
+	loadPlugins();
 	
 	//Load modsettings array
 	$modSettings = initModSettings();
