@@ -23,16 +23,13 @@
 	session_start();
 
 	if(!ini_get('date.timezone'))
-	{
 		date_default_timezone_set('GMT');
-	}
 	
 	//create an empty plugin array
 	$listeners = array();
 	
 	//Lets go head and load our files here.
 	require_once(str_replace('//', '/', dirname(__FILE__) . '/') . '../Settings.php');
-	require_once(dirname(__FILE__) . '/Sources/Main.php');
 	require_once(dirname(__FILE__) . '/Sources/Subs.php');
 	require_once(dirname(__FILE__) . '/Sources/Chat.php');
 	require_once(dirname(__FILE__) . '/Sources/Chat-Subs.php');
@@ -42,10 +39,7 @@
 	// Connect to the database
 	$smcFunc = array();
 	loadDatabase();
-	
-	//load any plugins
-	loadPlugins();
-	
+
 	//Load modsettings array
 	$modSettings = initModSettings();
 	
@@ -55,7 +49,7 @@
 	// Register a error handler
 	set_error_handler('errorHandler');
 	register_shutdown_function('shutdownHandler');
-
+	
 	//Load SMF's compatibility file for unsupported functions.
 	if (@version_compare(PHP_VERSION, '5') == -1)
 		require_once($sourcedir . '/Subs-Compat.php');
@@ -86,6 +80,11 @@
 	
 	getThemes();
 	
+	require_once(dirname(__FILE__) . '/Sources/Plugins.php');
+	
+	if(isset($filter_events['hook_load_file']))//Plugins loading files?.
+		call_hook('hook_load_file',array(),false);
+		
 	$ChatActionArray = array(
 		'body' => array('initchat','args' =>  array('body')),
 		'head' => array('initchat','args' =>  array('head')),
@@ -93,24 +92,33 @@
 		'typing' => array('typestatus'),
 		'closechat' => array('closechat'),
 	);
+	
 	if (isset($_REQUEST['action'])){
+		
+		if(isset($filter_events['hook_actions']))//Plugins modifying the chat action array?.
+			call_hook('hook_actions', array(&$ChatActionArray), false);
+			
+		$context['chat_action'] = $_REQUEST['action'];
+		
 		if(!empty($ChatActionArray[$_REQUEST['action']]['args']))
 			$ChatActionArray[$_REQUEST['action']][0]($ChatActionArray[$_REQUEST['action']]['args'][0]);
 		else
 			$ChatActionArray[$_REQUEST['action']][0]();
 	}else{ 
+		
+		if(isset($filter_events['hook_non_actions']))//Plugins adding custom $_REQUEST?.
+			call_hook('hook_non_actions', array(), false);
+		
 		if (!isset($_REQUEST['msg']) && isset($_REQUEST['cid']) && $member_id)
 			initChatSess();
 		else if (isset($_REQUEST['msg']) && isset($_REQUEST['cid']) && $member_id)
 			savemsg();
-		else if (isset($_REQUEST['gid']))
-			gadget();
 		else if (isset($_REQUEST['chat_user_search']) && $member_id)
 			chatSearch();
 		else if (isset($_REQUEST['home']))
 			chatHome();
-	}
 		
+	}
 	if ($member_id && isset($_REQUEST['action']) && $_REQUEST['action'] == 'heart' && !empty($modSettings['2sichat_live_online']) || $member_id && !isset($_REQUEST['action']) && !empty($modSettings['2sichat_live_online'])) {
 		liveOnline();
 	}

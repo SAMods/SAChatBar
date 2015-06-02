@@ -1,3 +1,12 @@
+=====SA Chat 1.0a1 Rev**=====
+
+Implemented a plugin system [WIP]
+Added a ton of hooks to the mod can also hook into sachat admin actions/areas
+Link are now a plugin
+Gadgets are now a plugin
+Social links are now a plugin
+Removed some older unused code  
+
 =====SA Chat 1.0a Rev**=====
 
 Fixed issue with cloning the default theme.

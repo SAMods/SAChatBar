@@ -4,11 +4,25 @@
  * I release this code as free software, under the MIT license.
  /Text reviewed by Flavio93Zena (ID 394309) 
 **/
-$txt['permissionname_2sichat_group_chat_use'] = 'Allowed to use group chat';
-$txt['permissionname_2sichat_group_chat'] = 'Allowed to create group chat sessions';
-$txt['2sichat_groupeChatGlobal'] = 'Enable global chat';
-$txt['2sichat_groupeChat_sub'] = '';
-$txt['2sichat_groupeChat'] = 'Enable group chat';
+$txt['2sichat_plugins17'] = 'plugin must contain filename_init.php';
+$txt['2sichat_plugins16'] = 'No plugin info found';
+$txt['2sichat_plugins15'] = 'Somthing Went fubar???????????????????????????????';
+$txt['2sichat_plugins14'] = 'Plugin value @Plugin ID must be set';
+$txt['2sichat_plugins13'] = 'Plugin value @Author URL must be set';
+$txt['2sichat_plugins12'] = 'Plugin value @Version must be set';
+$txt['2sichat_plugins11'] = 'Plugin value @Author must be set';
+$txt['2sichat_plugins10'] = 'Plugin value @Description must be set';
+$txt['2sichat_plugins9'] = 'Plugin value @Name must be set';
+$txt['2sichat_plugins8'] = '[Remove]';
+$txt['2sichat_plugins7'] = '[Activate]';
+$txt['2sichat_plugins6'] = '[Deactivate]';
+$txt['2sichat_plugins5'] = 'This allows you to install new plugins. You can do this from an already created directory, by uploading an .zip archive for the plugin';
+$txt['2sichat_plugins4'] = 'There are no plugins installed/activated that have added any settings to this area yet.';
+$txt['2sichat_plugins3'] = 'This page contains settings added by any plugins';
+$txt['2sichat_plugins2'] = 'From here you can enable, disable, upload and remove plugins';
+$txt['2sichat_plugins1'] = 'Miscellaneous';
+$txt['2sichat_plugins'] = 'Plugins';
+$txt['2sichat_loaderror_win'] = '<div class="error">Load checking is not avalible on windows</div>';
 $txt['2sichat_live_notfy'] = 'Show message notification on page title if not in focus';
 $txt['2sichat_live_type'] = 'Show when buddy is typing in chat';
 $txt['2sichat_live_type_sub'] = '<div class="error">May cause server load issues!!</div>';
@@ -76,6 +90,7 @@ $txt['2sichat_theme24'] = 'this allows you to remove themes';
 $txt['2sichat_theme25'] = 'Themes installed';
 $txt['2sichat_theme26'] = 'Are you sure you want to remove this theme?';
 $txt['2sichat_theme27'] = '[Remove]';
+$txt['2sichat_theme28'] = 'Succesfully removed';
 $txt['2sichat_board_index'] = 'Actions to show bar on (separated by comma)
 <div class="smalltext">to show on board index use: board_index<br />
 to show on message index use: message_index<br />

@@ -3,58 +3,11 @@
  * @copyright Wayne Mankertz, 2013
  * I release this code as free software, under the MIT license.
 **/
+
 function template_twosichaterror(){
 
     template_show_list('chat_error');
 
-}
-
-function template_twosichatGadgets(){
-
-	global $context, $txt, $scripturl;
-
-	echo '
-		<table class="table_grid" cellspacing="0" width="100%">
-			<tr class="catbg">
-				<td align="left" class="windowbg2">'.$txt['2sichat_ord'].'</td>
-				<td align="left" class="windowbg2">'.$txt['2sichat_title'].'</td>
-				<td align="left" class="windowbg2">'.$txt['2sichat_vis'].'</td>
-				<td align="left" class="windowbg2">Type</td>
-			</tr>		';
-	foreach ($context['gadgets'] as $row)
-	  {
-   echo'
-			<tr class="windowbg">
-				<td align="left" class="windowbg2">'.$row['ord'].'</td>
-                    <td align="left" class="windowbg2">
-					<strong>'.$row['title'].'</strong>
-					<div style="float:right;padding-right:40px;">
-						<button type="button" onclick="javascript:openGadget(\''.$row['id'].'\');">'.$txt['2sichat_preview'].'</button>
-						<button type="button" onclick="javascript:window.location.href = \''.$scripturl.'?action=admin;area=sachat;sa=gadget;edit='.$row['id'].'\';">'.$txt['2sichat_edit'].'</button>
-						<button type="button" onclick="javascript:window.location.href = \''.$scripturl.'?action=admin;area=sachat;sa=gadget;delete='.$row['id'].'\';">'.$txt['2sichat_delete'].'</button>
-						<button type="button" onclick="javascript:ShowGadgetLink(\'GadgetCode'.$row['id'].'\')">'.$txt['2sichat_link'].'</button>
-						<textarea id="GadgetCode'.$row['id'].'" rows="4" cols="28" style="display:none; overflow:hidden;"><a onclick="javascript:openGadget(\''.$row['id'].'\');return false;" href="javascript:void(0)">'.$row['title'].'</a></textarea>
-	 				</div>
-	 			</td>
-                    <td align="left" class="windowbg2">
-					'.($row['vis'] == 0 ? $txt['2sichat_vis0'] : '').'
-					'.($row['vis'] == 1 ? $txt['2sichat_vis1'] : '').'
-					'.($row['vis'] == 2 ? $txt['2sichat_vis2'] : '').'
-					'.($row['vis'] == 3 ? $txt['2sichat_vis3'] : '').'
-				</td>
-				 <td align="left" class="windowbg2">
-					'.($row['type'] == 0 ? 'PHP' : '').'
-					'.($row['type'] == 1 ? 'HTML' : '').'
-				</td>
-               </tr>';
-	  }
-    echo'
- 			<tr>
-				<td align="left" class="windowbg2" colspan="4">
-					<button type="button" onclick="javascript:window.location.href = \''.$scripturl.'?action=admin;area=sachat;sa=gadget;edit\';">'.$txt['2sichat_gad_add'].'</button>
-				</td>
-			</tr>
-		</table>';
 }
 
 function template_twosichatchmod(){
@@ -91,7 +44,7 @@ global $txt,$modSettings,$scripturl;
 			</div>
 	    <span class="botslice"><span></span></span>
 	</div>';
-	//if (!empty($modSettings['2sichat_cache'])){
+
 	  echo'<br /> 
 	    <div class="cat_bar">
 		    <h3 class="catbg">
@@ -123,195 +76,101 @@ global $txt,$modSettings,$scripturl;
 	</div>';
 	
 }
-function template_twosichatLinks(){
 
-	global $context, $txt, $scripturl;
-
-	echo '
-		<table class="table_grid" cellspacing="0" width="100%">
-			<tr class="catbg">
-				<td align="left" class="windowbg2">'.$txt['2sichat_ord'].'</td>
-				<td align="left" class="windowbg2">'.$txt['2sichat_title'].'</td>
-				<td align="left" class="windowbg2">'.$txt['2sichat_vis'].'</td>
-			</tr>		';
-	foreach ($context['gadgets'] as $row)
-	  {
-   echo'
-			<tr class="windowbg">
-				<td align="left" class="windowbg2">'.$row['ord'].'</td>
-                    <td align="left" class="windowbg2">
-					<strong>'.$row['title'].'</strong>
-					<div style="float:right;padding-right:40px;">
-						<button type="button" onclick="javascript:window.location.href = \''.$scripturl.'?action=admin;area=sachat;sa=link;edit='.$row['id'].'\';">'.$txt['2sichat_edit'].'</button>
-						<button type="button" onclick="javascript:window.location.href = \''.$scripturl.'?action=admin;area=sachat;sa=link;delete='.$row['id'].'\';">'.$txt['2sichat_delete'].'</button>
-	 				</div>
-	 			</td>
-                    <td align="left" class="windowbg2">
-					'.($row['vis'] == 0 ? $txt['2sichat_vis0'] : '').'
-					'.($row['vis'] == 1 ? $txt['2sichat_vis1'] : '').'
-					'.($row['vis'] == 2 ? $txt['2sichat_vis2'] : '').'
-					'.($row['vis'] == 3 ? $txt['2sichat_vis3'] : '').'
-				</td>
-               </tr>';
-	  }
-    echo'
- 			<tr>
-				<td align="left" class="windowbg2" colspan="3">
-					<button type="button" onclick="javascript:window.location.href = \''.$scripturl.'?action=admin;area=sachat;sa=link;edit\';">'.$txt['2sichat_ladd'].'</button>
-				</td>
-			</tr>
-		</table>';
-}
-
-function template_twosichatLinkAdd(){
-
-	global $context, $scripturl, $txt;
-
-	echo '
-		<form action="', $scripturl, '?action=admin;area=sachat;sa=link;save" method="post" accept-charset="', $context['character_set'], '">
-			<table width="100%" border="0" cellspacing="1" cellpadding="4" class="bordercolor">
-				<tr>
-				<td align="left" class="windowbg2">
-						<strong>'.$txt['2sichat_linkyyy'].'</strong>
-					</td>
-                         <td align="left" class="windowbg2">
-					 <input type="checkbox" name="newwin" class="input_check" ' . (!empty($context['gadget']['newwin']) ? ' checked="checked" ' : '') . ' />
-					</td>
-				</tr>
-					<td align="left" class="windowbg2">
-						<strong>'.$txt['2sichat_title'].'</strong>
-					</td>
-                         <td align="left" class="windowbg2">
-						<input type="text" name="title" size="64" maxlength="255" value="'.(isset($context['gadget']['title']) ? $context['gadget']['title']:'').'" /><br />
-					</td>
-				</tr>
-				<tr>
-					<td align="left" class="windowbg2">
-                              <strong>'.$txt['2sichat_laddu'].'</strong>
-                         </td>
-                         <td align="left" class="windowbg2">
-						<input type="text" name="url" size="64" maxlength="255" value="'.(isset($context['gadget']['url']) ? $context['gadget']['url']:'').'" />
-					</td>
-				</tr>
-				<tr>
-                         <td align="left" class="windowbg2">
-                              <strong>'.$txt['2sichat_laddiu'].'</strong>
-                         </td>
-                         <td align="left" class="windowbg2">
-						<input type="text" name="image" size="64" maxlength="255" value="'.(isset($context['gadget']['image']) ? $context['gadget']['image']:'').'" /><br />
-					</td>
-				</tr>
+function template_twosichatplugin() {
+global $modSettings, $txt, $scripturl, $context, $boarddir;
+	 
+	echo'<form action="', $scripturl, '?action=admin;area=sachat;sa=plugins;upload" method="post" accept-charset="', $context['character_set'], '" enctype="multipart/form-data" onsubmit="return confirm(\'Install plugin?\');">';
+	
+	echo' 
+		<div class="windowbg2">
+			<span class="topslice"><span></span></span>
+				<div class="content">
+					<div class="smalltext">'.$txt['2sichat_plugins5'].'</div><br />
+					Upload a Plugin: <input type="file" name="plug_gz" id="plug_gz" value="plug_gz" size="40" onchange="this.form.copy.disabled = this.value != \'\'; this.form.theme_dir.disabled = this.value != \'\';" class="input_file" />
+				<input type="submit" value="'.$txt['2sichat_theme13'].'" />
+				</div>
+	    <span class="botslice"><span></span></span>
+		</div></form><br />';
+		
+	foreach(glob($boarddir.'/sachat/Plugins/*_init.php')  as $plugin) {
+		
+		$comments = GetComments($plugin);
+		
+		foreach($comments as $comment){
+			
+			if($comment[0] == '@Name'){
+				$plugin_name = $comment[1];
+			}			
+			if($comment[0] == '@Description'){
+				$plugin_desc = $comment[1];
+			}
+			if($comment[0] == '@Author'){
+				$plugin_author = $comment[1];
+				$plugin_author_txt = str_replace('@','',$comment[0]);
+			}
+			if($comment[0] == '@Version'){
+				$plugin_version = $comment[1];
+				$plugin_version_txt = str_replace('@','',$comment[0]);
+			}
+			if($comment[0] == '@Author URL'){
+				$plugin_url = $comment[1];
+				$plugin_url_txt = str_replace('@','',$comment[0]);
+			}
+			if($comment[0] == '@Plugin ID'){
+				$plugin_id = $comment[1];
+				$plugin_id_txt = str_replace('@','',$comment[0]);
+			}
+		}
+		
+		$plug = $plugin_id;
+		$plug = trim($plug);
+		
+		echo'<div class="cat_bar">
+				<h3 class="catbg">
+					<strong>'.$plugin_name.'</strong>';
+					echo'<div class="floatright">';
+						if(!empty($modSettings[$plug]))
+							echo'<a href="'. $scripturl. '?action=admin;area=sachat;sa=plugins;disable_plugin='.$plugin_id.'">'.$txt['2sichat_plugins6'].'</a>';
+						else
+							echo'<a href="'. $scripturl. '?action=admin;area=sachat;sa=plugins;enable_plugin='.$plugin_id.'">'.$txt['2sichat_plugins7'].'</a>';
+						
+						echo' <a href="'. $scripturl. '?action=admin;area=sachat;sa=plugins;remove_plugin='.$plugin_id.';file='.$plugin.'">'.$txt['2sichat_plugins8'].'</a>';
+					echo'</div>';
+				echo'</h3>
+			</div>'; 
+			
+		echo' <div class="windowbg2">
+		<span class="topslice"><span></span></span>
+	        <div class="content">';	
+				echo parse_bbc($plugin_desc);
+						
+				echo'<br />';
+				echo'<br />
+				<div class="smalltext">';
 				
-				<tr>
-                         <td align="left" class="windowbg2">
-                              <strong>'.$txt['2sichat_vis'].'</strong>
-                         </td>
-					<td align="left" class="windowbg2">
-						<select name="vis">
-							<option value="0" '.(isset($context['gadget']['vis']) && $context['gadget']['vis'] == 0 ? 'selected="selected"' : '').'>'.$txt['2sichat_vis0'].'</option>
-							<option value="1" '.(isset($context['gadget']['vis']) && $context['gadget']['vis'] == 1 ? 'selected="selected"' : '').'>'.$txt['2sichat_vis1'].'</option>
-							<option value="2" '.(isset($context['gadget']['vis']) && $context['gadget']['vis'] == 2 ? 'selected="selected"' : '').'>'.$txt['2sichat_vis2'].'</option>
-							<option value="3" '.(isset($context['gadget']['vis']) && $context['gadget']['vis'] == 3 ? 'selected="selected"' : '').'>'.$txt['2sichat_vis3'].'</option>
-						</select>
-					</td>
-				</tr>
-				<tr>
-                         <td align="left" class="windowbg2">
-                              <strong>'.$txt['2sichat_ord'].'</strong>
-                         </td>
-					<td align="left" class="windowbg2">
-						<input type="text" name="ord" size="64" maxlength="255" value="'.(isset($context['gadget']['ord']) ? $context['gadget']['ord']:'').'" /><br />
-					</td>
-				</tr>
-				<tr>
-                         <td align="left" class="windowbg2" colspan="2">
-          				<input type="submit" name="submit" value="submit" />
-					</td>
-				</tr>
-			</table>
-			'.(isset($context['gadget']['id']) ? '<input type="hidden" name="mod" value="'.$context['gadget']['id'].'" />':'').'
-		</form>
-	';
-}
-
-function template_twosichatGadAdd(){
-
-	global $context, $scripturl, $txt;
-
-	echo '
-		<form action="', $scripturl, '?action=admin;area=sachat;sa=gadget;save" method="post" accept-charset="', $context['character_set'], '">
-			<table width="100%" border="0" cellspacing="1" cellpadding="4" class="bordercolor">
-				<tr>
-					<td align="left" class="windowbg2">
-						<strong>'.$txt['2sichat_title'].'</strong>
-					</td>
-                         <td align="left" class="windowbg2">
-						<input type="text" name="title" size="64" maxlength="255" value="'.(isset($context['gadget']['title']) ? $context['gadget']['title']:'').'" /><br />
-					</td>
-				</tr>
-				<tr>
-					<td align="left" class="windowbg2">
-                              <strong>'.$txt['2sichat_url'].'</strong>
-                         </td>
-                         <td align="left" class="windowbg2">
-						<textarea rows="5" cols="60" name="url">'.(isset($context['gadget']['url']) ? $context['gadget']['url']:'').'</textarea>
-					</td>
-				</tr>
-				<tr>
-                         <td align="left" class="windowbg2">
-                              <strong>'.$txt['2sichat_width'].'</strong>
-                         </td>
-                         <td align="left" class="windowbg2">
-						<input type="text" name="width" size="64" maxlength="255" value="'.(isset($context['gadget']['width']) ? $context['gadget']['width']:'').'" /><br />
-					</td>
-				</tr>
-				<tr>
-                         <td align="left" class="windowbg2">
-                              <strong>'.$txt['2sichat_height'].'</strong>
-                         </td>
-					<td align="left" class="windowbg2">
-						<input type="text" name="height" size="64" maxlength="255" value="'.(isset($context['gadget']['height']) ? $context['gadget']['height']:'').'" /><br />
-					</td>
-				</tr>
-				<tr>
-                         <td align="left" class="windowbg2">
-                              <strong>'.$txt['2sichat_vis'].'</strong>
-                         </td>
-					<td align="left" class="windowbg2">
-						<select name="vis">
-							<option value="0" '.(isset($context['gadget']['vis']) && $context['gadget']['vis'] == 0 ? 'selected="selected"' : '').'>'.$txt['2sichat_vis0'].'</option>
-							<option value="1" '.(isset($context['gadget']['vis']) && $context['gadget']['vis'] == 1 ? 'selected="selected"' : '').'>'.$txt['2sichat_vis1'].'</option>
-							<option value="2" '.(isset($context['gadget']['vis']) && $context['gadget']['vis'] == 2 ? 'selected="selected"' : '').'>'.$txt['2sichat_vis2'].'</option>
-							<option value="3" '.(isset($context['gadget']['vis']) && $context['gadget']['vis'] == 3 ? 'selected="selected"' : '').'>'.$txt['2sichat_vis3'].'</option>
-						</select>
-					</td></tr><tr>
-					 <td align="left" class="windowbg2">
-                              <strong>Type</strong>
-                         </td>
-					<td align="left" class="windowbg2">
-						<select name="type">
-							<option value="0" '.(isset($context['gadget']['type']) && $context['gadget']['type'] == 0 ? 'selected="selected"' : '').'>PHP</option>
-							<option value="1" '.(isset($context['gadget']['type']) && $context['gadget']['type'] == 1 ? 'selected="selected"' : '').'>HTML</option>
-						</select>
-					</td>
-				</tr>
-				<tr>
-                         <td align="left" class="windowbg2">
-                              <strong>'.$txt['2sichat_ord'].'</strong>
-                         </td>
-					<td align="left" class="windowbg2">
-						<input type="text" name="ord" size="64" maxlength="255" value="'.(isset($context['gadget']['ord']) ? $context['gadget']['ord']:'').'" /><br />
-					</td>
-				</tr>
-				<tr>
-                         <td align="left" class="windowbg2" colspan="2">
-          				<input type="submit" name="submit" value="submit" />
-					</td>
-				</tr>
-			</table>
-			'.(isset($context['gadget']['id']) ? '<input type="hidden" name="mod" value="'.$context['gadget']['id'].'" />':'').'
-		</form>
-	';
+				echo '<strong>'.$plugin_id_txt.':</strong> '; 
+				echo $plugin_id;
+				
+				echo' | '; 
+				
+				echo'<strong>'.$plugin_version_txt.':</strong> '; 
+				echo $plugin_version;
+						
+				echo' | '; 
+				
+				echo'<strong>'.$plugin_author_txt.':</strong> '; 
+				echo $plugin_author;
+						
+				echo' | '; 
+				
+				echo'<strong>'.$plugin_url_txt.':</strong> '; 
+				echo '<a href="'.$plugin_url.'">'.$plugin_url.'</a>';
+			
+			echo'</div></div>
+	    <span class="botslice"><span></span></span>
+		</div><br />';
+	}
 }
 
 function template_twosichatThemes(){
@@ -320,7 +179,7 @@ function template_twosichatThemes(){
       
 	  if(isset($_GET['rdone'])) {
 	  echo'<div class="information">
-	          <strong>Succesfully removed '.$_GET['rdone'].' theme</strong>
+	          <strong>'.$txt['2sichat_theme28'].' '.$_GET['rdone'].'</strong>
       </div>';
 	  }
 	  if(isset($_GET['done'])) {

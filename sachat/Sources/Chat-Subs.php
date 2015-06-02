@@ -7,14 +7,27 @@
 		die('No direct access...');
 	
 	function phaseBBC($string) {
-		global $listeners, $txt;
+		global $filter_events, $txt;
 		
 		if ((strpos($string, "[") === false || strpos($string, "]") === false))
 			return $string;
 		
-		if(isset($listeners['phaseBBC']))
-			$string = hook('phaseBBC', $string);
-			
+		/*$bbc_code = array(
+			'bold' => array(
+				'before_code' => '[b]', 
+				'after_code' => '[/b]', 
+				'replacement' => '<strong>data</strong>'
+			),
+			'italick' => array(
+				'before_code' => '[i]',
+				'after_code' => '[/i]', 
+				'replacement' => '<em>data</em>'
+			),
+		);*/
+		
+		if(isset($filter_events['hook_bbc']))//Plugins adding bbc?.
+			call_hook('hook_bbc', array(&$string));
+		
 		//'`\[('.$tags.')=?(.*?)\](.+?)\[/\1\]`'
 		$tags = 'b|i|size|color|quote|url|img|glow|video'; 
 		$pattern = '/\[('.$tags.')\=?([^]]+)?\](?:([^]]*)\[\/\1\])/';
@@ -56,16 +69,15 @@
             } 
             $string = str_replace($match, $replacement, $string); 
         } 
-			
+		
         return $string;
 	}
 	
 	function phaseMSG($data) {
-		global $context, $txt, $listeners, $modSettings;
+		global $filter_events, $context, $txt, $modSettings;
 		
-		
-		if(isset($listeners['phaseMsg']))
-			$data = hook('phaseMsg', $data);
+		if(isset($filter_events['hook_phase_msg']))//Plugins modifing the message?.
+			call_hook('hook_phase_msg', array(&$data));
 		
 		if ((strpos($data, '://') !== false || strpos($data, 'www.') !== false) && strpos($data, '[url') === false)
 		{
@@ -116,15 +128,15 @@
 	
 	function load_smiles() {
 
-		global $smcFunc, $listeners, $modSettings;
+		global $smcFunc, $filter_events, $modSettings;
 
 		$smiles = array();
-			
+
 		if (($smiles = cachegetData('smiless', 90)) == null) {
 			
-			if(isset($listeners['load_smiles']))
-				$smiles =  hook('load_smiles', $smiles);
-				
+			if(isset($filter_events['hook_load_smiles']))//Plugins modifing the smileys array?.
+				call_hook('hook_load_smiles',array(&$smiles));
+			
 			$results = $smcFunc['db_query']('', '
 				SELECT code, filename
 				FROM {db_prefix}smileys', array()
@@ -135,18 +147,22 @@
 				$smiles['file'][] = '<img src="' . $modSettings['smileys_url'] . '/' . $modSettings['smiley_sets_default'] . '/' . $row['filename'] . '">';
 			}
 			$smcFunc['db_free_result']($results);
-				
+			
 			cacheputData('smiless', $smiles, 90);
+		
 		}
-
+		
 		return $smiles;
 	}
 	
 	function closechat(){
-
-		if(!empty($_SESSION['buddy_id'])){
+		global $filter_events;
+		
+		if(!empty($_SESSION['buddy_id']))
 			unset($_SESSION['buddy_id']);
-		}
+
+		if(isset($filter_events['hook_close_chat']))//Plugins loading functions when closing the chat box
+			call_hook('hook_close_chat', array(), false);
 	}
 	
 	function mread($id) {

@@ -244,7 +244,7 @@
 
 	function chat_extra_template() { 
 
-		global $txt, $member_id, $dirArray, $indexCount, $modSettings, $curtheme, $context;
+		global $txt, $member_id, $dirArray, $filter_events, $indexCount, $modSettings, $curtheme, $context;
 		
 		$data = ' 
 			<div class="extraboxhead">
@@ -253,6 +253,12 @@
 				
 		$data .= '
 			<div class="extraboxcontent">';	
+				
+				if(isset($filter_events['hook_tools_template_top']))
+					call_hook('hook_tools_template_top',array(&$data));
+				
+				$data.= '<br />';
+				
 				if (!empty($member_id)) {
 					if(!empty($modSettings['enable_buddylist'])){
 						$data .= '<div class="extrasettings">'.$txt['bar_tools2'].'</div>';
@@ -301,48 +307,11 @@
 					}	
 					
 				}
-				if (!empty($modSettings['2sichat_ico_adthis']) || !empty($modSettings['2sichat_ico_gplus']) || !empty($modSettings['2sichat_ico_myspace']) || !empty($modSettings['2sichat_ico_twit']) || !empty($modSettings['2sichat_ico_fb']))
-						$ssocial=$txt['bar_social'];
-				else
-					$ssocial= '';
+						
+				if(isset($filter_events['hook_tools_template_bot']))
+					call_hook('hook_tools_template_bot',array(&$data));
 					
-				$data.= '
-					'.($ssocial ? '<br /><div class="extrasettings">'.$ssocial.':</div>' :'').'
-					
-					'.($modSettings['2sichat_ico_adthis'] ? '<a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;pubid=xa-503f263237ff99da">
-					<img src="'.LoadImage('add-this.png').'" width="20" height="20" alt="" style="border:0"/></a>&nbsp;':'').'
-					'.($modSettings['2sichat_ico_gplus'] ? '<a href="javascript:void(0)" onclick="javascript:getSocial(\'gplus\');">
-					<img src="'.LoadImage('gplus.png').'" width="20" height="20" alt="'.$txt['gplus'].'" title="'.$txt['gplus'].'" border="0"></a>&nbsp;':'').'
-					'.($modSettings['2sichat_ico_myspace'] ? '<a href="javascript:void(0)" onclick="javascript:getSocial(\'myspace\');">
-					<img src="'.LoadImage('myspace.png').'" width="20" height="20" alt="'.$txt['myspace'].'" title="'.$txt['myspace'].'" border="0"></a>&nbsp;':'').'
-					'.($modSettings['2sichat_ico_twit'] ? '<a href="javascript:void(0)" onclick="javascript:getSocial(\'twitter\');">
-					<img src="'.LoadImage('twitter.png').'" width="20" height="20" alt="'.$txt['twitter'].'" title="'.$txt['twitter'].'" border="0"></a>&nbsp;':'').'
-					'.($modSettings['2sichat_ico_fb'] ? '<a href="javascript:void(0)" onclick="javascript:getSocial(\'facebook\');">
-					<img src="'.LoadImage('facebook.png').'" width="20" height="20" alt="'.$txt['facebook'].'"  title="'.$txt['facebook'].'" border="0"></a><br />':'').'';
-					
-				if(!empty($context['gadgetslink'])) {
-					$data.= '<br />
-						<div class="extrasettings">'.$txt['bar_links'].':</div>';
-							foreach ($context['gadgetslink'] as $link) {
-								if($link['image']){
-									$data.= '
-										<a href="'.$link['url'].'" '.(!empty($link['newwin']) ? 'target="blank"' :'').'>
-											<img src="'.$link['image'].'" width="18" height="18" alt="'.$link['title'].'" title="'.$link['title'].'"/> 	
-										</a>&nbsp;';
-								}
-							}$data.= '<br />';
-				}
-					
-				if(!empty($context['gadgets'])) {
-					$data.= '<br />
-						<div class="extrasettings">'.$txt['bar_gadgets'] .':</div>';
-							foreach ($context['gadgets'] as $gadget) {
-								$data.= '
-									<a href="javascript:void(0)" onclick="javascript:openGadget(\''.$gadget['id'].'\');showhide(\'extra\');return false;">
-										'.$gadget['title'].'
-									</a><br />';
-							}
-				}
+				
 				
 		  $data .= '
 			  <div class="extraboxbottom">
@@ -443,49 +412,6 @@
 
 		$data = '<img src="'.LoadImage('balloon.png').'" alt="{}" border="0">'.$txt['guest_msg'].'';
 			
-		return $data;
-	}
-
-	function gadget_template() {
-		
-		global $boardurl, $context;
-
-		$data ='
-			<div class="gadgetboxhead">
-				<div class="gadgetboxtitle">'.$context['gadget']['title'].'</div>
-					<div class="gadgetboxoptions">
-						<a href="javascript:void(0)" onclick="javascript:closeGadget(\''.$context['gadget']['id'].'\'); return false;">
-							X
-						</a>
-				</div>
-				<br clear="all"/>
-			</div>';
-			
-		$data .='
-			<div class="gadgetboxcontent">
-				<object id="gadget'.$context['gadget']['id'].'" type="text/html" data="'.(substr($context['gadget']['url'], 0, 4) == 'http' ? $context['gadget']['url']:$boardurl.'/sachat/index.php?gid='.$context['gadget']['id'].'&src=true').'" width="'.$context['gadget']['width'].'" height="'.$context['gadget']['height'].'" style"overflow:hidden;" hspace="0" vspace="0"></object>
-			</div>';
-		
-		return $data;
-	}
-
-	function gadgetObject_template() {
-
-		global $context;
-
-		$data ='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-	<html>
-		<head>
-			<meta http-equiv="content-type" content="text/html; charset=utf-8">
-			<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
-			<title>'.$context['gadget']['title'].'</title>
-		</head>
-		<body >
-			<span style="color:black;">
-				'.$context['gadget']['url'].'
-			</span>
-		</body>
-	</html>';
 		return $data;
 	}
 ?>

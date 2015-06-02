@@ -3,7 +3,7 @@
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
 	<id>wdm2005:2sichat</id>
 	<name>SA Chat</name>
-	<version>1.0a Rev120</version>
+	<version>1.0a1 Rev120</version>
 	<type>modification</type>
 	
 <install>

@@ -6,55 +6,35 @@
 	if (!defined('SMF'))
 		die('No direct access...');
 	
-	function loadPlugins(){
-		global $boarddir, $plugArray, $plugindexCount;
-		
-		$myDirectory = opendir($boarddir . '/sachat/Plugins/');
-		
-		while ($entryName = readdir($myDirectory)) {
-			$plugArray[] = $entryName;
-		}
-		
-		closedir($myDirectory);
-		$plugindexCount = count($plugArray);
-		sort($plugArray);
-		
-		for ($index = 0; $index < $plugindexCount; $index++) {					
-			if (substr($plugArray[$index], 0, 1) != '.' && $plugArray[$index] != "index.php" && strpos($plugArray[$index], 'Plugin.') !== false){ // don't list hidden files
-				require_once($boarddir . '/sachat/Plugins/'.$plugArray[$index].'');
-			}
+	function chatHome(){
+		global $context;
+		$context['HTML'] = chat_test_template();
+	}
+	
+	function genMemcount() {
+		return genMemList('count');	
+	}
+
+	function liveOnline() {
+
+		global $modSettings, $context;
+
+		if (empty($modSettings['2sichat_dis_list'])) {
+			$context['JSON']['ONLINE'] = genMemList('list');
+			$context['JSON']['CONLINE'] = genMemcount('count');
 		}
 	}
 	
-	//create an entry point for plugins
-	function hook(){
-		global $listeners;
-
-		$num_args = func_num_args();
-		$args = func_get_args();
-
-		if($num_args < 2)
-			trigger_error("Insufficient arguments", E_USER_ERROR);
-
-		// Hook name should always be first argument
-		$hook_name = array_shift($args);
-
-		if(!isset($listeners[$hook_name]))
-			return; // No plugins have registered this hook
-
-		foreach($listeners[$hook_name] as $func){
-			$args = $func($args); 
+	function doheart() {
+		global $member_id;
+		if(!empty($member_id) && is_int($member_id)){
+			CheckActive();
+			CheckTyping();
+			getBuddySession();
+			newMsgPrivate();
+		
 		}
-
-		return $args;
-	}
-
-	//Attach a function to a hook
-	function add_listener($hook, $function_name){
-		global $listeners;
-
-		$listeners[$hook][] = $function_name;
-	}
+	}	
 	
 	function allowedTodo($permission){
 		global $modSettings, $user_settings;
@@ -233,6 +213,20 @@
 		return array($themeurl, $themedir, $thjs, $load_btime, $soundurl, $curtheme, $txt);
 	}
 	
+	function LoadLanguage($file){
+		global $lang, $boarddir;
+		
+		if (isset($file) && isset($lang) && is_file($boarddir . '/sachat/Plugins/' .$file.'.'.$lang. '.php'))
+			$langfile = $boarddir . '/sachat/Plugins/' .$file.'.'.$lang. '.php';
+		elseif (is_file($boarddir . '/sachat/Plugins/' .$file.'.english.php'))
+			$langfile = $boarddir . '/sachat/Plugins/' .$file.'.english.php';
+		else
+			logError('','','Unable to load plugin language file','DEBUG');
+		
+		if(!empty($langfile))
+			require_once($langfile);
+	}
+	
 	function LoadImage($icon){
 		global $boardurl, $themeurl;
 		
@@ -246,7 +240,7 @@
 	}
 	
 	function initchat($jsType) {
-		global $boarddir, $context, $themedir;
+		global $boarddir, $filter_events, $context, $themedir;
 		
 		header('Content-Type: application/x-javascript; text/javascript');
 		
@@ -259,17 +253,22 @@
 			$context['HTML'] = ' ';
 		
 		if ($jsType == 'body'){
-			initLink();
-			initGadgets();
-			initchatjs();
+			
+			if(isset($filter_events['hook_initialize']))//Plugins loading functions?.
+				call_hook('hook_initialize', array(), false);
+				
+			initchatjs();	
 			initCleanup();
 		}
 	}
 
 	function initCleanup() {
 
-		global $smcFunc, $modSettings;
+		global $smcFunc, $filter_events, $modSettings;
 
+		if(isset($filter_events['hook_cleanup']))//Plugins doing a cleanup.
+			call_hook('hook_cleanup',array(),false);
+			
 		$smcFunc['db_query']('', '
 			DELETE FROM {db_prefix}2sichat
 			WHERE {db_prefix}2sichat.rd != 0 AND {db_prefix}2sichat.sent < {int:purge}', 
@@ -389,7 +388,7 @@
 		// If last connection to the DB is greater than the DB expire stamp die.
 		// If no expire stamp die, usually means no messages availible anyways.
 		if (isset($_SESSION['DBcon_stamp']) && isset($DBcon_exp) && $_SESSION['DBcon_stamp'] > $DBcon_exp || isset($_SESSION['DBcon_stamp']) && !isset($DBcon_exp)) {
-			if (!isset($_REQUEST['chat_user_search']) && !isset($_REQUEST['home']) && !isset($_REQUEST['msg']) && !isset($_REQUEST['update']) && !isset($_REQUEST['gupdate']) && !isset($_REQUEST['gmsg']) && !isset($_REQUEST['gid']) && !isset($_REQUEST['cid']) && !isset($_REQUEST['gcid']) && !isset($_REQUEST['action'])) {
+			if (!isset($context['chat_action']) && !isset($_REQUEST['chat_user_search']) && !isset($_REQUEST['home']) && !isset($_REQUEST['msg']) && !isset($_REQUEST['update']) && !isset($_REQUEST['gid']) && !isset($_REQUEST['cid']) && !isset($_REQUEST['gcid']) && !isset($_REQUEST['action'])) {
 				$context['JSON']['STATUS'] = 'IDLE';
 				doOutput();
 			}

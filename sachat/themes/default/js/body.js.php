@@ -5,7 +5,7 @@
 	**/
 	function initchatjs() {
 
-		global $buddies, $soundurl, $member_id, $txt, $boardurl, $modSettings, $themeurl, $thjs, $context;
+		global $buddies, $soundurl, $member_id, $txt, $filter_events, $boardurl, $modSettings, $themeurl, $thjs, $context;
 
 		if ($member_id && empty($modSettings['2sichat_dis_bar'])) {
 			$bar = addslashes(preg_replace("/\r?\n?\t/m", "", chat_bar_template()));
@@ -16,7 +16,7 @@
 		}
 
 		$extra = addslashes(preg_replace("/\r?\n?\t/m", "", chat_extra_template()));
-
+			
 		$context['HTML'] = '
 			var msgArray = new Array();
 			var msgclear = new Array();
@@ -46,10 +46,12 @@
 		
 			chatcss = \'style.css?\' + milliseconds;
 			
-			$sachat(\'head\').append(\'<link rel="stylesheet" id="stylechange" href="'.$themeurl.'/css/\' + chatcss + \'" type="text/css" />\');
+			$sachat(\'head\').append(\'<link rel="stylesheet" id="stylechange" href="'.$themeurl.'/css/\' + chatcss + \'" type="text/css" />\');';
 			
+			if(isset($filter_events['hook_load_js']))
+				call_hook('hook_load_js', array(&$context['HTML']));
 			
-			'.(!empty($modSettings['2sichat_dis_bar']) ? '':'
+			$context['HTML'] .= ''.(!empty($modSettings['2sichat_dis_bar']) ? '':'
 					
 					$sachat("<div />").attr("id","chat_containter").attr("class","chatBar_containter").attr("dir","ltr").html(\''.$bar.'\').appendTo($sachat("body"));
 					if(saChatShow == 1){
@@ -632,96 +634,6 @@
 
 			// Guest and Members JavaScript
 			$context['HTML'].= '
-				function selectmouse(selector,handle){
-					$sachat(\'.\'+selector).draggable({
-						handle: \'.\'+handle,
-						opacity: 0.35,
-						drag: function(event, ui) {
-							
-							newX = ui.offset.left;
-							newY = ui.offset.top;
-							   
-							$sachat(this).css(\'left\', newX);
-							$sachat(this).css(\'top\', newY);
-								
-							zdex = (zdex+1);
-							$sachat(this).css(\'zIndex\', zdex);
-
-							cgobj = $sachat(this).attr(\'id\');
-							gadid = cgobj.substr(6);
-							gadFix = cgobj.substr(0, 6);
-									
-							if (gadFix == \'Gadget\') {
-								var myArray = [];
-								myArray[0] = \''.$modSettings['2sichat_cookie_name'].'_gadget\';
-								myArray[1] = cgobj;
-								myArray[2] = gadid;
-								myArray[3] = newX;
-								myArray[4] = newY;
-								$sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'_gadget\'+gadid, escape(myArray.join(\',\')));
-							}
-							else{
-								var myArray = [];
-								myArray[0] = \''.$modSettings['2sichat_cookie_name'].'\';
-								myArray[1] = \'msg_win\'+cgobj;
-								myArray[2] = cgobj;
-								myArray[3] = newX;
-								myArray[4] = newY;
-								$sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'\'+cgobj, escape(myArray.join(\',\')));
-						   }
-					   }
-				  });  
-			  }
-
-			  function openGadget(id) {
-				  if (document.getElementById(\'Gadget\'+id) == undefined) {
-
-					  zdex = (zdex+1);
-					  
-					  var div = $sachat("<div />").attr("id","Gadget"+id).attr("dir","ltr").attr("class","gadget_win").attr("style","position: fixed; zIndex: " +zdex+ ";").appendTo($sachat("body"));
-					  
-					  $sachat.ajax({
-						  url: \''.$boardurl.'/sachat/index.php\',
-						  data: \''.$thjs.'gid=\'+id,
-						  dataType: "json",
-						  cache: false,
-						  success: function(data){
-							  if (data.DATA != null){  
-								  $sachat(div).html(data.DATA);
-							  } 
-							  if (data != null && data.CONLINE != null) {
-								  $sachat("#cfriends").text(\'(\'+data.CONLINE+\')\');
-							  }
-							  if (data != null && data.ONLINE != null) {
-								  $sachat("#sa_friends").html(data.ONLINE);
-							  } 
-						 }
-					});
-
-					$sachat(window).load(selectmouse(\'gadget_win\',\'gadgetboxhead\'));
-					
-					if (cSession == undefined) {
-						var myArray = [];
-						myArray[0] = \''.$modSettings['2sichat_cookie_name'].'_gadget\';
-						myArray[1] = \'Gadget\'+id;
-						myArray[2] = id;
-						$sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'_gadget\'+id, escape(myArray.join(\',\')));	
-					}else{
-						var myArray = [];
-						myArray[0] = \''.$modSettings['2sichat_cookie_name'].'_gadget\';
-						myArray[1] = \'Gadget\'+id;
-						myArray[2] = id;
-						myArray[3] = cSession[3];
-						myArray[4] = cSession[4];
-						$sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'_gadget\'+id, escape(myArray.join(\',\')));
-					}
-				}
-			}
-
-			function closeGadget(id) {
-				$sachat(\'#Gadget\'+id).remove();
-				$sachat.cookie(\''.$modSettings['2sichat_cookie_name'].'_gadget\'+id, null);
-			}
 
 			doCookies();
 			function doCookies() {
@@ -733,11 +645,7 @@
 				var cookie = unescape($sachat.cookie(name));
 				cSession = cookie.split(\',\');
 						
-				if(cSession[0] == \''.$modSettings['2sichat_cookie_name'].'_gadget\'){
-					openGadget(cSession[1].substr(6));
-					document.getElementById(cSession[1]).style.left = cSession[3]+\'px\';
-					document.getElementById(cSession[1]).style.top = cSession[4]+\'px\';
-				}
+				
 				
 				if(cSession[0] == \''.$modSettings['2sichat_cookie_name'].'\'){
 					if(cSession[3] == \''.$member_id.'\'){
@@ -839,30 +747,6 @@
 						
 					}
 				}	
-			}
-			
-			$sachat.getScript(\'http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-503f263237ff99da\');
-			
-			function getSocial (social) {
-				if (social == \'myspace\') {
-					pupUP("http://www.myspace.com/Modules/PostTo/Pages/default.aspx?c="+window.location+"&t="+document.documentElement.getElementsByTagName("TITLE")[0].innerHTML);
-				}
-				if (social == \'twitter\') {
-					pupUP("http://twitter.com/home?status="+document.documentElement.getElementsByTagName("TITLE")[0].innerHTML+" @ "+window.location);
-				}
-				if (social == \'facebook\') {
-					pupUP("http://www.facebook.com/sharer.php?t="+document.documentElement.getElementsByTagName("TITLE")[0].innerHTML+"&u="+window.location);
-				}
-				if (social == \'gplus\') {
-					pupUP("https://plusone.google.com/_/+1/confirm?hl=en-US&url="+window.location);
-				}
-			}
-			function pupUP(url) {
-				newwindow=window.open(url,\'pupUP\',\'height=400,width=550,top=200,left=200,toolbar=0,location=0,directories=0,status=0,menubar=0,statusbar=0\');
-				if (window.focus) {newwindow.focus()}
-				return false;
-			}
-
-			';
+			}';
 	}
 ?>

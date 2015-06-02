@@ -31,11 +31,11 @@
 	}
 
 	function SAChat_loadTheme() {
-		global $context;
+		global $boarddir, $context;
 
 		loadLanguage('2sichat');
-
-	   if (!isset($_REQUEST['xml'])) {
+	
+		if (!isset($_REQUEST['xml'])) {
 			$layers = $context['template_layers'];
 			$context['template_layers'] = array();
 			foreach ($layers as $layer) {
@@ -44,7 +44,7 @@
 					$context['template_layers'][] = 'sachat';
 			}
 		}
-
+		
 		$context['html_headers'] .= SAChat_showBar('head');
 	}
 
@@ -71,16 +71,6 @@
 				return;
 		}
 
-		//set our default theme if none set
-		if (empty($modSettings['2sichat_theme']))
-			$modSettings['2sichat_theme'] = 'default';
-
-		//load our theme
-		if (!empty($options['cbar_theme']) && allowedTo('2sichat_bar_theme'))
-			$sachatTheme = $options['cbar_theme'];
-		else
-			$sachatTheme = $modSettings['2sichat_theme'];
-
 		//get our actions
 		SAChat_getActions($actions);
 
@@ -94,7 +84,7 @@
 
 		return $bar;
 	}
-
+ 
 	function SAChat_getActions($actions) {
 		global $context;
 
@@ -116,22 +106,12 @@
 			'2sichat_access' => array(false, '2sichat', '2sichat'),
 			'2sichat_chat' => array(false, '2sichat', '2sichat'),
 			'2sichat_bar' => array(false, '2sichat', '2sichat'),
-			'2sichat_bar_adminmode' => array(false, '2sichat', '2sichat'),
-			'2sichat_group_chat_use' =>array(false, '2sichat', '2sichat'),
-			'2sichat_group_chat' =>array(false, '2sichat', '2sichat'),
 		);
 
 		$context['non_guest_permissions'] = array_merge(
 			$context['non_guest_permissions'], array(
 				//'2sichat_access',
 				'2sichat_chat',
-				'2sichat_bar_theme',
-				'2sichat_bar_buddys',
-				'2sichat_bar_close',
-				'2sichat_group_chat_use',
-				'2sichat_group_chat_use',
-				'2sichat_bar_adminmode',
-				'2sichat_group_chat',
 			)
 		);
 	}
@@ -145,7 +125,7 @@
 				'permission' => array('admin_forum'),
 				'areas' => array(
 					'sachat' => array(
-						'label' => $txt['2sichat'],
+						'label' => $txt['twosichatConfig'],
 						'file' => 'sachatAdmin.php',
 						'function' => 'twosichatAdmin',
 						'icon' => 'languages.gif',
@@ -153,18 +133,29 @@
 						'subsections' => array(
 							'config' => array($txt['twosichatConfig']),
 							'chat' => array($txt['twosichatChat']),
-							'gadget' => array($txt['twosichatGadget']),
-							'link' => array($txt['2sichat_linksd2']),
 							'load' => array($txt['2sichatloadbal']),
 							'theme' => array($txt['2sichat_theme']),
+							'plugins' => array($txt['2sichat_plugins']),
 							'maintain' => array($txt['2sichatmaintain']),
 							'errorlogs' => array($txt['error_2si']),
 						),
 					),
+					'plugsetting' => array(
+						'label' => $txt['2sichat_plugins1'],
+						'file' => 'sachatAdmin.php',
+						'function' => 'twosichatmisc',
+						'icon' => 'languages.gif',
+						'permission' => array('admin_forum'),
+						'subsections' => array(
+							'plugsetting' => array($txt['2sichat_plugins1']),
+						),
+					),
 				),
 			),
-				)
-		);
+		));
+		
+		call_integration_hook('integrate_chat_admin_areas', array(&$admin_areas));
+		
 		if(empty($modSettings['2sichat_e_logs']))
 				unset($admin_areas['sachat']['areas']['sachat']['subsections']['errorlogs']);	
 	}
