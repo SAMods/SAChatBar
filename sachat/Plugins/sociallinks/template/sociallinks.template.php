@@ -39,7 +39,7 @@ function template_display_soc_link(&$data){
 	else
 		$ssocial= '';
 					
-	$data.= '
+	$soc = '
 		'.($ssocial ? '<br /><div class="extrasettings">'.$ssocial.':</div>' :'').'
 					
 		'.($modSettings['2sichat_ico_adthis'] ? '<a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;pubid=xa-503f263237ff99da">
@@ -54,6 +54,6 @@ function template_display_soc_link(&$data){
 		<img src="'.LoadImage('facebook.png').'" width="20" height="20" alt="'.$txt['facebook'].'"  title="'.$txt['facebook'].'" border="0"></a><br />':'').'
 	';
 	
-	return $data;
+	$data = str_replace('</select><br />','</select><br />'.$soc,$data);
 }
 ?>

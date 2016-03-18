@@ -102,7 +102,7 @@
 		$context[$context['admin_menu_name']]['tab_data']['description'] = $txt['2sichat_plugins2'];
 		$context['sub_template'] = 'twosichatplugin';
 		
-		require_once($sourcedir . '/Subs-Package.php');
+		/*require_once($sourcedir . '/Subs-Package.php');
 		
 		if (isset($_GET['upload'])) {
 
@@ -162,7 +162,7 @@
 			}else{
 				fatal_lang_error('2sichat_plugins17', false);	
 			}
-		}
+		}*/
 		
 		if(isset($_REQUEST['enable_plugin'])){
 			

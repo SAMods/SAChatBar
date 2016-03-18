@@ -593,8 +593,8 @@
 						);
 					}
 				}
-				$smcFunc['db_free_result']($results);
 			}
+			$smcFunc['db_free_result']($results);
 		}
 	}
 	

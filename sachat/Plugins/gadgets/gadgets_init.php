@@ -22,7 +22,7 @@ register_hook('hook_load_file',$boarddir.'/sachat/Plugins/gadgets/template/gadge
 register_hook('hook_load_file',$boarddir.'/sachat/Plugins/gadgets/gadgets.php','sa_gadgets');
 register_hook('hook_non_actions', 'dogadgets','sa_gadgets');
 register_hook('hook_initialize', 'initGadgets','sa_gadgets');
-register_hook('hook_tools_template_bot', 'template_display_gad','sa_gadgets');
+register_hook('hook_tools_template', 'template_display_gad','sa_gadgets');
 register_hook('hook_load_js', 'load_gadgets_js','sa_gadgets');
 
 //gadgets Language strings

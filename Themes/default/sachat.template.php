@@ -82,7 +82,7 @@ global $modSettings, $txt, $scripturl, $context, $boarddir;
 	 
 	echo'<form action="', $scripturl, '?action=admin;area=sachat;sa=plugins;upload" method="post" accept-charset="', $context['character_set'], '" enctype="multipart/form-data" onsubmit="return confirm(\'Install plugin?\');">';
 	
-	echo' 
+	/*echo' 
 		<div class="windowbg2">
 			<span class="topslice"><span></span></span>
 				<div class="content">
@@ -91,85 +91,90 @@ global $modSettings, $txt, $scripturl, $context, $boarddir;
 				<input type="submit" value="'.$txt['2sichat_theme13'].'" />
 				</div>
 	    <span class="botslice"><span></span></span>
-		</div></form><br />';
+		</div></form><br />';*/
 		
-	foreach(glob($boarddir.'/sachat/Plugins/*_init.php')  as $plugin) {
+	$DirPlug = glob($boarddir.'/sachat/Plugins/*/*_init.php');
+	$NoDirPlug = glob($boarddir.'/sachat/Plugins/*_init.php');
+	$AllPlug = array_merge($DirPlug,$NoDirPlug);
+	foreach($AllPlug  as $plugin) {
 		
 		$comments = GetComments($plugin);
 		
-		foreach($comments as $comment){
+		if(!empty($comments)){
+			foreach($comments as $comment){
+				
+				if($comment[0] == '@Name'){
+					$plugin_name = $comment[1];
+				}			
+				if($comment[0] == '@Description'){
+					$plugin_desc = $comment[1];
+				}
+				if($comment[0] == '@Author'){
+					$plugin_author = $comment[1];
+					$plugin_author_txt = str_replace('@','',$comment[0]);
+				}
+				if($comment[0] == '@Version'){
+					$plugin_version = $comment[1];
+					$plugin_version_txt = str_replace('@','',$comment[0]);
+				}
+				if($comment[0] == '@Author URL'){
+					$plugin_url = $comment[1];
+					$plugin_url_txt = str_replace('@','',$comment[0]);
+				}
+				if($comment[0] == '@Plugin ID'){
+					$plugin_id = $comment[1];
+					$plugin_id_txt = str_replace('@','',$comment[0]);
+				}
+			}
 			
-			if($comment[0] == '@Name'){
-				$plugin_name = $comment[1];
-			}			
-			if($comment[0] == '@Description'){
-				$plugin_desc = $comment[1];
-			}
-			if($comment[0] == '@Author'){
-				$plugin_author = $comment[1];
-				$plugin_author_txt = str_replace('@','',$comment[0]);
-			}
-			if($comment[0] == '@Version'){
-				$plugin_version = $comment[1];
-				$plugin_version_txt = str_replace('@','',$comment[0]);
-			}
-			if($comment[0] == '@Author URL'){
-				$plugin_url = $comment[1];
-				$plugin_url_txt = str_replace('@','',$comment[0]);
-			}
-			if($comment[0] == '@Plugin ID'){
-				$plugin_id = $comment[1];
-				$plugin_id_txt = str_replace('@','',$comment[0]);
-			}
+			$plug = $plugin_id;
+			$plug = trim($plug);
+			
+			echo'<div class="cat_bar">
+					<h3 class="catbg">
+						<strong>'.$plugin_name.'</strong>';
+						echo'<div class="floatright">';
+							if(!empty($modSettings[$plug]))
+								echo'<a href="'. $scripturl. '?action=admin;area=sachat;sa=plugins;disable_plugin='.$plugin_id.'">'.$txt['2sichat_plugins6'].'</a>';
+							else
+								echo'<a href="'. $scripturl. '?action=admin;area=sachat;sa=plugins;enable_plugin='.$plugin_id.'">'.$txt['2sichat_plugins7'].'</a>';
+							
+							echo' <a href="'. $scripturl. '?action=admin;area=sachat;sa=plugins;remove_plugin='.$plugin_id.';file='.$plugin.'">'.$txt['2sichat_plugins8'].'</a>';
+						echo'</div>';
+					echo'</h3>
+				</div>'; 
+				
+			echo' <div class="windowbg2">
+			<span class="topslice"><span></span></span>
+				<div class="content">';	
+					echo parse_bbc($plugin_desc);
+							
+					echo'<br />';
+					echo'<br />
+					<div class="smalltext">';
+					
+					echo '<strong>'.$plugin_id_txt.':</strong> '; 
+					echo $plugin_id;
+					
+					echo' | '; 
+					
+					echo'<strong>'.$plugin_version_txt.':</strong> '; 
+					echo $plugin_version;
+							
+					echo' | '; 
+					
+					echo'<strong>'.$plugin_author_txt.':</strong> '; 
+					echo $plugin_author;
+							
+					echo' | '; 
+					
+					echo'<strong>'.$plugin_url_txt.':</strong> '; 
+					echo '<a href="'.$plugin_url.'">'.$plugin_url.'</a>';
+				
+				echo'</div></div>
+			<span class="botslice"><span></span></span>
+			</div><br />';
 		}
-		
-		$plug = $plugin_id;
-		$plug = trim($plug);
-		
-		echo'<div class="cat_bar">
-				<h3 class="catbg">
-					<strong>'.$plugin_name.'</strong>';
-					echo'<div class="floatright">';
-						if(!empty($modSettings[$plug]))
-							echo'<a href="'. $scripturl. '?action=admin;area=sachat;sa=plugins;disable_plugin='.$plugin_id.'">'.$txt['2sichat_plugins6'].'</a>';
-						else
-							echo'<a href="'. $scripturl. '?action=admin;area=sachat;sa=plugins;enable_plugin='.$plugin_id.'">'.$txt['2sichat_plugins7'].'</a>';
-						
-						echo' <a href="'. $scripturl. '?action=admin;area=sachat;sa=plugins;remove_plugin='.$plugin_id.';file='.$plugin.'">'.$txt['2sichat_plugins8'].'</a>';
-					echo'</div>';
-				echo'</h3>
-			</div>'; 
-			
-		echo' <div class="windowbg2">
-		<span class="topslice"><span></span></span>
-	        <div class="content">';	
-				echo parse_bbc($plugin_desc);
-						
-				echo'<br />';
-				echo'<br />
-				<div class="smalltext">';
-				
-				echo '<strong>'.$plugin_id_txt.':</strong> '; 
-				echo $plugin_id;
-				
-				echo' | '; 
-				
-				echo'<strong>'.$plugin_version_txt.':</strong> '; 
-				echo $plugin_version;
-						
-				echo' | '; 
-				
-				echo'<strong>'.$plugin_author_txt.':</strong> '; 
-				echo $plugin_author;
-						
-				echo' | '; 
-				
-				echo'<strong>'.$plugin_url_txt.':</strong> '; 
-				echo '<a href="'.$plugin_url.'">'.$plugin_url.'</a>';
-			
-			echo'</div></div>
-	    <span class="botslice"><span></span></span>
-		</div><br />';
 	}
 }
 

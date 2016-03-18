@@ -1,12 +1,17 @@
 <?php
 	if (!defined('SMF'))
 		die('No direct access...');
-		
+	
+	global $boarddir;
+	
 	//Arrays to store user-registered events, functions and actions.
 	$filter_events = array();
 	 
 	 //Load Plugins
-	foreach(glob('Plugins/*_init.php')  as $plugin) {
+	$DirPlug = glob($boarddir.'/sachat/Plugins/*/*_init.php');
+	$NoDirPlug = glob($boarddir.'/sachat/Plugins/*_init.php');
+	$AllPlug = array_merge($DirPlug,$NoDirPlug);
+	foreach($AllPlug  as $plugin) {
 		require_once($plugin);
 	} 
 	

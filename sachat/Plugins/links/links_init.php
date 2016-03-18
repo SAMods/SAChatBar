@@ -21,7 +21,7 @@ register_hook('integrate_chat_admin_template', 'link_admin_area','sa_links',true
 register_hook('hook_load_file',$boarddir.'/sachat/Plugins/links/template/links.template.php','sa_links');
 register_hook('hook_load_file',$boarddir.'/sachat/Plugins/links/links.php','sa_links');
 register_hook('hook_initialize', 'initLink','sa_links');
-register_hook('hook_tools_template_bot', 'template_display_link','sa_links');
+register_hook('hook_tools_template', 'template_display_link','sa_links');
 
 //gadgets Language strings
 LoadLanguage('links/template/links');

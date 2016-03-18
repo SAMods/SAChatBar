@@ -332,6 +332,12 @@ End bar styles
 /*
 start buddy box styles
 */
+#bddy_box{
+	max-height: 600px;
+	overflow-y:auto;
+	overflow-x:auto;
+}
+
 .buddyboxcontent a {
 	color: #000000;
 	border:0px;
@@ -349,8 +355,6 @@ start buddy box styles
 	font-family: arial,sans-serif;
 	font-size: 13px;
 	color: #333333;
-	overflow-y:auto;
-	overflow-x:auto;
 	padding:7px;
 	border-left:1px solid #abb2c1;
 	border-right:1px solid #abb2c1;

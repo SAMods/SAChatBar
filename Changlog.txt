@@ -5,7 +5,9 @@ Added a ton of hooks to the mod can also hook into sachat admin actions/areas
 Link are now a plugin
 Gadgets are now a plugin
 Social links are now a plugin
-Removed some older unused code  
+Removed some older unused code
+Fixed scrolling issues in whos online list
+Fixed online list showing hidden members
 
 =====SA Chat 1.0a Rev**=====
 

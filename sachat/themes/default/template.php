@@ -96,7 +96,7 @@
 	
 	function chat_window_template() { //Main chat window, not the bar, the window you chat to your friends with, duh :P
 
-		global $user_settings, $buddy_settings, $modSettings, $txt, $context;
+		global $user_settings, $buddy_settings, $filter_events, $modSettings, $txt, $context;
 
 		// The main chat window
 		$data = '
@@ -111,9 +111,10 @@
 				<span id="typeon'.$buddy_settings['id_member'].'"></span>
 			<br clear="all"/></div>
 				<div class="chatboxoptions">';
+					
 					$data.= '
 						<a href="javascript:void(0)" onclick="javascript:xchat(\''.$buddy_settings['id_member'].'\')">X</a>';
-					
+						
 				$data.= '</div>
 				<br clear="all"/>
 		</div>';
@@ -155,6 +156,9 @@
 				   <input type="text" name="msg'.$buddy_settings['id_member'].'" id="msg'.$buddy_settings['id_member'].'" />
 				</form>
 		   </div>';
+		   
+		if(isset($filter_events['hook_chatbox_template']))
+			call_hook('hook_chatbox_template',array(&$data),true);
 		
 		return $data;
 	}
@@ -244,7 +248,7 @@
 
 	function chat_extra_template() { 
 
-		global $txt, $member_id, $dirArray, $filter_events, $indexCount, $modSettings, $curtheme, $context;
+		global $txt, $member_id, $dirArray, $filter_events, $IsMobile, $indexCount, $modSettings, $curtheme, $context;
 		
 		$data = ' 
 			<div class="extraboxhead">
@@ -253,9 +257,6 @@
 				
 		$data .= '
 			<div class="extraboxcontent">';	
-				
-				if(isset($filter_events['hook_tools_template_top']))
-					call_hook('hook_tools_template_top',array(&$data));
 				
 				$data.= '<br />';
 				
@@ -305,17 +306,14 @@
 						
 						$data .= '</select><br />';
 					}	
-					
 				}
 						
-				if(isset($filter_events['hook_tools_template_bot']))
-					call_hook('hook_tools_template_bot',array(&$data));
-					
-				
+				if(isset($filter_events['hook_tools_template']))
+					call_hook('hook_tools_template',array(&$data));
 				
 		  $data .= '
-			  <div class="extraboxbottom">
-				  Powered by SA Chat &copy; 2010 - 2015 <a href="http://samods.github.io/SAChatBar/">SA Mods</a>
+			  <div class="extraboxbottom">'.$IsMobile.'
+				  Powered by SA Chat &copy; 2010 - 2016 <a href="http://samods.github.io/SAChatBar/">SA Mods</a>
 			  </div>';
 				  
 		 $data .= '
@@ -371,6 +369,7 @@
 			<div class="buddyboxcontent">';
 				 
 				$data .= '<div id="bddy_box">';
+				
 				if(!empty($context['friends'])) {
 				 
 					foreach ($context['friends'] as $buddy) {

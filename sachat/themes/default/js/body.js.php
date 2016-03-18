@@ -47,7 +47,6 @@
 			chatcss = \'style.css?\' + milliseconds;
 			
 			$sachat(\'head\').append(\'<link rel="stylesheet" id="stylechange" href="'.$themeurl.'/css/\' + chatcss + \'" type="text/css" />\');';
-			
 			if(isset($filter_events['hook_load_js']))
 				call_hook('hook_load_js', array(&$context['HTML']));
 			
@@ -86,7 +85,7 @@
 			}else{
 				$sachat(\'#sa_friends\').hide();
 			}
-			
+
 			$sachat(\'.show_buddys\').change(function(){
 				checkit = $sachat(\'#showbuddys\').prop(\'checked\');
 				
@@ -549,7 +548,7 @@
 							upDownchat(value.id);
 						}
 					}else{
-						upDownchat(id);
+						upDownchat(value.id);
 					}
 					//console.log(index + \':\' + value.id); 
 				});

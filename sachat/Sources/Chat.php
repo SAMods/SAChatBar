@@ -34,8 +34,10 @@
 				$lastID = $row['id'];
 				mread($row['id']);
 			}
-			$smcFunc['db_free_result']($results);
 		}
+		
+		$smcFunc['db_free_result']($results);
+		
 		if($_REQUEST['update'] == 'true'){
 			$context['JSON']['DATA'] = chat_update_template();
 		}else{
@@ -111,15 +113,14 @@
 			)
 		);
 
-		if ($results && $smcFunc['db_num_rows']($results) != 0) {
-			$context['JSON']['ids'] = array();
-			while ($row = $smcFunc['db_fetch_assoc']($results)) {
-					$context['JSON']['ids'][$row['id']] = $row['from'];
+		
+		$context['JSON']['ids'] = array();
+		while ($row = $smcFunc['db_fetch_assoc']($results)) {
+				$context['JSON']['ids'][$row['id']] = $row['from'];
 				
-			}
-			$smcFunc['db_free_result']($results);
-		}   
-		else {
+		}
+		$smcFunc['db_free_result']($results);
+		if (!$results && $smcFunc['db_num_rows']($results) == 0) {
 			if (defined('loadOpt')) {
 				doOptDBrec();
 			}

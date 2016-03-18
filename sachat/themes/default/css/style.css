@@ -376,6 +376,13 @@ End bar styles
 /*
 start buddy box styles
 */
+
+#bddy_box{
+	max-height: 600px;
+	overflow-y:auto;
+	overflow-x:auto;
+}
+
 .buddyboxcontent a {
 	color: #000000;
 	border:0px;

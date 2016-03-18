@@ -18,7 +18,7 @@ register_hook('integrate_chat_admin_config', 'soc_config','sa_soc_links',true);
 	
 //SA Chat hooks
 register_hook('hook_load_file', $boarddir.'/sachat/Plugins/sociallinks/template/sociallinks.template.php','sa_soc_links');
-register_hook('hook_tools_template_bot', 'template_display_soc_link','sa_soc_links');
+register_hook('hook_tools_template', 'template_display_soc_link','sa_soc_links');
 register_hook('hook_load_js', 'load_soc_js','sa_soc_links');
 
 //sociallinks Language strings
