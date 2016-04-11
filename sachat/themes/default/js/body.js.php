@@ -35,7 +35,7 @@
 			var maxHeartbeat = '.$modSettings['2sichat_mn_heartmin'].';
 			var HeartbeatTime = minHeartbeat;
 			var itemsfound = 0;
-			var $sachat = jQuery.noConflict();
+			
 			var windowFocus = true;
 			var memberID = "'.$member_id.'";
 			lastKeyUp = 0;

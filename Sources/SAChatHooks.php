@@ -134,10 +134,40 @@
 							'config' => array($txt['twosichatConfig']),
 							'chat' => array($txt['twosichatChat']),
 							'load' => array($txt['2sichatloadbal']),
-							'theme' => array($txt['2sichat_theme']),
-							'plugins' => array($txt['2sichat_plugins']),
-							'maintain' => array($txt['2sichatmaintain']),
-							'errorlogs' => array($txt['error_2si']),
+							//'theme' => array($txt['2sichat_theme']),
+							//'plugins' => array($txt['2sichat_plugins']),
+							//'maintain' => array($txt['2sichatmaintain']),
+							//'errorlogs' => array($txt['error_2si']),
+						),
+					),
+					'themesa' => array(
+						'label' => $txt['2sichat_theme'],
+						'file' => 'sachatAdmin.php',
+						'function' => 'twosichatThemes',
+						'icon' => 'languages.gif',
+						'permission' => array('admin_forum'),
+						'subsections' => array(
+							
+						),
+					),
+					'plugins' => array(
+						'label' => $txt['2sichat_plugins'],
+						'file' => 'sachatAdmin.php',
+						'function' => 'twosichatplugin',
+						'icon' => 'languages.gif',
+						'permission' => array('admin_forum'),
+						'subsections' => array(
+							
+						),
+					),
+					'errors' => array(
+						'label' => $txt['error_2si'],
+						'file' => 'sachatAdmin.php',
+						'function' => 'twosichaterror',
+						'icon' => 'languages.gif',
+						'permission' => array('admin_forum'),
+						'subsections' => array(
+							
 						),
 					),
 					'plugsetting' => array(
@@ -148,6 +178,16 @@
 						'permission' => array('admin_forum'),
 						'subsections' => array(
 							'plugsetting' => array($txt['2sichat_plugins1']),
+						),
+					),
+					'maintainsa' => array(
+						'label' => $txt['2sichatmaintain'],
+						'file' => 'sachatAdmin.php',
+						'function' => 'twosichatchmod',
+						'icon' => 'languages.gif',
+						'permission' => array('admin_forum'),
+						'subsections' => array(
+							
 						),
 					),
 				),

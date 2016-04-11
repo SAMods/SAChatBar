@@ -25,7 +25,7 @@ global $txt,$modSettings,$scripturl;
 		<span class="topslice"><span></span></span>
 	        <div class="content">
 			 '.$txt['2sichatmaintainopt1'].'<br /><br />
-			   <button type="button" onclick="javascript:location.href = \''.$scripturl.'?action=admin;area=sachat;sa=maintain;opti\';">'.$txt['2sichatmaintainopt2'] .'</button>
+			   <button type="button" onclick="javascript:location.href = \''.$scripturl.'?action=admin;area=maintainsa;sa=maintain;opti\';">'.$txt['2sichatmaintainopt2'] .'</button>
 			</div>
 	    <span class="botslice"><span></span></span>
 	</div><br />';
@@ -40,7 +40,7 @@ global $txt,$modSettings,$scripturl;
 		<span class="topslice"><span></span></span>
 	        <div class="content">
 			  <div class="error">'.$txt['2sichatmaintainpurge1'].'.</div><br />
-			   <button type="button" onclick="javascript:location.href = \''.$scripturl.'?action=admin;area=sachat;sa=maintain;purge\';">'.$txt['2sichatmaintainpurge2'].'</button>
+			   <button type="button" onclick="javascript:location.href = \''.$scripturl.'?action=admin;area=maintainsa;sa=maintain;purge\';">'.$txt['2sichatmaintainpurge2'].'</button>
 			</div>
 	    <span class="botslice"><span></span></span>
 	</div>';
@@ -55,7 +55,7 @@ global $txt,$modSettings,$scripturl;
 		<span class="topslice"><span></span></span>
 	        <div class="content">
 			  '.$txt['2sichatmaintaincache1'].'<br /><br />
-			     <button type="button" onclick="javascript:location.href = \''.$scripturl.'?action=admin;area=sachat;sa=maintain;cache\';">'.$txt['2sichatmaintaincache'].'</button>
+			     <button type="button" onclick="javascript:location.href = \''.$scripturl.'?action=admin;area=maintainsa;sa=maintain;cache\';">'.$txt['2sichatmaintaincache'].'</button>
 			</div>
 	    <span class="botslice"><span></span></span>
 	</div>';
@@ -70,7 +70,7 @@ global $txt,$modSettings,$scripturl;
 		<span class="topslice"><span></span></span>
 	        <div class="content">
 			    '.$txt['2sichatmaintainfb1'].'<br /><br />
-				<button type="button" onclick="javascript:location.href = \''.$scripturl.'?action=admin;area=sachat;sa=maintain;fixbar\';"> '.$txt['2sichatmaintainfb'].'</button>
+				<button type="button" onclick="javascript:location.href = \''.$scripturl.'?action=admin;area=maintainsa;sa=maintain;fixbar\';"> '.$txt['2sichatmaintainfb'].'</button>
 			</div>
 	    <span class="botslice"><span></span></span>
 	</div>';
@@ -199,7 +199,7 @@ function template_twosichatThemes(){
 	  }
 
 	 
-	  echo'<form action="', $scripturl, '?action=admin;area=sachat;sa=theme;upload" method="post" accept-charset="', $context['character_set'], '" enctype="multipart/form-data" onsubmit="return confirm(\'', $txt['theme_install_new_confirm'], '\');">';
+	  echo'<form action="', $scripturl, '?action=admin;area=themesa;sa=theme;upload" method="post" accept-charset="', $context['character_set'], '" enctype="multipart/form-data" onsubmit="return confirm(\'', $txt['theme_install_new_confirm'], '\');">';
 	  echo'
 	  <div class="cat_bar">
 		<h3 class="catbg">

@@ -169,14 +169,14 @@
 			$penable = $_REQUEST['enable_plugin'];
 			
 			updateSettings(array($penable => '1'));
-			redirectexit('action=admin;area=sachat;sa=plugins');
+			redirectexit('action=admin;area=plugins');
 		}
 		if(isset($_REQUEST['disable_plugin'])){
 			
 			$pdisable = $_REQUEST['disable_plugin'];
 			
 			updateSettings(array($pdisable => '0'));
-			redirectexit('action=admin;area=sachat;sa=plugins');
+			redirectexit('action=admin;area=plugins');
 		}
 		if(isset($_REQUEST['remove_plugin']) && isset($_REQUEST['file'])){
 			
@@ -191,7 +191,7 @@
 			if(file_exists($_REQUEST['file']))
 				unlink($_REQUEST['file']);
 			
-			redirectexit('action=admin;area=sachat;sa=plugins');
+			redirectexit('action=admin;area=plugins');
 			
 		}
 	}
@@ -246,7 +246,7 @@
 			'id' => 'chat_error',
 			'title' => $txt['error_2si'],
 			'items_per_page' => 20,
-			'base_href' => $scripturl . '?action=admin;area=sachat;sa=errorlogs',
+			'base_href' => $scripturl . '?action=admin;area=errors',
 			'get_items' => array(
 				'function' => create_function('$start, $items_per_page, $sort', '
 					global $context, $user_info, $memid, $smcFunc;
@@ -352,7 +352,7 @@
 				),
 			),
 			'form' => array(
-				'href' => $scripturl . '?action=admin;area=sachat;sa=errorlogs',
+				'href' => $scripturl . '?action=admin;area=errors',
 				'include_sort' => true,
 				'include_start' => true,
 				'hidden_fields' => array(
@@ -375,13 +375,13 @@
 		if (isset($_POST['del_all'])) {
 			$smcFunc['db_query']('', '
 			   DELETE FROM {db_prefix}2sichat_error', array());
-			   redirectexit('action=admin;area=sachat;sa=errorlogs');
+			   redirectexit('action=admin;area=errors');
 		}
 		if (!empty($_POST['del_sel']) && isset($_POST['del'])) {
 			$smcFunc['db_query']('', '
 			   DELETE FROM {db_prefix}2sichat_error
 			   WHERE id IN ({array_string:delete_actions})', array('delete_actions' => array_unique($_POST['del']),));
-			   redirectexit('action=admin;area=sachat;sa=errorlogs');
+			   redirectexit('action=admin;area=errors');
 		}
 	}
 
@@ -410,20 +410,20 @@
 					$data_freed = $smcFunc['db_optimize_table']($table['table_name']);
 				}
 			}
-			redirectexit('action=admin;area=sachat;sa=maintain;done');
+			redirectexit('action=admin;area=maintainsa;sa=maintain;done');
 		}
 		if (isset($_GET['fixbar'])) {
 			chmodDirectory('sachat/', 0);
-			redirectexit('action=admin;area=sachat;sa=maintain;done');
+			redirectexit('action=admin;area=maintainsa;sa=maintain;done');
 		}
 		if (isset($_GET['cache'])) {
 			twosicleanCache();
-			redirectexit('action=admin;area=sachat;sa=maintain;done');
+			redirectexit('action=admin;area=maintainsa;sa=maintain;done');
 		}
 		if (isset($_GET['purge'])) {
 			$smcFunc['db_query']('', 'DELETE FROM {db_prefix}2sichat', array());
 			$smcFunc['db_query']('', 'ALTER TABLE {db_prefix}2sichat AUTO_INCREMENT = 0', array());
-			redirectexit('action=admin;area=sachat;sa=maintain;done');
+			redirectexit('action=admin;area=maintainsa;sa=maintain;done');
 		}
 	}
 
@@ -645,9 +645,9 @@
 
 					$extracted = read_tgz_file($_FILES['theme_gz']['tmp_name'], $theme_dir, false, true);
 
-					redirectexit('action=admin;area=sachat;sa=theme;udone=' . $theme_name1 . '');
+					redirectexit('action=admin;area=themesa;sa=theme;udone=' . $theme_name1 . '');
 				} else {
-					redirectexit('action=admin;area=sachat;sa=theme');
+					redirectexit('action=admin;area=themesa');
 				}
 			} else {
 				//Invalide file type
@@ -695,7 +695,7 @@
 			copytree($boarddir . '/sachat/themes/default/js', $theme_dir . '/js');
 
 			package_flush_cache();
-			redirectexit('action=admin;area=sachat;sa=theme;udone');
+			redirectexit('action=admin;area=themesa;sa=theme;udone');
 		}
 
 		//remove theme
@@ -703,7 +703,7 @@
 			if ($_GET['remove'] != $modSettings['2sichat_theme']) {
 				if ($_GET['remove'] != '') {
 					SAChat_deleteAll($boarddir . '/sachat/themes/' . $_GET['remove']);
-					redirectexit('action=admin;area=sachat;sa=theme;rdone=' . $_GET['remove'] . '');
+					redirectexit('action=admin;area=themesa;sa=theme;rdone=' . $_GET['remove'] . '');
 				} else {
 					fatal_lang_error('2sichat_theme20', false);
 				}
