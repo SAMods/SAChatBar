@@ -215,10 +215,14 @@
 	
 	function GetComments($filename){
 		
-		$docComments = array_filter(
+		/*$docComments = array_filter(
 			token_get_all(file_get_contents($filename)), function($entry) {
 				return $entry[0] == T_COMMENT;
 			}
+		);*/
+		
+		$docComments = array_filter(
+			token_get_all(file_get_contents($filename)), create_function('$entry','return $entry[0] == T_COMMENT;')
 		);
 		
 		$fileDocComment = array_shift($docComments);
